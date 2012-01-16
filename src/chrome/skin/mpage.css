@@ -1,0 +1,274 @@
+vbox.page{
+  overflow-y: auto;
+  padding: 0 4px 0 3px;
+}
+
+.clear{
+  clear: both;
+}
+
+table.container{
+  border-collapse: collapse;
+  padding: 0;
+  width: 100%;
+}
+
+td.column{
+  width: 33%;
+  height: 100%;
+  padding: 7px 0 50px 0;
+  vertical-align: top;
+}
+
+div.toolbar{
+  font: 11px arial,sans-serif;
+  margin: 0 3px 0 4px;
+}
+
+div.toolbar input{
+  width: 250px; 
+  margin: 0 7px 7px 0;
+  float: left;
+}
+
+div.toolbar .button{
+  float: left;
+  width: 70px;
+  height: 20px;
+  margin: 0 7px 7px 0;
+  background-color: #F1F1F1; 
+  position: relative;
+  border: 1px solid #DCDCDC;
+  border-radius: 2px 2px 2px 2px;
+  text-align: center;
+  font-weight: bold;
+  line-height: 20px;
+  color: #444444;
+}
+
+div.toolbar .button:hover{
+  background-color: #E0E0E0;
+  cursor: pointer;
+}
+
+div.toolbar .loading{
+  background-image: url('loading_16.png');
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+div.toolbar a{
+  float: left;  
+  display: block;
+  margin: 0 7px 7px 0;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+div.toolbar a:hover{
+  text-decoration: underline;
+}
+
+div.widget{
+  margin: 0;
+  font: 13px arial,sans-serif;
+}
+
+div.header{
+  padding: 0px 9px;
+  line-height: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+div.header a.title{
+}
+
+div.header div.action{
+  margin: 0 0 0 5px;
+  cursor: pointer;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
+
+div.header div.remove{
+  background-image: url('trash.gif');
+}
+
+div.header div.configure{
+  background-image: url('equalizer.gif');
+  width: 11px;
+}
+
+div.body{
+  padding: 7px 9px;
+}
+
+div.body ul{
+  padding: 0;
+  margin: 0;
+}
+
+div.body li{
+  list-style-type: none;
+  padding: 3px 0 2px 0;
+  margin: 0;
+  line-height: 16px;
+}
+
+div.body a{
+  color: inherit;
+  text-decoration: none;
+}
+
+div.body a:hover{
+  text-decoration: underline;
+}
+
+div.body a:visited{
+}
+
+div.body div.error{
+  color: #9d0e15;
+}
+
+div.body div.loading{
+  background-image: url('loading_16.png');
+  padding-left: 20px;
+  background-repeat: no-repeat;
+}
+
+#dd-placeholder {
+  border-style: dashed; 
+  border-width: 2px; 
+  display:none;
+}
+
+.about-page{
+  padding: 7px;
+}
+
+.about-box{
+  padding: 13px;
+  padding-top: 5px;
+}
+
+.about-product-name{
+  font-weight: bold; 
+  font-size: x-large;  
+}
+
+.about-sub-title{
+  font-weight: bold;
+}
+
+.about-author{
+}
+
+.about-email{
+  color: #3A69A6;
+}
+
+/* Kellys theme */
+.kellys vbox.page{
+  background-color: #2a2b2f;
+}
+
+.kellys td.column{
+  border-right: 1px dashed #67686b;
+}
+
+.kellys div.toolbar{
+  border-bottom: 1px dashed #67686b;
+}
+
+.kellys div.toolbar .button{
+  background-color: #d1c79e;   
+  color: #444444;
+  border: 1px solid #d1c79e;
+}
+
+.kellys div.toolbar a{
+  color: #9ab2c8;
+}
+
+.kellys div.toolbar .button:hover{
+  background-color: #B2A985;
+  border-color: #B2A985;
+}
+
+.kellys div.widget{
+  border-bottom: 1px dashed #67686b;  
+  font: 13px "Lucida Sans", Helvetica, sans-serif;
+}
+
+.kellys div.header a.title{
+  color: #62acce;
+}
+
+.kellys div.header div.remove{
+  background-image: url('kellys_trash.gif');
+}
+
+.kellys div.header div.configure{
+  background-image: url('kellys_equalizer.gif');
+}
+
+.kellys div.body li{
+  color: #d1c79e;
+}
+
+.kellys div.body a:visited{
+  color: #e6ac32;
+}
+
+.kellys div.body div.loading{
+  color: #d1c79e;
+} 
+
+.kellys #dd-placeholder {
+  background-color: #d1c79e;
+  border-color: #d1c79e;
+}
+
+/* light theme */
+.light vbox.page{
+  background-color: #FFFFFF;
+}
+
+.light div.header div.remove{
+  background-image: url('light_trash.gif');
+}
+
+.light div.header div.configure{
+  background-image: url('light_equalizer.gif');
+}
+
+.light div.widget{
+  margin: 0 4px 7px 3px;
+  border: 1px solid #C6C6C6;  
+  font: 13px arial,sans-serif;
+}
+
+.light div.header{
+  background-color: #AAE3DD;
+}
+
+.light div.header a.title{
+  color: #3E8780;
+}
+
+.light div.body li{
+  color: #1155CC;
+}
+
+.light div.body a:visited{
+  color: #6611CC;
+}
+
+.light div.body div.loading{
+  color: #1155CC;
+} 
+

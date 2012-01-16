@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet type="text/css" href="chrome://mpage/skin/mpage.css" ?>
+
+<!DOCTYPE window SYSTEM "chrome://mpage/locale/mpage.dtd">
+
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" title="&about.label;" class="about-page">
+ 
+<groupbox align="start" orient="horizontal" width="200" height="120" class="about-box">
+  <vbox>
+    <text value="mPage" class="about-product-name"/>
+    <text value="&about.version.label; 1.0"/>
+
+    <separator/>
+    <text value="&about.createdby.label;" class="about-sub-title"/>
+    <text value="Matija Podravec" class="about-author"/>
+    <text value="matija.podravec@gmail.com" class="about-email"/>
+  </vbox>
+</groupbox>
+<hbox>
+  <spacer flex="1"/>
+  <button label="&about.close.label;" oncommand="window.close();"/>
+</hbox>
+</window>
+
+

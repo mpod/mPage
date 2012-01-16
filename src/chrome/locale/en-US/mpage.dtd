@@ -1,0 +1,9 @@
+<!ENTITY subscribe.label            "Subscribe">
+<!ENTITY placeholder.label          "Paste a URL here.">
+<!ENTITY theme.label                "Theme">
+<!ENTITY about.label                "About">
+<!ENTITY about.version.label             "Version">
+<!ENTITY about.createdby.label           "Created by:">
+<!ENTITY about.close.label               "Close">
+<!ENTITY mpage.showMenuItem.label        "mPage">
+<!ENTITY mpage.showMenuItem.accesskey    "m">
