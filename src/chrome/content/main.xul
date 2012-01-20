@@ -29,9 +29,9 @@
   <vbox flex="1" class="page">
     <html:table class="container">
       <html:tr>
-        <html:td id="panel-1" class="column first" ondragover="mpage.dd.dragOver(event, this);"></html:td>
-        <html:td id="panel-2" class="column" ondragover="mpage.dd.dragOver(event, this);"></html:td>
-        <html:td id="panel-3" class="column" ondragover="mpage.dd.dragOver(event, this);">
+        <html:td id="panel-1" class="column first"></html:td>
+        <html:td id="panel-2" class="column"></html:td>
+        <html:td id="panel-3" class="column">
           <html:div class="toolbar">
             <html:input id="subscribe-url" type="text" placeholder="&placeholder.label;" name="subscribe" 
               onkeydown="mpage.controller.handleReturnKey(event);"/>

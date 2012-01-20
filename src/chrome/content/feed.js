@@ -61,6 +61,7 @@ mpage.feed.prototype = {
 
       try {
         if (self.url.indexOf('reddit.com') != -1) {
+          self.siteUrl = self.url;         
           self.processReddit(request.responseText);
         } else {
           self.process(request.responseText);
@@ -103,9 +104,11 @@ mpage.feed.prototype = {
         var dateEl = entryEl.childNodes[1];
         if (dateEl.className != 'tagline') dateEl = dateEl.nextSibling;
         dateEl = dateEl.childNodes[1];
+        var commentsEl = dateEl.parentNode.nextSibling.firstChild.firstChild;
         this.entries.push({
           title: titleEl.firstChild.nodeValue,
-          link: titleEl.getAttribute('href'),
+          link: commentsEl.getAttribute('href'),  
+          link2: titleEl.getAttribute('href'),
           date: new Date(dateEl.getAttribute('datetime')).getTime(),
           content: ''
         });
@@ -120,7 +123,7 @@ mpage.feed.prototype = {
     var parser = new DOMParser();
     var xmlDoc = parser.parseFromString(feedText, 'text/xml');
     var docEl = xmlDoc.documentElement;
-    var nodes, node, entry;
+    var nodes, node, entry, n;
 
     var isAtom = docEl.tagName == 'feed';
     var isRSS = docEl.tagName == 'rss';
@@ -133,11 +136,15 @@ mpage.feed.prototype = {
     var channelEl = xmlDoc.getElementsByTagName('channel')[0];
     if (!channelEl) channelEl = xmlDoc;
     this.title = channelEl.getElementsByTagName('title')[0].firstChild.nodeValue;
-    /*var linkEl = channelEl.getElementsByTagName('link');
+    for (n = channelEl.firstChild; n; n = n.nextSibling){
+      if (n.tagName && n.tagName.toLowerCase() == 'link') {
+        this.siteUrl = n.firstChild.nodeValue;  
+        break;
+      }
+    }
+    var linkEl = channelEl.getElementsByTagName('link');
     if (linkEl)
-      this.link = linkEl[0].firstChild.nodeValue;
-    else
-      this.link = '#';*/
+      this.siteUrl = linkEl[0].firstChild.nodeValue;
 
     if (isRdf) { 
       nodes = xmlDoc.getElementsByTagName('item');
@@ -147,7 +154,7 @@ mpage.feed.prototype = {
       nodes = channelEl.getElementsByTagName('entry');
     }
 
-    for (var i=0, count = nodes.length; i<count; i++){
+    for (i=0, count = nodes.length; i<count; i++){
       node = nodes[i];
       entry = {};
 			entry.readed = false;

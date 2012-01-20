@@ -3,16 +3,16 @@ else if (typeof mpage.dd != 'object')
   throw new Error('mpage.dd already exists and is not an object');
 
 mpage.dd = {
-  dragStart: function(event, self) {
-    event.dataTransfer.setData('text/plain', self.getAttribute('id')); 
+  dragStart: function(event) {
+    event.dataTransfer.setData('text/plain', this.getAttribute('id')); 
     var feedbackEl = document.createElementNS(mpage.view.htmlNS, 'img');  
     feedbackEl.setAttribute('src', 'chrome://mpage/skin/feedback.png');
     event.dataTransfer.setDragImage(feedbackEl, 19, 19);
     event.dataTransfer.effectAllowed = 'none';
-    self.style.opacity = 0.3;
+    this.style.opacity = 0.3;
   },
 
-  dragOver: function(event, self) {
+  dragOver: function(event) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -23,8 +23,8 @@ mpage.dd = {
       placeholderEl.setAttribute('class', 'widget');
     }
 
-    if (self.className.indexOf('column') != -1) {
-      for (var n=self.lastChild; n; n=n.previousSibling) {
+    if (this.className.indexOf('column') != -1) {
+      for (var n=this.lastChild; n; n=n.previousSibling) {
         if (n.className && n.className.indexOf('widget') != -1) {
           if (event.layerY > (n.offsetTop + n.offsetHeight)) {
             break;  
@@ -33,17 +33,17 @@ mpage.dd = {
           }
         }
       }
-      self.appendChild(placeholderEl); 
+      this.appendChild(placeholderEl); 
       return;
     }
 
-    if ((event.layerY + 1 - self.offsetTop) / self.offsetHeight < 0.5) {
-      self.parentNode.insertBefore(placeholderEl, self);
+    if ((event.layerY + 1 - this.offsetTop) / this.offsetHeight < 0.5) {
+      this.parentNode.insertBefore(placeholderEl, this);
     } else {
-      if (self.nextSibling) {
-        self.parentNode.insertBefore(placeholderEl, self.nextSibling);
+      if (this.nextSibling) {
+        this.parentNode.insertBefore(placeholderEl, this.nextSibling);
       } else {
-        self.parentNode.appendChild(placeholderEl);
+        this.parentNode.appendChild(placeholderEl);
       }
     }
     var el = document.getElementById(event.dataTransfer.getData('text/plain')); 
@@ -51,7 +51,7 @@ mpage.dd = {
     placeholderEl.style.display = 'block';
   },
 
-  drop: function(event, self) {
+  drop: function(event) {
     var data = event.dataTransfer.getData('text/plain');
     var placeholderEl = document.getElementById('dd-placeholder'); 
     var el = document.getElementById(data);
@@ -61,7 +61,7 @@ mpage.dd = {
     event.stopPropagation();
   }, 
 
-  dragEnd: function(event, self) {
+  dragEnd: function(event) {
     var placeholderEl = document.getElementById('dd-placeholder'); 
     if (placeholderEl) {
       var data = event.dataTransfer.getData('text/plain');

@@ -82,6 +82,8 @@ div.header{
 }
 
 div.header a.title{
+  cursor: pointer;
+  text-decoration: none;
 }
 
 div.header div.action{

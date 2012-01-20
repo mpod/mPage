@@ -7,6 +7,13 @@ mpage = {
   start: function() {
     var windowEl = document.getElementById('main');
     windowEl.className = mpage.fuelApplication.prefs.getValue('extensions.mpage.theme', 'kellys');
+    var panelEl = document.getElementById('panel-1');
+    panelEl.addEventListener('dragover', mpage.dd.dragOver, false);
+    panelEl = document.getElementById('panel-2');
+    panelEl.addEventListener('dragover', mpage.dd.dragOver, false);
+    panelEl = document.getElementById('panel-3');
+    panelEl.addEventListener('dragover', mpage.dd.dragOver, false);
+    
     mpage.view.registerObserver();
     mpage.controller.registerObserver();
     mpage.model.load();

@@ -128,13 +128,19 @@ mpage.view = {
 
     widgetEl.setAttribute('class', 'widget');
     widgetEl.setAttribute('id', 'widget-' + widget.id);
-    widgetEl.setAttribute('ondragstart', 'mpage.dd.dragStart(event, this);');
-    widgetEl.setAttribute('ondragend', 'mpage.dd.dragEnd(event, this);');
-    widgetEl.setAttribute('ondragover', 'mpage.dd.dragOver(event, this);');
+    widgetEl.addEventListener('dragstart', mpage.dd.dragStart, false);
+    widgetEl.addEventListener('dragend', mpage.dd.dragEnd, false);
+    widgetEl.addEventListener('dragover', mpage.dd.dragOver, false);
     widgetEl.setAttribute('widget-id', widget.id);
     headerEl.setAttribute('class', 'header');
     titleEl.setAttribute('class', 'title');
+    if (widget.siteUrl) {
+        titleEl.setAttribute('target', '_blank');
+        titleEl.setAttribute('href', widget.siteUrl);
+        titleEl.addEventListener('click', function(){this.blur();}, false); 
+    }
     titleEl.appendChild(document.createTextNode(widget.title));
+
     headerEl.appendChild(titleEl);
 
     var el;
@@ -187,8 +193,18 @@ mpage.view = {
       var linkEl = document.createElementNS(self.htmlNS, 'html:a');
       linkEl.setAttribute('href', entry.link);
       linkEl.setAttribute('target', '_blank');
+      linkEl.addEventListener('click', function(){this.blur();}, false); 
       linkEl.appendChild(document.createTextNode(entry.title));
       entryEl.appendChild(linkEl);
+      if (entry.link2) {
+          var link2El = document.createElementNS(self.htmlNS, 'html:a');
+          link2El.setAttribute('href', entry.link2);
+          link2El.setAttribute('target', '_blank');
+          link2El.appendChild(document.createTextNode('+'));
+          link2El.addEventListener('click', function(){this.blur();}, false); 
+          entryEl.appendChild(document.createTextNode(' '));
+          entryEl.appendChild(link2El);
+      }
       listEl.appendChild(entryEl);
     }
 
