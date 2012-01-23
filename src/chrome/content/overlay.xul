@@ -15,7 +15,7 @@
   <menupopup id="menu_ToolsPopup">
     <menuitem id="mpage-show-menu" label="&mpage.showMenuItem.label;"
       accesskey="&mpage.showMenuItem.accesskey;"
-      insertafter="menu_pageInfo,javascriptConsole"
+      insertafter="menu_pageInfo"
       oncommand="mpage.openPage()"/>
   </menupopup>
 

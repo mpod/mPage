@@ -127,8 +127,8 @@ mpage.controller = {
     }
   },
 
-  configure: function(event, self) {
-    var widgetId = mpage.view.getWidgetId(self);
+  configure: function(event) {
+    var widgetId = mpage.view.getWidgetId(this);
     var widget = mpage.model.getWidget(widgetId);
     var value = {value: widget.entriesToShow};
     var strbundle = document.getElementById('labels');
@@ -141,7 +141,7 @@ mpage.controller = {
   },
 
   remove: function(event, self) {
-    var widgetId = mpage.view.getWidgetId(self);
+    var widgetId = mpage.view.getWidgetId(this);
     var widget = mpage.model.getWidget(widgetId);
 
     mpage.model.remove(widget);

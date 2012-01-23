@@ -146,11 +146,11 @@ mpage.view = {
     var el;
     el = document.createElementNS(self.htmlNS, 'html:div');
     el.setAttribute('class', 'action configure');
-    el.setAttribute('onclick', 'mpage.controller.configure(event, this);');
+    el.addEventListener('click', mpage.controller.configure, false);
     headerEl.appendChild(el);
     el = document.createElementNS(self.htmlNS, 'html:div');
     el.setAttribute('class', 'action remove');
-    el.setAttribute('onclick', 'mpage.controller.remove(event, this);');
+    el.addEventListener('click', mpage.controller.remove, false);
     headerEl.appendChild(el);
 
     widgetEl.appendChild(headerEl);
@@ -200,7 +200,7 @@ mpage.view = {
           var link2El = document.createElementNS(self.htmlNS, 'html:a');
           link2El.setAttribute('href', entry.link2);
           link2El.setAttribute('target', '_blank');
-          link2El.appendChild(document.createTextNode('+'));
+          link2El.appendChild(document.createTextNode('#'));
           link2El.addEventListener('click', function(){this.blur();}, false); 
           entryEl.appendChild(document.createTextNode(' '));
           entryEl.appendChild(link2El);

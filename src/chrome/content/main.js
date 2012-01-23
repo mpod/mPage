@@ -30,7 +30,7 @@ mpage = {
   },
 
   dump: function(v) {
-    if (mpage.fuelApplication.prefs.getValue('mpage.debug', false)) {
+    if (mpage.fuelApplication.prefs.getValue('extensions.mpage.debug', false)) {
       console.log(v);
     }
   },
