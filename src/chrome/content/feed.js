@@ -154,7 +154,7 @@ mpage.feed.prototype = {
       nodes = channelEl.getElementsByTagName('entry');
     }
 
-    for (i=0, count = nodes.length; i<count; i++){
+    for (var i=0, count = nodes.length; i<count; i++){
       node = nodes[i];
       entry = {};
 			entry.readed = false;

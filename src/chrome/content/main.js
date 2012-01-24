@@ -16,7 +16,7 @@ mpage = {
     
     mpage.view.registerObserver();
     mpage.controller.registerObserver();
-    mpage.model.load();
+    mpage.model.init();
   },
 
   unload: function() {

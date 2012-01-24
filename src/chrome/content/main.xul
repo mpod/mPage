@@ -18,6 +18,7 @@
   <script type="application/javascript" src="chrome://mpage/content/ajax.js"/>
   <script type="application/javascript" src="chrome://mpage/content/feed.js"/>
   <script type="application/javascript" src="chrome://mpage/content/view.js"/>
+  <script type="application/javascript" src="chrome://mpage/content/storage.js"/>
   <script type="application/javascript" src="chrome://mpage/content/model.js"/>
   <script type="application/javascript" src="chrome://mpage/content/dd.js"/>
   <script type="application/javascript" src="chrome://mpage/content/controller.js"/>

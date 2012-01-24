@@ -135,9 +135,9 @@ mpage.view = {
     headerEl.setAttribute('class', 'header');
     titleEl.setAttribute('class', 'title');
     if (widget.siteUrl) {
-        titleEl.setAttribute('target', '_blank');
-        titleEl.setAttribute('href', widget.siteUrl);
-        titleEl.addEventListener('click', function(){this.blur();}, false); 
+      titleEl.setAttribute('target', '_blank');
+      titleEl.setAttribute('href', widget.siteUrl);
+      titleEl.addEventListener('click', function(){this.blur();}, false); 
     }
     titleEl.appendChild(document.createTextNode(widget.title));
 
