@@ -1,8 +1,8 @@
-if (!mpage.ajax) mpage.ajax = {};
-else if (typeof mpage.ajax != 'object')
-  throw new Error('mpage.ajax already exists and is not an object');
+if (!mpagespace.ajax) mpagespace.ajax = {};
+else if (typeof mpagespace.ajax != 'object')
+  throw new Error('mpagespace.ajax already exists and is not an object');
 
-mpage.ajax = {
+mpagespace.ajax = {
   load: function(url, callback, options) {  
     var req = new XMLHttpRequest();  
     var n = 0;
@@ -33,13 +33,13 @@ mpage.ajax = {
 
     var target = url;
     if (options.parameters)
-      target += '?' + mpage.ajax.encodeFormData(options.parameters);
+      target += '?' + mpagespace.ajax.encodeFormData(options.parameters);
 
     try {
       req.open('GET', url);  
       req.send();
     } catch (e) {
-      mpage.promptsService.alert(null, mpage.translate('ajaxException.title'), mpage.translate('ajaxException.message'));
+      mpagespace.promptsService.alert(null, mpagespace.translate('ajaxException.title'), mpagespace.translate('ajaxException.message'));
       if (options.errorHandler) 
         options.errorHandler(null, null);
     } 

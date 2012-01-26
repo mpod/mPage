@@ -1,5 +1,5 @@
-content   mpage                  chrome/content/
-skin      mpage   classic/1.0    chrome/skin/
-locale    mpage   en-US          chrome/locale/en-US/
+content   mpagespace                  chrome/content/
+skin      mpagespace   classic/1.0    chrome/skin/
+locale    mpagespace   en-US          chrome/locale/en-US/
 
-overlay chrome://browser/content/browser.xul  chrome://mpage/content/overlay.xul
+overlay chrome://browser/content/browser.xul  chrome://mpagespace/content/overlay.xul

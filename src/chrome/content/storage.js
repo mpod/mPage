@@ -1,30 +1,24 @@
-if (!mpage.storage) mpage.storage = {};
-else if (typeof mpage.storage != 'object')
-  throw new Error('mpage.storage already exists and is not an object');
+if (!mpagespace.storage) mpagespace.storage = {};
+else if (typeof mpagespace.storage != 'object')
+  throw new Error('mpagespace.storage already exists and is not an object');
 
 Components.utils.import("resource://gre/modules/Services.jsm");  
 Components.utils.import("resource://gre/modules/FileUtils.jsm");  
 Components.utils.import("resource://gre/modules/NetUtil.jsm");
 
-mpage.storage = {
+mpagespace.storage = {
   instance: null,
 
   getStorage: function(flag) {
-    return new mpage.storage.json();
-
-    if (flag) {
-      if (!mpage.storage.instance) {
-        mpage.storage.instance = new mpage.storage.sqlite();
-      }
-      return mpage.storage.instance;
-    } else {
-      return new mpage.storage.json();
+    if (!mpagespace.storage.instance) {
+      mpagespace.storage.instance = new mpagespace.storage.json();
     }
+    return mpagespace.storage.instance;
   } 
 }
 
-mpage.storage.sqlite = function() {
-  let file = FileUtils.getFile('ProfD', ['mpage.sqlite']);  
+mpagespace.storage.sqlite = function() {
+  let file = FileUtils.getFile('ProfD', ['mpage.extension.sqlite']);  
   this.conn = Services.storage.openDatabase(file); 
   if (!this.conn.tableExists('feeds')) {
     this.conn.executeSimpleSQL([
@@ -36,12 +30,13 @@ mpage.storage.sqlite = function() {
         "panel_id integer not null, ",
         "order_number integer not null)"
       ].join(''));
+    this.reset();
   }
   return this;
 }
 
 
-mpage.storage.sqlite.prototype = {
+mpagespace.storage.sqlite.prototype = {
   save: function(widget) {
     var statements = [];
 
@@ -50,7 +45,7 @@ mpage.storage.sqlite.prototype = {
       stmt.params.id = widget.id;  
       statements.push(stmt);
     } else {
-      var panel = mpage.model.layout[widget.panelId]; 
+      var panel = mpagespace.model.layout[widget.panelId]; 
       for (var i=0; i<panel.length; i++) {
         let stmt = null;
         if (panel[i] == widget.id) {
@@ -87,11 +82,11 @@ mpage.storage.sqlite.prototype = {
         }
 
         if (panel[i] == widget.id && (widget.id + '').indexOf('temp') != -1) { 
-          if (mpage.model.widgets[widget.id]) delete mpage.model.widgets[widget.id];
+          if (mpagespace.model.widgets[widget.id]) delete mpagespace.model.widgets[widget.id];
           widget.id = this.conn.lastInsertRowID;
-          mpage.model.widgets[widget.id] = widget;
+          mpagespace.model.widgets[widget.id] = widget;
           panel[i] = widget.id;
-          mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-id:' + this.conn.lastInsertRowID + ':' + widget.id);  
+          mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-id:' + this.conn.lastInsertRowID + ':' + widget.id);  
         }
       }
     }
@@ -100,27 +95,27 @@ mpage.storage.sqlite.prototype = {
       handleError: function(error) { },
       handleCompletion: function(reason) { 
         if (reason == Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED) {
-          mpage.dump('Async execution ended.');
+          mpagespace.dump('Async execution ended.');
         } 
       }
     });
-    mpage.dump('Model has been saved.');
+    mpagespace.dump('Model has been saved.');
   },
 
   load: function() {
-    mpage.model.widgets = {};
-    mpage.model.layout = {};
+    mpagespace.model.widgets = {};
+    mpagespace.model.layout = {};
     var stmt = this.conn.createStatement("select * from feeds order by panel_id, order_number");  
     stmt.executeAsync({
       handleResult: function(result) {
         for (let row = result.getNextRow(); row; row = result.getNextRow()) {
           var panelId = row.getResultByName('panel_id');
-          var feed = new mpage.feed(row.getResultByName('id'), row.getResultByName('url'), panelId, row.getResultByName('entries_to_show'));
-          mpage.model.widgets[feed.id] = feed;
-          if (mpage.model.layout[panelId]) {
-            mpage.model.layout[panelId].push(feed.id);
+          var feed = new mpagespace.feed(row.getResultByName('id'), row.getResultByName('url'), panelId, row.getResultByName('entries_to_show'));
+          mpagespace.model.widgets[feed.id] = feed;
+          if (mpagespace.model.layout[panelId]) {
+            mpagespace.model.layout[panelId].push(feed.id);
           } else {
-            mpage.model.layout[panelId] = [feed.id];
+            mpagespace.model.layout[panelId] = [feed.id];
           }    
           feed.load();
         }
@@ -129,14 +124,19 @@ mpage.storage.sqlite.prototype = {
       },
       handleCompletion: function(reason) {
         if (reason == Components.interfaces.mozIStorageStatementCallback.REASON_FINISHED) {
-          mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'model-loaded');  
+          mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'model-loaded');  
         } 
       }
     });
   },
 
-  clear: function() {
-    this.conn.executeSimpleSQL("delete from feeds");                
+  reset: function() {
+    this.conn.executeSimpleSQL("INSERT INTO feeds VALUES(null,'http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml','NYT > Home Page',5,3,0);");
+    this.conn.executeSimpleSQL("INSERT INTO feeds VALUES(null,'http://feeds.wired.com/wired/index','Wired Top Stories',5,2,1);");
+    this.conn.executeSimpleSQL("INSERT INTO feeds VALUES(null,'http://www.reddit.com/r/worldnews/','http://www.reddit.com/r/worldnews/',5,1,2);");
+    this.conn.executeSimpleSQL("INSERT INTO feeds VALUES(null,'http://feeds.guardian.co.uk/theguardian/rss','The Guardian World News',5,3,1);");
+    this.conn.executeSimpleSQL("INSERT INTO feeds VALUES(null,'http://rss.slashdot.org/Slashdot/slashdot','Slashdot',5,2,0);");
+    this.conn.executeSimpleSQL("INSERT INTO feeds VALUES(null,'http://blog.mozilla.com/feed/','http://blog.mozilla.com/feed/',5,1,1);");
   },
 
   close: function() {
@@ -144,30 +144,34 @@ mpage.storage.sqlite.prototype = {
   }
 }
 
-mpage.storage.json = function() {
+mpagespace.storage.json = function() {
+  this.file = FileUtils.getFile('ProfD', ['mpage.extension.json']);  
+  if (!this.file.exists()) {
+    this.reset();
+  }
 }
 
-mpage.storage.json.prototype = {
-  save: function(widget) {
-    var model = {}, i;
-    
+mpagespace.storage.json.prototype = {
+  save: function() {
+    var model = {}, i, widget;
     var maxId = -1;
-    for (var widgetId in mpage.model.widgets) {
+
+    for (var widgetId in mpagespace.model.widgets) {
       if ((widgetId + '').indexOf('temp') == -1 && parseInt(widgetId) > maxId) maxId = widgetId;
     }
 
-    for(var panelId in mpage.model.layout) {
-      var panel = mpage.model.layout[panelId];  
+    for(var panelId in mpagespace.model.layout) {
+      var panel = mpagespace.model.layout[panelId];  
       model[panelId] = [];
       for (i=0; i<panel.length; i++) {
-        widget = mpage.model.widgets[panel[i]];
+        widget = mpagespace.model.widgets[panel[i]];
         if ((widget.id + '').indexOf('temp') != -1) {
-          if (mpage.model.widgets[widget.id]) delete mpage.model.widgets[widget.id];
+          if (mpagespace.model.widgets[widget.id]) delete mpagespace.model.widgets[widget.id];
           maxId++;
           widget.id = maxId;
-          mpage.model.widgets[widget.id] = widget;
+          mpagespace.model.widgets[widget.id] = widget;
           panel[i] = widget.id;
-          mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-id:' + widget.id + ':' + widget.id);  
+          mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-id:' + widget.id + ':' + widget.id);  
         }
         model[panelId].push({
           id: widget.id,
@@ -178,31 +182,18 @@ mpage.storage.json.prototype = {
       }
     }
 
-    var file = FileUtils.getFile('ProfD', ['mpage.json']);  
-    var ostream = FileUtils.openSafeFileOutputStream(file)  
-    mpage.unicodeConverter.charset = "UTF-8";  
-    var istream = mpage.unicodeConverter.convertToInputStream(JSON.stringify(model));  
-      
-    NetUtil.asyncCopy(istream, ostream, function(status) {  
-      if (!Components.isSuccessCode(status)) {  
-        mpage.dump('Error in model saving.');
-        return;  
-      }  
-      mpage.dump('Model has been saved.');
-      FileUtils.closeSafeFileOutputStream(ostream); 
-    });  
+    this.writeToFile(model);
   },
 
   load: function() {
-    mpage.model.widgets = {};
-    mpage.model.layout = {};
+    mpagespace.model.widgets = {};
+    mpagespace.model.layout = {};
 
-    var file = FileUtils.getFile('ProfD', ['mpage.json']);  
-    var channel = NetUtil.newChannel(file);  
+    var channel = NetUtil.newChannel(this.file);  
     channel.contentType = "application/json";  
-    NetUtil.asyncFetch(file, function(inputStream, status) {  
+    NetUtil.asyncFetch(this.file, function(inputStream, status) {  
       if (!Components.isSuccessCode(status)) {  
-        mpage.dump('Error in model loading.');
+        mpagespace.dump('Error in model loading.');
         return;  
       }  
   
@@ -211,22 +202,70 @@ mpage.storage.json.prototype = {
       for (var panelId in model) {      
         for (var i=0; i<model[panelId].length; i++) {
           var w = model[panelId][i];
-          var widget = new mpage.feed(w.id, w.url, panelId, w.entriesToShow);
-          mpage.model.widgets[widget.id] = widget;
-          if (mpage.model.layout[panelId]) {
-            mpage.model.layout[panelId].push(widget.id);
+          var widget = new mpagespace.feed(w.id, w.url, panelId, w.entriesToShow);
+          mpagespace.model.widgets[widget.id] = widget;
+          if (mpagespace.model.layout[panelId]) {
+            mpagespace.model.layout[panelId].push(widget.id);
           } else {
-            mpage.model.layout[panelId] = [widget.id];
+            mpagespace.model.layout[panelId] = [widget.id];
           }    
           widget.load();
         }
       }
-      mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'model-loaded');  
+      mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'model-loaded');  
     });  
   },
 
   close: function() {
     // nop
+  },
+
+  reset: function() {
+    var model = {
+      '1': [
+        { id: 1,
+          url: 'http://blog.mozilla.com/feed/',
+          title: 'http://blog.mozilla.com/feed/',
+          entriesToShow: 5 },
+        { id: 2,
+          url: 'http://www.reddit.com/r/worldnews/',
+          title: 'http://www.reddit.com/r/worldnews/',
+          entriesToShow: 5 } ],
+      '2': [
+        { id: 3,
+          url: 'http://rss.slashdot.org/Slashdot/slashdot',
+          title: 'Slashdot',
+          entriesToShow: 5 },
+        { id: 4,
+          url: 'http://feeds.wired.com/wired/index',
+          title: 'Wired Top Stories',
+          entriesToShow: 5 } ],
+      '3': [
+        { id: 5,
+          url: 'http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml',
+          title: 'NYT > Home Page',
+          entriesToShow: 5 },
+        { id: 6,
+          url: 'http://feeds.guardian.co.uk/theguardian/rss',
+          title: 'The Guardian World News',
+          entriesToShow: 5 } ]
+    };
+    this.writeToFile(model);
+  },
+
+  writeToFile: function(model) {
+    var ostream = FileUtils.openSafeFileOutputStream(this.file)  
+    mpagespace.unicodeConverter.charset = "UTF-8";  
+    var istream = mpagespace.unicodeConverter.convertToInputStream(JSON.stringify(model));  
+      
+    NetUtil.asyncCopy(istream, ostream, function(status) {  
+      if (!Components.isSuccessCode(status)) {  
+        mpagespace.dump('Error in model saving.');
+        return;  
+      }  
+      mpagespace.dump('Model has been saved.');
+      FileUtils.closeSafeFileOutputStream(ostream); 
+    });    
   }
 }
 

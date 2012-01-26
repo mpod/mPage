@@ -1,8 +1,8 @@
-if (!mpage.feed) mpage.feed = {};
-else if (typeof mpage.feed != 'object')
-  throw new Error('mpage.feed already exists and is not an object');
+if (!mpagespace.feed) mpagespace.feed = {};
+else if (typeof mpagespace.feed != 'object')
+  throw new Error('mpagespace.feed already exists and is not an object');
 
-mpage.feed = function(id, url, panelId, entriesToShow) {
+mpagespace.feed = function(id, url, panelId, entriesToShow) {
   this.url = url;
   this.title = url;
   this.id = id;
@@ -14,11 +14,11 @@ mpage.feed = function(id, url, panelId, entriesToShow) {
   this.setup = false;
 }
 
-mpage.feed.prototype = {
+mpagespace.feed.prototype = {
   set: function(property, value) {
     this[property] = value;
-    mpage.model.save(this);
-    mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-' + property + ':' + this.id);  
+    mpagespace.model.save(this);
+    mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-' + property + ':' + this.id);  
   },
 
   load: function() {
@@ -27,8 +27,8 @@ mpage.feed.prototype = {
     var errorHandler = function() {
         self.inError = true;
         self.initialized = true;
-        mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-error:' + self.id);  
-        mpage.dump('Error occured during feed loading.');
+        mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-error:' + self.id);  
+        mpagespace.dump('Error occured during feed loading.');
     }
 
     var processHandler = function(request) {
@@ -66,20 +66,20 @@ mpage.feed.prototype = {
         } else {
           self.process(request.responseText);
         }
-        mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-loaded:' + self.id);  
+        mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-loaded:' + self.id);  
       } catch (e) {
-        mpage.dump('error: ' + e.message);
+        mpagespace.dump('error: ' + e.message);
         if (self.responseText || self.url.indexOf('reddit.com') != -1 || self.setup == false) {
           errorHandler();
         } else {
           self.responseText = request.responseText;
-          mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-error:' + self.id);  
-          mpage.dump('Trying to extract feed URLs from HTML.');
+          mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-error:' + self.id);  
+          mpagespace.dump('Trying to extract feed URLs from HTML.');
         }
       }
     }
 
-    mpage.ajax.load(this.url, processHandler, {errorHandler: errorHandler});  
+    mpagespace.ajax.load(this.url, processHandler, {errorHandler: errorHandler});  
   },
 
   processReddit: function(htmlText) {
@@ -88,7 +88,7 @@ mpage.feed.prototype = {
     var node;
 
     htmlDoc.documentElement.appendChild(bodyEl);
-    bodyEl.appendChild(mpage.htmlService.parseFragment(htmlText, false, null, bodyEl));
+    bodyEl.appendChild(mpagespace.htmlService.parseFragment(htmlText, false, null, bodyEl));
 
     this.title = 'reddit: ' + htmlDoc.getElementById('header-img-a').nextSibling.nextSibling.firstChild.firstChild.nodeValue; 
     

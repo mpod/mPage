@@ -1,50 +1,31 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet type="text/css" href="chrome://mpage/skin/mpage.css" ?>
+<?xml-stylesheet type="text/css" href="chrome://mpagespace/skin/mpage.css" ?>
 
-<!DOCTYPE window SYSTEM "chrome://mpage/locale/mpage.dtd">
+<!DOCTYPE window SYSTEM "chrome://mpagespace/locale/mpagespace.dtd">
 
 <window id="main" 
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  xmlns:html="http://www.w3.org/1999/xhtml"
   title="mPage"
   tooltiptext=""
-  onload="mpage.start();"
-  onunload="mpage.unload();">
+  onload="mpagespace.start();"
+  onunload="mpagespace.unload();">
 
-  <script type="application/javascript" src="chrome://mpage/content/main.js"/>
-  <script type="application/javascript" src="chrome://mpage/content/ajax.js"/>
-  <script type="application/javascript" src="chrome://mpage/content/feed.js"/>
-  <script type="application/javascript" src="chrome://mpage/content/view.js"/>
-  <script type="application/javascript" src="chrome://mpage/content/storage.js"/>
-  <script type="application/javascript" src="chrome://mpage/content/model.js"/>
-  <script type="application/javascript" src="chrome://mpage/content/dd.js"/>
-  <script type="application/javascript" src="chrome://mpage/content/controller.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/main.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/ajax.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/feed.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/view.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/storage.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/model.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/dd.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/controller.js"/>
 
   <stringbundleset>
-    <stringbundle id="labels" src="chrome://mpage/locale/mpage.properties"/>
+    <stringbundle id="mpagespace-labels" src="chrome://mpagespace/locale/mpage.properties"/>
   </stringbundleset>
 
-  <!-- <vbox flex="1">
-    <html:table class="container">
-      <html:tr>
-        <html:td id="panel-1" class="column first"></html:td>
-        <html:td id="panel-2" class="column"></html:td>
-        <html:td id="panel-3" class="column">
-          <html:div class="toolbar">
-            <html:input id="subscribe-url" type="text" placeholder="&placeholder.label;" name="subscribe" 
-              onkeydown="mpage.controller.handleReturnKey(event);"/>
-            <html:div class="button" onclick="mpage.controller.subscribe();">&subscribe.label;</html:div>
-            <html:a href="#" onclick="mpage.controller.changeTheme(); return false;">&theme.label;</html:a>
-            <html:a href="#" onclick="mpage.controller.openAbout(); return false;">&about.label;</html:a>
-            <html:div style="clear: both;"></html:div>
-          </html:div>
-        </html:td>
-      </html:tr>
-    </html:table> 
-  </vbox> -->
-  <iframe id="container" src="javascript:''" type="content" flex="1" class="page">
+  <iframe id="mpagespace-container" src="javascript:''" type="content" flex="1" class="page">
   </iframe>
 </window>
 

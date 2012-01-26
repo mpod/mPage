@@ -1,43 +1,35 @@
-var mpage;
-if (!mpage) mpage = {};
-else if (typeof mpage != 'object')
-  throw new Error('mpage already exists and is not an object');
+var mpagespace;
+if (!mpagespace) mpagespace = {};
+else if (typeof mpagespace != 'object')
+  throw new Error('mpagespace already exists and is not an object');
 
-mpage = {
+mpagespace = {
   start: function() {
-    var windowEl = document.getElementById('main');
-    /*var panelEl = document.getElementById('panel-1');
-    panelEl.addEventListener('dragover', mpage.dd.dragOver, false);
-    panelEl = document.getElementById('panel-2');
-    panelEl.addEventListener('dragover', mpage.dd.dragOver, false);
-    panelEl = document.getElementById('panel-3');
-    panelEl.addEventListener('dragover', mpage.dd.dragOver, false);*/
-    
-    mpage.view.registerObserver();
-    mpage.controller.registerObserver();
-    mpage.view.init();
-    mpage.model.init();
-    mpage.view.changeTheme(mpage.fuelApplication.prefs.getValue('extensions.mpage.theme', 'kellys'));
+    mpagespace.view.init();
+    mpagespace.model.init();
+    mpagespace.view.registerObserver();
+    mpagespace.controller.registerObserver();
+    mpagespace.view.changeTheme(mpagespace.fuelApplication.prefs.getValue('extensions.mpagespace.theme', 'kellys'));
   },
 
   unload: function() {
-    mpage.view.unregisterObserver();
-    mpage.controller.unregisterObserver();
-    mpage.model.close();
+    mpagespace.view.unregisterObserver();
+    mpagespace.controller.unregisterObserver();
+    mpagespace.model.close();
   },
 
   openPage: function() {
-    openUILinkIn('chrome://mpage/content/main.xul', 'tab');
+    openUILinkIn('chrome://mpagespace/content/main.xul', 'tab');
   },
 
   dump: function(v) {
-    if (mpage.fuelApplication.prefs.getValue('extensions.mpage.debug', false)) {
+    if (mpagespace.fuelApplication.prefs.getValue('extensions.mpagespace.debug', false)) {
       console.log(v);
     }
   },
 
   translate: function(message, params) {
-    var strbundle = document.getElementById('labels');
+    var strbundle = document.getElementById('mpagespace-labels');
     if (params)
       return strbundle.getFormattedString(message, params);
     else

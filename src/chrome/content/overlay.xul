@@ -2,27 +2,27 @@
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
 
-<!DOCTYPE overlay SYSTEM "chrome://mpage/locale/mpage.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://mpagespace/locale/mpagespace.dtd">
 
-<overlay id="mpage-browser-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="mpagespace-browser-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/javascript" src="chrome://mpage/content/main.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/main.js"/>
 
   <stringbundleset>
-    <stringbundle id="labels" src="chrome://mpage/locale/mpage.properties" />
+    <stringbundle id="mpagespace-labels" src="chrome://mpagespace/locale/mpage.properties" />
   </stringbundleset>
 
   <menupopup id="menu_ToolsPopup">
-    <menuitem id="mpage-show-menu" label="&mpage.showMenuItem.label;"
-      accesskey="&mpage.showMenuItem.accesskey;"
+    <menuitem label="&mpagespace.showMenuItem.label;"
+      accesskey="&mpagespace.showMenuItem.accesskey;"
       insertafter="menu_pageInfo"
-      oncommand="mpage.openPage()"/>
+      oncommand="mpagespace.openPage()"/>
   </menupopup>
 
   <vbox id="appmenuSecondaryPane">
-    <menuitem id="mpage-show-menu-2" label="&mpage.showMenuItem.label;"
-      accesskey="&mpage.showMenuItem.accesskey;"
+    <menuitem label="&mpagespace.showMenuItem.label;"
+      accesskey="&mpagespace.showMenuItem.accesskey;"
       insertafter="appmenu_addons"
-      oncommand="mpage.openPage()"/>
+      oncommand="mpagespace.openPage()"/>
   </vbox>
 </overlay>

@@ -1,18 +1,18 @@
-if (!mpage.controller) mpage.controller = {};
-else if (typeof mpage.controller != 'object')
-  throw new Error('mpage.controller already exists and is not an object');
+if (!mpagespace.controller) mpagespace.controller = {};
+else if (typeof mpagespace.controller != 'object')
+  throw new Error('mpagespace.controller already exists and is not an object');
 
-mpage.controller = {
+mpagespace.controller = {
 
   modelChangedObserver: {
     observe : function(subject, topic, data) {  
       if (topic == 'mpage-model-changed') {  
         var widget;
         data = data.split(':');
-        widget = mpage.model.getWidget(data[1]);
+        widget = mpagespace.model.getWidget(data[1]);
         switch (data[0]) {
           case 'widget-error': 
-            mpage.controller.handleWidgetLoadingError(widget);     
+            mpagespace.controller.handleWidgetLoadingError(widget);     
             break;
         }
       }  
@@ -20,23 +20,23 @@ mpage.controller = {
   },
 
   registerObserver: function() {
-    mpage.observerService.addObserver(mpage.controller.modelChangedObserver, 'mpage-model-changed', false); 
+    mpagespace.observerService.addObserver(mpagespace.controller.modelChangedObserver, 'mpage-model-changed', false); 
   },
 
   unregisterObserver: function() {
-    mpage.observerService.removeObserver(mpage.controller.modelChangedObserver, 'mpage-model-changed');
+    mpagespace.observerService.removeObserver(mpagespace.controller.modelChangedObserver, 'mpage-model-changed');
   },
   
   subscribe: function() {
-    var subscribeUrlEl = mpage.view.getDoc().getElementById('subscribe-url');  
+    var subscribeUrlEl = mpagespace.view.getDoc().getElementById('subscribe-url');  
     var url = subscribeUrlEl.value;
     //subscribeUrlEl.className = 'loading';
    
-    var parser = mpage.urlParser;
+    var parser = mpagespace.urlParser;
     var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
     parser.parseURL(url, url.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
     if (authLen.value == -1 || authLen.value == 0) {
-      mpage.promptsService.alert(null, mpage.translate('invalidUrl.title'), mpage.translate('invalidUrl.message'));
+      mpagespace.promptsService.alert(null, mpagespace.translate('invalidUrl.title'), mpagespace.translate('invalidUrl.message'));
       subscribeUrlEl.value = '';
       subscribeUrlEl.blur();
       return;
@@ -44,15 +44,15 @@ mpage.controller = {
     if (schemeLen.value == -1) url = 'http://' + url;
     if (pathLen.value == -1) url = url + '/'; 
 
-    var widget = new mpage.feed(mpage.model.getNextTempId(), url);
+    var widget = new mpagespace.feed(mpagespace.model.getNextTempId(), url);
     widget.setup = true;
-    mpage.model.widgets[widget.id] = widget;
-    var panel = mpage.model.layout[1];
+    mpagespace.model.widgets[widget.id] = widget;
+    var panel = mpagespace.model.layout[1];
     var refWidget;
     if (panel.length > 0) {
-      refWidget = mpage.model.widgets[panel[0]];
+      refWidget = mpagespace.model.widgets[panel[0]];
     }
-    mpage.model.insertToPanel(widget, 1, refWidget);
+    mpagespace.model.insertToPanel(widget, 1, refWidget);
     widget.load();
     subscribeUrlEl.value = '';
     subscribeUrlEl.blur();
@@ -90,8 +90,8 @@ mpage.controller = {
       index++;
     }
     if (titles.length == 0) {
-      mpage.promptsService.alert(null, mpage.translate('availableFeedsError.title'), mpage.translate('availableFeedsError.message')); 
-      mpage.model.remove(widget);  
+      mpagespace.promptsService.alert(null, mpagespace.translate('availableFeedsError.title'), mpagespace.translate('availableFeedsError.message')); 
+      mpagespace.model.remove(widget);  
       return;
     }
     
@@ -101,12 +101,12 @@ mpage.controller = {
       result = true;
       selected.value = 0;
     } else {
-      result = mpage.promptsService.select(null, mpage.translate('availableFeeds.title'), 
-        mpage.translate('availableFeeds.message'), titles.length, titles, selected); 
+      result = mpagespace.promptsService.select(null, mpagespace.translate('availableFeeds.title'), 
+        mpagespace.translate('availableFeeds.message'), titles.length, titles, selected); 
     }
     if (result) {
       var url1 = widget.url;
-      var parser = mpage.urlParser;
+      var parser = mpagespace.urlParser;
       var schemePos1 = {}, schemeLen1 = {}, authPos1 = {}, authLen1 = {}, pathPos1 = {}, pathLen1 = {};
       parser.parseURL(url1, url1.length, schemePos1, schemeLen1, authPos1, authLen1, pathPos1, pathLen1);
 
@@ -121,18 +121,17 @@ mpage.controller = {
         widget.url = url2;
       
       widget.load();
-      mpage.model.save(widget);
+      mpagespace.model.save(widget);
     } else {
-      mpage.model.remove(widget);  
+      mpagespace.model.remove(widget);  
     }
   },
 
   configure: function(event) {
-    var widgetId = mpage.view.getWidgetId(this);
-    var widget = mpage.model.getWidget(widgetId);
+    var widgetId = mpagespace.view.getWidgetId(this);
+    var widget = mpagespace.model.getWidget(widgetId);
     var value = {value: widget.entriesToShow};
-    var strbundle = document.getElementById('labels');
-    var result = mpage.promptsService.prompt(null, strbundle.getString('configuration.title'), strbundle.getString('configuration.message'), value, null, {value: false});  
+    var result = mpagespace.promptsService.prompt(null, mpagespace.translate('configuration.title'), mpagespace.translate('configuration.message'), value, null, {value: false});  
     if (result) {
       if (!isNaN(parseInt(value.value))) {
         widget.set('entriesToShow', parseInt(value.value));  
@@ -141,10 +140,10 @@ mpage.controller = {
   },
 
   remove: function(event, self) {
-    var widgetId = mpage.view.getWidgetId(this);
-    var widget = mpage.model.getWidget(widgetId);
+    var widgetId = mpagespace.view.getWidgetId(this);
+    var widget = mpagespace.model.getWidget(widgetId);
 
-    mpage.model.remove(widget);
+    mpagespace.model.remove(widget);
   },
 
   changeTheme: function(event) {
@@ -152,14 +151,13 @@ mpage.controller = {
     event.stopPropagation();
     var items = ['light', 'kellys']; 
     var selected = {};  
-    var strbundle = document.getElementById('labels');
-    var active = mpage.view.getTheme();
+    var active = mpagespace.view.getTheme();
 
-    var result = mpage.promptsService.select(null, strbundle.getString('theme.title'), 
-        strbundle.getFormattedString('theme.message', [active]), items.length,  items, selected);  
+    var result = mpagespace.promptsService.select(null, mpagespace.translate('theme.title'), 
+        mpagespace.translate('theme.message', [active]), items.length,  items, selected);  
     if (result) {
-      mpage.view.changeTheme(items[selected.value]);
-      mpage.fuelApplication.prefs.setValue('extensions.mpage.theme', items[selected.value]);
+      mpagespace.view.changeTheme(items[selected.value]);
+      mpagespace.fuelApplication.prefs.setValue('extensions.mpagespace.theme', items[selected.value]);
     }
     return false;
   },
@@ -167,13 +165,13 @@ mpage.controller = {
   openAbout: function(event) {
     event.preventDefault();
     event.stopPropagation();
-    window.open('chrome://mpage/content/about.xul','','chrome,centerscreen,dialog');  
+    window.open('chrome://mpagespace/content/about.xul','','chrome,centerscreen,dialog');  
     return false;
   },
 
   handleReturnKey: function(event) {
     if (event.keyCode == 13) {
-      mpage.controller.subscribe();
+      mpagespace.controller.subscribe();
     }
   }
 }

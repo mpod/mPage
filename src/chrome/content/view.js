@@ -1,17 +1,16 @@
-if (!mpage.view) mpage.view = {};
-else if (typeof mpage.view != 'object')
-  throw new Error('mpage.view already exists and is not an object');
+if (!mpagespace.view) mpagespace.view = {};
+else if (typeof mpagespace.view != 'object')
+  throw new Error('mpagespace.view already exists and is not an object');
 
-mpage.view = {
+mpagespace.view = {
   modelChangedObserver: {
     observe : function(subject, topic, data) {  
       if (topic == 'mpage-model-changed') {  
-
-        var self = mpage.view;
+        var self = mpagespace.view;
         var widget;
-        mpage.dump('event: ' + data);
+        mpagespace.dump('event: ' + data);
         data = data.split(':');
-        widget = mpage.model.getWidget(data[1]);
+        widget = mpagespace.model.getWidget(data[1]);
         switch (data[0]) {
           case 'widget-changed-id': 
             self.updateWidgetId(data[1], data[2]);
@@ -20,6 +19,7 @@ mpage.view = {
             self.removeWidget(widget);
             break;
           case 'widget-inserted-to-panel':
+            console.log(widget);
             self.draw(widget, false);
             break;
           default:
@@ -30,11 +30,10 @@ mpage.view = {
   },
 
   init: function() {
-    var strbundle = document.getElementById('labels');
     var html = [
       '<html>',
       '  <head>',
-      '  <link rel="stylesheet" type="text/css" href="chrome://mpage/skin/mpage.css"/>',
+      '  <link rel="stylesheet" type="text/css" href="chrome://mpagespace/skin/mpage.css"/>',
       '  </head>',
       '  <body class="kellys">',
       '    <table class="container">',
@@ -43,10 +42,10 @@ mpage.view = {
       '        <td id="panel-2" class="column"></td>',
       '        <td id="panel-3" class="column">',
       '          <div class="toolbar">',
-      '            <input id="subscribe-url" type="text" placeholder="' + strbundle.getString('placeholder.label') + '" name="subscribe" />',
-      '            <div class="button" id="subscribe-button">' + strbundle.getString('subscribe.label') + '</div>',
-      '            <a href="#" id="theme-link">' + strbundle.getString('theme.label') + '</a>',
-      '            <a href="#" id="about-link">' + strbundle.getString('about.label') + '</a>',
+      '            <input id="subscribe-url" type="text" placeholder="' + mpagespace.translate('placeholder.label') + '" name="subscribe" />',
+      '            <div class="button" id="subscribe-button">' + mpagespace.translate('subscribe.label') + '</div>',
+      '            <a href="#" id="theme-link">' + mpagespace.translate('theme.label') + '</a>',
+      '            <a href="#" id="about-link">' + mpagespace.translate('about.label') + '</a>',
       '            <div style="clear: both;"></div>',
       '          </div>',
       '        </td>',
@@ -55,60 +54,59 @@ mpage.view = {
       '  </body>',
       '</html>'];
 
-    var iframeEl = document.getElementById('container');
-    var doc = iframeEl.contentWindow.document;
+    var doc = mpagespace.view.getDoc();
     doc.open();
     doc.write(html.join(''));
     doc.close();
 
     var el = doc.getElementById('panel-1');
-    el.addEventListener('dragover', mpage.dd.dragOver, false);
+    el.addEventListener('dragover', mpagespace.dd.dragOver, false);
     el = doc.getElementById('panel-2');
-    el.addEventListener('dragover', mpage.dd.dragOver, false);
+    el.addEventListener('dragover', mpagespace.dd.dragOver, false);
     el = doc.getElementById('panel-3');
-    el.addEventListener('dragover', mpage.dd.dragOver, false);
+    el.addEventListener('dragover', mpagespace.dd.dragOver, false);
     el = doc.getElementById('subscribe-button');
-    el.addEventListener('click', mpage.controller.subscribe, false);
+    el.addEventListener('click', mpagespace.controller.subscribe, false);
     el = doc.getElementById('theme-link');
-    el.addEventListener('click', mpage.controller.changeTheme, false);
+    el.addEventListener('click', mpagespace.controller.changeTheme, false);
     el = doc.getElementById('about-link');
-    el.addEventListener('click', mpage.controller.openAbout, false);
+    el.addEventListener('click', mpagespace.controller.openAbout, false);
     el = doc.getElementById('subscribe-url');
-    el.addEventListener('keydown', mpage.controller.handleReturnKey, false);
+    el.addEventListener('keydown', mpagespace.controller.handleReturnKey, false);
   },
 
   getDoc: function() {
-    return document.getElementById('container').contentWindow.document;  
+    return document.getElementById('mpagespace-container').contentWindow.document;  
   },
 
   registerObserver: function() {
-    mpage.observerService.addObserver(mpage.view.modelChangedObserver, 'mpage-model-changed', false); 
+    mpagespace.observerService.addObserver(mpagespace.view.modelChangedObserver, 'mpage-model-changed', false); 
   },
 
   unregisterObserver: function() {
-    mpage.observerService.removeObserver(mpage.view.modelChangedObserver, 'mpage-model-changed');
+    mpagespace.observerService.removeObserver(mpagespace.view.modelChangedObserver, 'mpage-model-changed');
   },
 
   changeTheme: function(theme) {
-    mpage.view.getDoc().body.className = theme; 
+    mpagespace.view.getDoc().body.className = theme; 
   },
 
   getTheme: function() {
-    return mpage.view.getDoc().body.className;
+    return mpagespace.view.getDoc().body.className;
   },
 
   removeWidget: function(widget) {
-    var self = mpage.view;
+    var self = mpagespace.view;
     var widgetEl = self.getWidgetEl(widget.id);  
     widgetEl.parentNode.removeChild(widgetEl);
   },
 
   getWidgetEl: function(widgetId) {
-    return mpage.view.getDoc().getElementById('widget-' + widgetId);
+    return mpagespace.view.getDoc().getElementById('widget-' + widgetId);
   },
 
   updateWidgetId: function(oldId, newId) {
-    var widgetEl = mpage.view.getWidgetEl(oldId);
+    var widgetEl = mpagespace.view.getWidgetEl(oldId);
     if (widgetEl) {
       widgetEl.setAttribute('id', 'widget-' + newId);
       widgetEl.setAttribute('widget-id', newId);
@@ -125,25 +123,25 @@ mpage.view = {
   },
 
   removeWidget: function(widget) {
-    var widgetEl = mpage.view.getWidgetEl(widget.id);
+    var widgetEl = mpagespace.view.getWidgetEl(widget.id);
     widgetEl.parentNode.removeChild(widgetEl);
   },
 
   draw: function(widget, refresh) {
     var panelEl;
     var panel;
-    var doc = mpage.view.getDoc();
+    var doc = mpagespace.view.getDoc();
 
     if (widget) {
       var widgetEl = doc.getElementById('widget-' + widget.id);
       panelEl = doc.getElementById('panel-' + widget.panelId);   
-      panel = mpage.model.layout[widget.panelId];
+      panel = mpagespace.model.layout[widget.panelId];
       if (widgetEl && refresh) {
         widgetEl.parentNode.removeChild(widgetEl);
         widgetEl = null;
       }
       if (!widgetEl) {
-        widgetEl = mpage.view.createWidgetEl(widget);
+        widgetEl = mpagespace.view.createWidgetEl(widget);
       }
       for (var i=0; i<panel.length; i++) {
         if (panel[i] == widget.id) {
@@ -157,8 +155,8 @@ mpage.view = {
         }
       }
     } else {
-      var widgets = mpage.model.widgets;
-      var layout = mpage.model.layout;
+      var widgets = mpagespace.model.widgets;
+      var layout = mpagespace.model.layout;
       
       for (var panelId in layout) {
         panelEl = doc.getElementById('panel-' + panelId);
@@ -172,14 +170,14 @@ mpage.view = {
         var widgetIds = layout[panelId];
         for (var i=0; i<widgetIds.length; i++) {
           var widget = widgets[widgetIds[i]];
-          if (widget) panelEl.appendChild(mpage.view.createWidgetEl(widget));
+          if (widget) panelEl.appendChild(mpagespace.view.createWidgetEl(widget));
         }
       } 
     }
   },
 
   createWidgetEl: function(widget) {
-    var self = mpage.view;
+    var self = mpagespace.view;
     var doc = self.getDoc();
     var widgetEl = doc.createElement('div');
     var headerEl = doc.createElement('div');
@@ -190,9 +188,9 @@ mpage.view = {
     widgetEl.setAttribute('class', 'widget');
     widgetEl.setAttribute('id', 'widget-' + widget.id);
     widgetEl.setAttribute('draggable', 'true');
-    widgetEl.addEventListener('dragstart', mpage.dd.dragStart, false);
-    widgetEl.addEventListener('dragend', mpage.dd.dragEnd, false);
-    widgetEl.addEventListener('dragover', mpage.dd.dragOver, false);
+    widgetEl.addEventListener('dragstart', mpagespace.dd.dragStart, false);
+    widgetEl.addEventListener('dragend', mpagespace.dd.dragEnd, false);
+    widgetEl.addEventListener('dragover', mpagespace.dd.dragOver, false);
     widgetEl.setAttribute('widget-id', widget.id);
     headerEl.setAttribute('class', 'header');
     titleEl.setAttribute('class', 'title');
@@ -208,11 +206,11 @@ mpage.view = {
     var el;
     el = doc.createElement('div');
     el.setAttribute('class', 'action configure');
-    el.addEventListener('click', mpage.controller.configure, false);
+    el.addEventListener('click', mpagespace.controller.configure, false);
     headerEl.appendChild(el);
     el = doc.createElement('div');
     el.setAttribute('class', 'action remove');
-    el.addEventListener('click', mpage.controller.remove, false);
+    el.addEventListener('click', mpagespace.controller.remove, false);
     headerEl.appendChild(el);
 
     widgetEl.appendChild(headerEl);
@@ -222,11 +220,6 @@ mpage.view = {
       bodyEl.appendChild(self.createFeedBody(widget));
     } else {
       bodyEl.appendChild(self.createLoadingBody());  
-      /*widget.load(function(){
-        bodyEl.replaceChild(mpage.view.createFeedBody(widget), bodyEl.firstChild);  
-        titleEl.replaceChild(document.createTextNode(widget.title), titleEl.firstChild); 
-        //titleEl.setAttribute('href', widget.link);
-      });*/
     }
 
     widgetEl.appendChild(bodyEl);
@@ -234,18 +227,17 @@ mpage.view = {
   },
 
   createLoadingBody: function() {
-    var self = mpage.view;
+    var self = mpagespace.view;
     var doc = self.getDoc();
     var divEl = doc.createElement('div');  
     divEl.setAttribute('class', 'loading');
-    var strbundle = document.getElementById('labels');
-    var titleTextEl = doc.createTextNode(strbundle.getString('loading.label'));
+    var titleTextEl = doc.createTextNode(mpagespace.translate('loading.label'));
     divEl.appendChild(titleTextEl);
     return divEl;
   }, 
 
   createFeedBody: function(feed) {
-    var self = mpage.view;
+    var self = mpagespace.view;
     var doc = self.getDoc();
     var listEl = doc.createElement('ul');
 
@@ -276,12 +268,11 @@ mpage.view = {
   },
 
   createErrorBody: function() {
-    var self = mpage.view;
+    var self = mpagespace.view;
     var doc = self.getDoc();
     var divEl = doc.createElement('div');  
     divEl.className = 'error';
-    var strbundle = doc.getElementById('labels');
-    var titleTextEl = doc.createTextNode(strbundle.getString('widget.error.message'));
+    var titleTextEl = doc.createTextNode(mpagespace.translate('widget.error.message'));
     divEl.appendChild(titleTextEl);
     return divEl;  
   }

@@ -1,13 +1,13 @@
-if (!mpage.dd) mpage.dd = {};
-else if (typeof mpage.dd != 'object')
-  throw new Error('mpage.dd already exists and is not an object');
+if (!mpagespace.dd) mpagespace.dd = {};
+else if (typeof mpagespace.dd != 'object')
+  throw new Error('mpagespace.dd already exists and is not an object');
 
-mpage.dd = {
+mpagespace.dd = {
   dragStart: function(event) {
-    var doc = mpage.view.getDoc();
+    var doc = mpagespace.view.getDoc();
     event.dataTransfer.setData('text/plain', this.getAttribute('id')); 
     var feedbackEl = doc.createElement('img');  
-    feedbackEl.setAttribute('src', 'chrome://mpage/skin/feedback.png');
+    feedbackEl.setAttribute('src', 'chrome://mpagespace/skin/feedback.png');
     event.dataTransfer.setDragImage(feedbackEl, 19, 19);
     event.dataTransfer.effectAllowed = 'none';
     this.style.opacity = 0.3;
@@ -17,7 +17,7 @@ mpage.dd = {
     event.preventDefault();
     event.stopPropagation();
 
-    var doc = mpage.view.getDoc();
+    var doc = mpagespace.view.getDoc();
     var placeholderEl = doc.getElementById('dd-placeholder'); 
     if (!placeholderEl) {
       placeholderEl = doc.createElement('div');  
@@ -54,7 +54,7 @@ mpage.dd = {
   },
 
   drop: function(event) {
-    var doc = mpage.view.getDoc();
+    var doc = mpagespace.view.getDoc();
     var data = event.dataTransfer.getData('text/plain');
     var placeholderEl = doc.getElementById('dd-placeholder'); 
     var el = doc.getElementById(data);
@@ -65,19 +65,19 @@ mpage.dd = {
   }, 
 
   dragEnd: function(event) {
-    var doc = mpage.view.getDoc();
+    var doc = mpagespace.view.getDoc();
     var placeholderEl = doc.getElementById('dd-placeholder'); 
     if (placeholderEl) {
       var data = event.dataTransfer.getData('text/plain');
       var el = doc.getElementById(data);
-      var widget = mpage.model.getWidget(el.getAttribute('widget-id'));
+      var widget = mpagespace.model.getWidget(el.getAttribute('widget-id'));
       var refWidgetEl = placeholderEl.nextSibling;
       var refWidget = null;
       if (refWidgetEl && refWidgetEl.className.indexOf('widget') != -1) {
-        refWidget = mpage.model.getWidget(refWidgetEl.getAttribute('widget-id')); 
+        refWidget = mpagespace.model.getWidget(refWidgetEl.getAttribute('widget-id')); 
       }
       var panelId = placeholderEl.parentNode.getAttribute('id').substr('panel-'.length);
-      mpage.model.insertToPanel(widget, panelId, refWidget);
+      mpagespace.model.insertToPanel(widget, panelId, refWidget);
       placeholderEl.parentNode.removeChild(placeholderEl);
       el.style.opacity = 1; 
     }
