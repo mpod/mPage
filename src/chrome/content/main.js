@@ -6,17 +6,18 @@ else if (typeof mpage != 'object')
 mpage = {
   start: function() {
     var windowEl = document.getElementById('main');
-    windowEl.className = mpage.fuelApplication.prefs.getValue('extensions.mpage.theme', 'kellys');
-    var panelEl = document.getElementById('panel-1');
+    /*var panelEl = document.getElementById('panel-1');
     panelEl.addEventListener('dragover', mpage.dd.dragOver, false);
     panelEl = document.getElementById('panel-2');
     panelEl.addEventListener('dragover', mpage.dd.dragOver, false);
     panelEl = document.getElementById('panel-3');
-    panelEl.addEventListener('dragover', mpage.dd.dragOver, false);
+    panelEl.addEventListener('dragover', mpage.dd.dragOver, false);*/
     
     mpage.view.registerObserver();
     mpage.controller.registerObserver();
+    mpage.view.init();
     mpage.model.init();
+    mpage.view.changeTheme(mpage.fuelApplication.prefs.getValue('extensions.mpage.theme', 'kellys'));
   },
 
   unload: function() {
@@ -51,5 +52,7 @@ mpage = {
 
   urlParser: Components.classes["@mozilla.org/network/url-parser;1?auth=maybe"].createInstance(Components.interfaces.nsIURLParser),
 
-  htmlService: Components.classes["@mozilla.org/feed-unescapehtml;1"].getService(Components.interfaces.nsIScriptableUnescapeHTML)
+  htmlService: Components.classes["@mozilla.org/feed-unescapehtml;1"].getService(Components.interfaces.nsIScriptableUnescapeHTML),
+
+  unicodeConverter: Components.classes["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Components.interfaces.nsIScriptableUnicodeConverter)
 }

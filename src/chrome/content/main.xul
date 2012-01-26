@@ -8,7 +8,6 @@
 <window id="main" 
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   xmlns:html="http://www.w3.org/1999/xhtml"
-  class="kellys"
   title="mPage"
   tooltiptext=""
   onload="mpage.start();"
@@ -27,7 +26,7 @@
     <stringbundle id="labels" src="chrome://mpage/locale/mpage.properties"/>
   </stringbundleset>
 
-  <vbox flex="1" class="page">
+  <!-- <vbox flex="1">
     <html:table class="container">
       <html:tr>
         <html:td id="panel-1" class="column first"></html:td>
@@ -43,7 +42,9 @@
           </html:div>
         </html:td>
       </html:tr>
-    </html:table>
-  </vbox>
+    </html:table> 
+  </vbox> -->
+  <iframe id="container" src="javascript:''" type="content" flex="1" class="page">
+  </iframe>
 </window>
 

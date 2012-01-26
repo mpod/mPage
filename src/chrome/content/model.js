@@ -10,11 +10,15 @@ mpage.model = {
   tempIdSeq: 0,
 
   init: function() {
-    mpage.storage.getStorage().load();
+    mpage.storage.getStorage(true).load();
   },
 
   close: function() {
-    mpage.storage.getStorage().close();
+    mpage.storage.getStorage(true).close();
+  },
+
+  save: function(widget) {
+    mpage.storage.getStorage().save(widget);
   },
 
   getNextTempId: function() {

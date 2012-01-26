@@ -28,7 +28,7 @@ mpage.controller = {
   },
   
   subscribe: function() {
-    var subscribeUrlEl = document.getElementById('subscribe-url');  
+    var subscribeUrlEl = mpage.view.getDoc().getElementById('subscribe-url');  
     var url = subscribeUrlEl.value;
     //subscribeUrlEl.className = 'loading';
    
@@ -147,28 +147,28 @@ mpage.controller = {
     mpage.model.remove(widget);
   },
 
-  changeTheme: function() {
+  changeTheme: function(event) {
+    event.preventDefault();
+    event.stopPropagation();
     var items = ['light', 'kellys']; 
     var selected = {};  
     var strbundle = document.getElementById('labels');
-    var windowEl = document.getElementById('main');
-    var active;
-    for (var i=0; i<items.length; i++) {
-      if (items[i] == windowEl.className) {
-        active = items[i];
-        break;
-      }
-    }
+    var active = mpage.view.getTheme();
+
     var result = mpage.promptsService.select(null, strbundle.getString('theme.title'), 
         strbundle.getFormattedString('theme.message', [active]), items.length,  items, selected);  
     if (result) {
-      windowEl.className = items[selected.value];
+      mpage.view.changeTheme(items[selected.value]);
       mpage.fuelApplication.prefs.setValue('extensions.mpage.theme', items[selected.value]);
     }
+    return false;
   },
 
-  openAbout: function() {
+  openAbout: function(event) {
+    event.preventDefault();
+    event.stopPropagation();
     window.open('chrome://mpage/content/about.xul','','chrome,centerscreen,dialog');  
+    return false;
   },
 
   handleReturnKey: function(event) {

@@ -4,15 +4,22 @@ else if (typeof mpage.storage != 'object')
 
 Components.utils.import("resource://gre/modules/Services.jsm");  
 Components.utils.import("resource://gre/modules/FileUtils.jsm");  
+Components.utils.import("resource://gre/modules/NetUtil.jsm");
 
 mpage.storage = {
   instance: null,
 
-  getStorage: function() {
-    if (!mpage.storage.instance) {
-      mpage.storage.instance = new mpage.storage.sqlite();
+  getStorage: function(flag) {
+    return new mpage.storage.json();
+
+    if (flag) {
+      if (!mpage.storage.instance) {
+        mpage.storage.instance = new mpage.storage.sqlite();
+      }
+      return mpage.storage.instance;
+    } else {
+      return new mpage.storage.json();
     }
-    return mpage.storage.instance;
   } 
 }
 
@@ -101,11 +108,11 @@ mpage.storage.sqlite.prototype = {
   },
 
   load: function() {
+    mpage.model.widgets = {};
+    mpage.model.layout = {};
     var stmt = this.conn.createStatement("select * from feeds order by panel_id, order_number");  
     stmt.executeAsync({
       handleResult: function(result) {
-        mpage.model.widgets = {};
-        mpage.model.layout = {};
         for (let row = result.getNextRow(); row; row = result.getNextRow()) {
           var panelId = row.getResultByName('panel_id');
           var feed = new mpage.feed(row.getResultByName('id'), row.getResultByName('url'), panelId, row.getResultByName('entries_to_show'));
@@ -144,15 +151,9 @@ mpage.storage.json.prototype = {
   save: function(widget) {
     var model = {}, i;
     
-    if ((widget.id + '').indexOf('temp') != -1) {
-      var maxId = -1;
-      for (i=0; i<mpage.model.widgets.length; i++) {
-        widget = mpage.model.widgets[i];
-        if ((widget.id + '').indexOf('temp') == -1 && widget.id > maxId) maxId = widget.id;
-      }
-      maxId++;
-      widget.id = maxId;
-      mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-id:' + widget.id + ':' + widget.id);  
+    var maxId = -1;
+    for (var widgetId in mpage.model.widgets) {
+      if ((widgetId + '').indexOf('temp') == -1 && parseInt(widgetId) > maxId) maxId = widgetId;
     }
 
     for(var panelId in mpage.model.layout) {
@@ -160,34 +161,68 @@ mpage.storage.json.prototype = {
       model[panelId] = [];
       for (i=0; i<panel.length; i++) {
         widget = mpage.model.widgets[panel[i]];
+        if ((widget.id + '').indexOf('temp') != -1) {
+          if (mpage.model.widgets[widget.id]) delete mpage.model.widgets[widget.id];
+          maxId++;
+          widget.id = maxId;
+          mpage.model.widgets[widget.id] = widget;
+          panel[i] = widget.id;
+          mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-id:' + widget.id + ':' + widget.id);  
+        }
         model[panelId].push({
+          id: widget.id,
           url: widget.url,
           title: widget.title,
           entriesToShow: widget.entriesToShow
         });
       }
     }
-    mpage.dump('Model has been saved.');
+
+    var file = FileUtils.getFile('ProfD', ['mpage.json']);  
+    var ostream = FileUtils.openSafeFileOutputStream(file)  
+    mpage.unicodeConverter.charset = "UTF-8";  
+    var istream = mpage.unicodeConverter.convertToInputStream(JSON.stringify(model));  
+      
+    NetUtil.asyncCopy(istream, ostream, function(status) {  
+      if (!Components.isSuccessCode(status)) {  
+        mpage.dump('Error in model saving.');
+        return;  
+      }  
+      mpage.dump('Model has been saved.');
+      FileUtils.closeSafeFileOutputStream(ostream); 
+    });  
   },
 
   load: function() {
     mpage.model.widgets = {};
     mpage.model.layout = {};
-    for (var panelId in model) {      
-      for (var i=0; i<model[panelId].length; i++) {
-        var w = model[panelId][i];
-        var widget = new mpage.feed(w.id, w.url, panelId, w.entriesToShow);
-        mpage.model.widgets[widget.id] = widget;
-        if (mpage.model.layout[panelId]) {
-          mpage.model.layout[panelId].push(widget.id);
-        } else {
-          mpage.model.layout[panelId] = [widget.id];
-        }    
-        widget.load();
+
+    var file = FileUtils.getFile('ProfD', ['mpage.json']);  
+    var channel = NetUtil.newChannel(file);  
+    channel.contentType = "application/json";  
+    NetUtil.asyncFetch(file, function(inputStream, status) {  
+      if (!Components.isSuccessCode(status)) {  
+        mpage.dump('Error in model loading.');
+        return;  
+      }  
+  
+      var data = NetUtil.readInputStreamToString(inputStream, inputStream.available());  
+      var model = JSON.parse(data);
+      for (var panelId in model) {      
+        for (var i=0; i<model[panelId].length; i++) {
+          var w = model[panelId][i];
+          var widget = new mpage.feed(w.id, w.url, panelId, w.entriesToShow);
+          mpage.model.widgets[widget.id] = widget;
+          if (mpage.model.layout[panelId]) {
+            mpage.model.layout[panelId].push(widget.id);
+          } else {
+            mpage.model.layout[panelId] = [widget.id];
+          }    
+          widget.load();
+        }
       }
-    }
-      
-    mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'model-loaded');  
+      mpage.observerService.notifyObservers(null, 'mpage-model-changed', 'model-loaded');  
+    });  
   },
 
   close: function() {

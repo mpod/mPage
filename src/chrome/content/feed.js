@@ -143,8 +143,12 @@ mpage.feed.prototype = {
       }
     }
     var linkEl = channelEl.getElementsByTagName('link');
-    if (linkEl)
-      this.siteUrl = linkEl[0].firstChild.nodeValue;
+    if (linkEl) {
+      if (linkEl[0].getAttribute('href') != '')
+        this.siteUrl = linkEl[0].getAttribute('href');
+      else
+        this.siteUrl = linkEl[0].firstChild.nodeValue;
+    }
 
     if (isRdf) { 
       nodes = xmlDoc.getElementsByTagName('item');
@@ -176,10 +180,14 @@ mpage.feed.prototype = {
             if (n.getAttribute('type').indexOf('image') == 0) entry.image = n.getAttribute('url');
             break;
           case 'link':
-            if (isAtom) {
-              entry.link = n.getAttribute('href');
+            if (n.getAttribute('rel') == 'enclosure') {
+              entry.image = n.getAttribute('href');
             } else {
-              entry.link = n.firstChild ? n.firstChild.nodeValue : '';
+              if (isAtom) {
+                entry.link = n.getAttribute('href');
+              } else {
+                entry.link = n.firstChild ? n.firstChild.nodeValue : '';
+              }
             }
             break;
           case 'updated':

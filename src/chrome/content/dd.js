@@ -4,8 +4,9 @@ else if (typeof mpage.dd != 'object')
 
 mpage.dd = {
   dragStart: function(event) {
+    var doc = mpage.view.getDoc();
     event.dataTransfer.setData('text/plain', this.getAttribute('id')); 
-    var feedbackEl = document.createElementNS(mpage.view.htmlNS, 'img');  
+    var feedbackEl = doc.createElement('img');  
     feedbackEl.setAttribute('src', 'chrome://mpage/skin/feedback.png');
     event.dataTransfer.setDragImage(feedbackEl, 19, 19);
     event.dataTransfer.effectAllowed = 'none';
@@ -16,9 +17,10 @@ mpage.dd = {
     event.preventDefault();
     event.stopPropagation();
 
-    var placeholderEl = document.getElementById('dd-placeholder'); 
+    var doc = mpage.view.getDoc();
+    var placeholderEl = doc.getElementById('dd-placeholder'); 
     if (!placeholderEl) {
-      placeholderEl = document.createElementNS(mpage.view.htmlNS, 'html:div');  
+      placeholderEl = doc.createElement('div');  
       placeholderEl.setAttribute('id', 'dd-placeholder');
       placeholderEl.setAttribute('class', 'widget');
     }
@@ -46,15 +48,16 @@ mpage.dd = {
         this.parentNode.appendChild(placeholderEl);
       }
     }
-    var el = document.getElementById(event.dataTransfer.getData('text/plain')); 
+    var el = doc.getElementById(event.dataTransfer.getData('text/plain')); 
     placeholderEl.style.height = el.offsetHeight + 'px';
     placeholderEl.style.display = 'block';
   },
 
   drop: function(event) {
+    var doc = mpage.view.getDoc();
     var data = event.dataTransfer.getData('text/plain');
-    var placeholderEl = document.getElementById('dd-placeholder'); 
-    var el = document.getElementById(data);
+    var placeholderEl = doc.getElementById('dd-placeholder'); 
+    var el = doc.getElementById(data);
     el.style.opacity = 1;
     placeholderEl.parentNode.replaceChild(el, placeholderEl);
     event.preventDefault();
@@ -62,10 +65,11 @@ mpage.dd = {
   }, 
 
   dragEnd: function(event) {
-    var placeholderEl = document.getElementById('dd-placeholder'); 
+    var doc = mpage.view.getDoc();
+    var placeholderEl = doc.getElementById('dd-placeholder'); 
     if (placeholderEl) {
       var data = event.dataTransfer.getData('text/plain');
-      var el = document.getElementById(data);
+      var el = doc.getElementById(data);
       var widget = mpage.model.getWidget(el.getAttribute('widget-id'));
       var refWidgetEl = placeholderEl.nextSibling;
       var refWidget = null;

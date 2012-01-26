@@ -3,11 +3,10 @@ else if (typeof mpage.view != 'object')
   throw new Error('mpage.view already exists and is not an object');
 
 mpage.view = {
-  htmlNS: 'http://www.w3.org/1999/xhtml',
-
   modelChangedObserver: {
     observe : function(subject, topic, data) {  
       if (topic == 'mpage-model-changed') {  
+
         var self = mpage.view;
         var widget;
         mpage.dump('event: ' + data);
@@ -30,12 +29,72 @@ mpage.view = {
     }
   },
 
+  init: function() {
+    var strbundle = document.getElementById('labels');
+    var html = [
+      '<html>',
+      '  <head>',
+      '  <link rel="stylesheet" type="text/css" href="chrome://mpage/skin/mpage.css"/>',
+      '  </head>',
+      '  <body class="kellys">',
+      '    <table class="container">',
+      '      <tr>',
+      '        <td id="panel-1" class="column first"></td>',
+      '        <td id="panel-2" class="column"></td>',
+      '        <td id="panel-3" class="column">',
+      '          <div class="toolbar">',
+      '            <input id="subscribe-url" type="text" placeholder="' + strbundle.getString('placeholder.label') + '" name="subscribe" />',
+      '            <div class="button" id="subscribe-button">' + strbundle.getString('subscribe.label') + '</div>',
+      '            <a href="#" id="theme-link">' + strbundle.getString('theme.label') + '</a>',
+      '            <a href="#" id="about-link">' + strbundle.getString('about.label') + '</a>',
+      '            <div style="clear: both;"></div>',
+      '          </div>',
+      '        </td>',
+      '      </tr>',
+      '    </table>',
+      '  </body>',
+      '</html>'];
+
+    var iframeEl = document.getElementById('container');
+    var doc = iframeEl.contentWindow.document;
+    doc.open();
+    doc.write(html.join(''));
+    doc.close();
+
+    var el = doc.getElementById('panel-1');
+    el.addEventListener('dragover', mpage.dd.dragOver, false);
+    el = doc.getElementById('panel-2');
+    el.addEventListener('dragover', mpage.dd.dragOver, false);
+    el = doc.getElementById('panel-3');
+    el.addEventListener('dragover', mpage.dd.dragOver, false);
+    el = doc.getElementById('subscribe-button');
+    el.addEventListener('click', mpage.controller.subscribe, false);
+    el = doc.getElementById('theme-link');
+    el.addEventListener('click', mpage.controller.changeTheme, false);
+    el = doc.getElementById('about-link');
+    el.addEventListener('click', mpage.controller.openAbout, false);
+    el = doc.getElementById('subscribe-url');
+    el.addEventListener('keydown', mpage.controller.handleReturnKey, false);
+  },
+
+  getDoc: function() {
+    return document.getElementById('container').contentWindow.document;  
+  },
+
   registerObserver: function() {
     mpage.observerService.addObserver(mpage.view.modelChangedObserver, 'mpage-model-changed', false); 
   },
 
   unregisterObserver: function() {
     mpage.observerService.removeObserver(mpage.view.modelChangedObserver, 'mpage-model-changed');
+  },
+
+  changeTheme: function(theme) {
+    mpage.view.getDoc().body.className = theme; 
+  },
+
+  getTheme: function() {
+    return mpage.view.getDoc().body.className;
   },
 
   removeWidget: function(widget) {
@@ -45,7 +104,7 @@ mpage.view = {
   },
 
   getWidgetEl: function(widgetId) {
-    return document.getElementById('widget-' + widgetId);
+    return mpage.view.getDoc().getElementById('widget-' + widgetId);
   },
 
   updateWidgetId: function(oldId, newId) {
@@ -73,10 +132,11 @@ mpage.view = {
   draw: function(widget, refresh) {
     var panelEl;
     var panel;
+    var doc = mpage.view.getDoc();
 
     if (widget) {
-      var widgetEl = document.getElementById('widget-' + widget.id);
-      panelEl = document.getElementById('panel-' + widget.panelId);   
+      var widgetEl = doc.getElementById('widget-' + widget.id);
+      panelEl = doc.getElementById('panel-' + widget.panelId);   
       panel = mpage.model.layout[widget.panelId];
       if (widgetEl && refresh) {
         widgetEl.parentNode.removeChild(widgetEl);
@@ -87,7 +147,7 @@ mpage.view = {
       }
       for (var i=0; i<panel.length; i++) {
         if (panel[i] == widget.id) {
-          var refWidgetEl = document.getElementById('widget-' + panel[i+1]);
+          var refWidgetEl = doc.getElementById('widget-' + panel[i+1]);
           if (refWidgetEl) {
             panelEl.insertBefore(widgetEl, refWidgetEl);
           } else {
@@ -101,7 +161,7 @@ mpage.view = {
       var layout = mpage.model.layout;
       
       for (var panelId in layout) {
-        panelEl = document.getElementById('panel-' + panelId);
+        panelEl = doc.getElementById('panel-' + panelId);
         var n1, n2;
         n1 = panelEl.firstChild;
         while (n1) {
@@ -120,14 +180,16 @@ mpage.view = {
 
   createWidgetEl: function(widget) {
     var self = mpage.view;
-    var widgetEl = document.createElementNS(self.htmlNS, 'html:div');
-    var headerEl = document.createElementNS(self.htmlNS, 'html:div');
-    var bodyEl = document.createElementNS(self.htmlNS, 'html:div');
-    var listEl = document.createElementNS(self.htmlNS, 'html:ul');
-    var titleEl = document.createElementNS(self.htmlNS, 'html:a');
+    var doc = self.getDoc();
+    var widgetEl = doc.createElement('div');
+    var headerEl = doc.createElement('div');
+    var bodyEl = doc.createElement('div');
+    var listEl = doc.createElement('ul');
+    var titleEl = doc.createElement('a');
 
     widgetEl.setAttribute('class', 'widget');
     widgetEl.setAttribute('id', 'widget-' + widget.id);
+    widgetEl.setAttribute('draggable', 'true');
     widgetEl.addEventListener('dragstart', mpage.dd.dragStart, false);
     widgetEl.addEventListener('dragend', mpage.dd.dragEnd, false);
     widgetEl.addEventListener('dragover', mpage.dd.dragOver, false);
@@ -139,16 +201,16 @@ mpage.view = {
       titleEl.setAttribute('href', widget.siteUrl);
       titleEl.addEventListener('click', function(){this.blur();}, false); 
     }
-    titleEl.appendChild(document.createTextNode(widget.title));
+    titleEl.appendChild(doc.createTextNode(widget.title));
 
     headerEl.appendChild(titleEl);
 
     var el;
-    el = document.createElementNS(self.htmlNS, 'html:div');
+    el = doc.createElement('div');
     el.setAttribute('class', 'action configure');
     el.addEventListener('click', mpage.controller.configure, false);
     headerEl.appendChild(el);
-    el = document.createElementNS(self.htmlNS, 'html:div');
+    el = doc.createElement('div');
     el.setAttribute('class', 'action remove');
     el.addEventListener('click', mpage.controller.remove, false);
     headerEl.appendChild(el);
@@ -173,36 +235,38 @@ mpage.view = {
 
   createLoadingBody: function() {
     var self = mpage.view;
-    var divEl = document.createElementNS(self.htmlNS, 'html:div');  
+    var doc = self.getDoc();
+    var divEl = doc.createElement('div');  
     divEl.setAttribute('class', 'loading');
     var strbundle = document.getElementById('labels');
-    var titleTextEl = document.createTextNode(strbundle.getString('loading.label'));
+    var titleTextEl = doc.createTextNode(strbundle.getString('loading.label'));
     divEl.appendChild(titleTextEl);
     return divEl;
   }, 
 
   createFeedBody: function(feed) {
     var self = mpage.view;
-    var listEl = document.createElementNS(self.htmlNS, 'html:ul');
+    var doc = self.getDoc();
+    var listEl = doc.createElement('ul');
 
     if (feed.inError) return self.createErrorBody();
 
     for (var i=0; i<feed.entries.length && i<feed.entriesToShow; i++) {
       var entry = feed.entries[i];
-      var entryEl = document.createElementNS(self.htmlNS, 'html:li');
-      var linkEl = document.createElementNS(self.htmlNS, 'html:a');
+      var entryEl = doc.createElement('li');
+      var linkEl = doc.createElement('a');
       linkEl.setAttribute('href', entry.link);
       linkEl.setAttribute('target', '_blank');
       linkEl.addEventListener('click', function(){this.blur();}, false); 
-      linkEl.appendChild(document.createTextNode(entry.title));
+      linkEl.appendChild(doc.createTextNode(entry.title));
       entryEl.appendChild(linkEl);
       if (entry.link2) {
-          var link2El = document.createElementNS(self.htmlNS, 'html:a');
+          var link2El = doc.createElement('a');
           link2El.setAttribute('href', entry.link2);
           link2El.setAttribute('target', '_blank');
-          link2El.appendChild(document.createTextNode('#'));
+          link2El.appendChild(doc.createTextNode('#'));
           link2El.addEventListener('click', function(){this.blur();}, false); 
-          entryEl.appendChild(document.createTextNode(' '));
+          entryEl.appendChild(doc.createTextNode(' '));
           entryEl.appendChild(link2El);
       }
       listEl.appendChild(entryEl);
@@ -213,10 +277,11 @@ mpage.view = {
 
   createErrorBody: function() {
     var self = mpage.view;
-    var divEl = document.createElementNS(self.htmlNS, 'html:div');  
+    var doc = self.getDoc();
+    var divEl = doc.createElement('div');  
     divEl.className = 'error';
-    var strbundle = document.getElementById('labels');
-    var titleTextEl = document.createTextNode(strbundle.getString('widget.error.message'));
+    var strbundle = doc.getElementById('labels');
+    var titleTextEl = doc.createTextNode(strbundle.getString('widget.error.message'));
     divEl.appendChild(titleTextEl);
     return divEl;  
   }
