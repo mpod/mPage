@@ -250,22 +250,27 @@ mpagespace.storage.json.prototype = {
           title: 'The Guardian World News',
           entriesToShow: 5 } ]
     };
-    this.writeToFile(model);
+    this.writeToFile(model, true);
   },
 
-  writeToFile: function(model) {
+  writeToFile: function(model, synchronous) {
     var ostream = FileUtils.openSafeFileOutputStream(this.file)  
-    mpagespace.unicodeConverter.charset = "UTF-8";  
-    var istream = mpagespace.unicodeConverter.convertToInputStream(JSON.stringify(model));  
-      
-    NetUtil.asyncCopy(istream, ostream, function(status) {  
-      if (!Components.isSuccessCode(status)) {  
-        mpagespace.dump('Error in model saving.');
-        return;  
-      }  
-      mpagespace.dump('Model has been saved.');
-      FileUtils.closeSafeFileOutputStream(ostream); 
-    });    
+    var data = JSON.stringify(model);  
+    
+    if (synchronous) {
+      ostream.write(data, data.length)
+    } else {
+      mpagespace.unicodeConverter.charset = "UTF-8";  
+      var istream = mpagespace.unicodeConverter.convertToInputStream(data);  
+      NetUtil.asyncCopy(istream, ostream, function(status) {  
+        if (!Components.isSuccessCode(status)) {  
+          mpagespace.dump('Error in model saving.');
+          return;  
+        }  
+        mpagespace.dump('Model has been saved.');
+        FileUtils.closeSafeFileOutputStream(ostream); 
+      });    
+    }
   }
 }
 
