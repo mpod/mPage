@@ -2,7 +2,7 @@
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
 
-<!DOCTYPE overlay SYSTEM "chrome://mpagespace/locale/mpagespace.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://mpagespace/locale/mpage.dtd">
 
 <overlay id="mpagespace-browser-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
@@ -13,14 +13,14 @@
   </stringbundleset>
 
   <menupopup id="menu_ToolsPopup">
-    <menuitem label="&mpagespace.showMenuItem.label;"
+    <menuitem id="mpagespace-button-1" label="&mpagespace.showMenuItem.label;"
       accesskey="&mpagespace.showMenuItem.accesskey;"
       insertafter="menu_pageInfo"
       oncommand="mpagespace.openPage()"/>
   </menupopup>
 
   <vbox id="appmenuSecondaryPane">
-    <menuitem label="&mpagespace.showMenuItem.label;"
+    <menuitem id="mpagespace-button-2" label="&mpagespace.showMenuItem.label;"
       accesskey="&mpagespace.showMenuItem.accesskey;"
       insertafter="appmenu_addons"
       oncommand="mpagespace.openPage()"/>

@@ -5,5 +5,5 @@
 <!ENTITY about.version.label             "Version">
 <!ENTITY about.createdby.label           "Created by:">
 <!ENTITY about.close.label               "Close">
-<!ENTITY mpage.showMenuItem.label        "mPage">
-<!ENTITY mpage.showMenuItem.accesskey    "m">
+<!ENTITY mpagespace.showMenuItem.label        "mPage">
+<!ENTITY mpagespace.showMenuItem.accesskey    "m">

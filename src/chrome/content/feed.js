@@ -144,9 +144,9 @@ mpagespace.feed.prototype = {
     }
     var linkEl = channelEl.getElementsByTagName('link');
     if (linkEl) {
-      if (linkEl[0].getAttribute('href') != '')
+      if (linkEl[0] && linkEl[0].getAttribute('href'))
         this.siteUrl = linkEl[0].getAttribute('href');
-      else
+      else if (linkEl[0]) 
         this.siteUrl = linkEl[0].firstChild.nodeValue;
     }
 
