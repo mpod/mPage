@@ -1,3 +1,5 @@
+// Author: Matija Podravec, 2012.
+
 if (!mpagespace.controller) mpagespace.controller = {};
 else if (typeof mpagespace.controller != 'object')
   throw new Error('mpagespace.controller already exists and is not an object');

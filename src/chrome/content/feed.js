@@ -1,3 +1,5 @@
+// Author: Matija Podravec, 2012.
+
 if (!mpagespace.feed) mpagespace.feed = {};
 else if (typeof mpagespace.feed != 'object')
   throw new Error('mpagespace.feed already exists and is not an object');

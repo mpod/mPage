@@ -9,7 +9,7 @@
 <groupbox align="start" orient="horizontal" width="200" height="120" class="about-box">
   <vbox>
     <text value="mPage" class="about-product-name"/>
-    <text value="&about.version.label; 1.0"/>
+    <text value="&about.version.label; 0.3"/>
 
     <separator/>
     <text value="&about.createdby.label;" class="about-sub-title"/>

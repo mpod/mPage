@@ -1,3 +1,5 @@
+// Author: Matija Podravec, 2012.
+
 if (!mpagespace.dd) mpagespace.dd = {};
 else if (typeof mpagespace.dd != 'object')
   throw new Error('mpagespace.dd already exists and is not an object');

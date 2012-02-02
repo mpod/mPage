@@ -1,3 +1,5 @@
+// Author: Matija Podravec, 2012.
+
 if (!mpagespace.view) mpagespace.view = {};
 else if (typeof mpagespace.view != 'object')
   throw new Error('mpagespace.view already exists and is not an object');
@@ -19,7 +21,6 @@ mpagespace.view = {
             self.removeWidget(widget);
             break;
           case 'widget-inserted-to-panel':
-            console.log(widget);
             self.draw(widget, false);
             break;
           default:

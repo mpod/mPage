@@ -1,3 +1,5 @@
+// Author: Matija Podravec, 2012.
+
 if (!mpagespace.ajax) mpagespace.ajax = {};
 else if (typeof mpagespace.ajax != 'object')
   throw new Error('mpagespace.ajax already exists and is not an object');

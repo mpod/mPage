@@ -1,3 +1,5 @@
+// Author: Matija Podravec, 2012.
+
 if (!mpagespace.model) mpagespace.model = {};
 else if (typeof mpagespace.model != 'object')
   throw new Error('mpagespace.model already exists and is not an object');

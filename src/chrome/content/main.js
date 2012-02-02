@@ -1,3 +1,5 @@
+// Author: Matija Podravec, 2012.
+
 var mpagespace;
 if (!mpagespace) mpagespace = {};
 else if (typeof mpagespace != 'object')

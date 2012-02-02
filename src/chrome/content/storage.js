@@ -1,3 +1,5 @@
+// Author: Matija Podravec, 2012.
+
 if (!mpagespace.storage) mpagespace.storage = {};
 else if (typeof mpagespace.storage != 'object')
   throw new Error('mpagespace.storage already exists and is not an object');
@@ -259,6 +261,7 @@ mpagespace.storage.json.prototype = {
     
     if (synchronous) {
       ostream.write(data, data.length)
+      FileUtils.closeSafeFileOutputStream(ostream); 
     } else {
       mpagespace.unicodeConverter.charset = "UTF-8";  
       var istream = mpagespace.unicodeConverter.convertToInputStream(data);  
