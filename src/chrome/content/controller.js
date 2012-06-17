@@ -6,7 +6,7 @@ else if (typeof mpagespace.controller != 'object')
 
 mpagespace.controller = {
 
-  modelChangedObserver: {
+  observer: {
     observe : function(subject, topic, data) {  
       if (topic == 'mpage-model-changed') {  
         var widget;
@@ -22,11 +22,11 @@ mpagespace.controller = {
   },
 
   registerObserver: function() {
-    mpagespace.observerService.addObserver(mpagespace.controller.modelChangedObserver, 'mpage-model-changed', false); 
+    mpagespace.observerService.addObserver(mpagespace.controller.observer, 'mpage-model-changed', false); 
   },
 
   unregisterObserver: function() {
-    mpagespace.observerService.removeObserver(mpagespace.controller.modelChangedObserver, 'mpage-model-changed');
+    mpagespace.observerService.removeObserver(mpagespace.controller.observer, 'mpage-model-changed');
   },
   
   subscribe: function() {
@@ -38,7 +38,8 @@ mpagespace.controller = {
     var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
     parser.parseURL(url, url.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
     if (authLen.value == -1 || authLen.value == 0) {
-      mpagespace.promptsService.alert(null, mpagespace.translate('invalidUrl.title'), mpagespace.translate('invalidUrl.message'));
+      mpagespace.promptsService.alert(null, mpagespace.translate('invalidUrl.title'), 
+          mpagespace.translate('invalidUrl.message'));
       subscribeUrlEl.value = '';
       subscribeUrlEl.blur();
       return;
@@ -46,7 +47,7 @@ mpagespace.controller = {
     if (schemeLen.value == -1) url = 'http://' + url;
     if (pathLen.value == -1) url = url + '/'; 
 
-    var widget = new mpagespace.feed(mpagespace.model.getNextTempId(), url);
+    var widget = new mpagespace.feed(mpagespace.model.getNextWidgetId(), url);
     widget.setup = true;
     mpagespace.model.widgets[widget.id] = widget;
     var panel = mpagespace.model.layout[1];
@@ -92,7 +93,8 @@ mpagespace.controller = {
       index++;
     }
     if (titles.length == 0) {
-      mpagespace.promptsService.alert(null, mpagespace.translate('availableFeedsError.title'), mpagespace.translate('availableFeedsError.message')); 
+      mpagespace.promptsService.alert(null, mpagespace.translate('availableFeedsError.title'), 
+          mpagespace.translate('availableFeedsError.message')); 
       mpagespace.model.remove(widget);  
       return;
     }
@@ -133,7 +135,8 @@ mpagespace.controller = {
     var widgetId = mpagespace.view.getWidgetId(this);
     var widget = mpagespace.model.getWidget(widgetId);
     var value = {value: widget.entriesToShow};
-    var result = mpagespace.promptsService.prompt(null, mpagespace.translate('configuration.title'), mpagespace.translate('configuration.message'), value, null, {value: false});  
+    var result = mpagespace.promptsService.prompt(null, mpagespace.translate('configuration.title'), 
+        mpagespace.translate('configuration.message'), value, null, {value: false});  
     if (result) {
       if (!isNaN(parseInt(value.value))) {
         widget.set('entriesToShow', parseInt(value.value));  
@@ -158,7 +161,7 @@ mpagespace.controller = {
     var result = mpagespace.promptsService.select(null, mpagespace.translate('theme.title'), 
         mpagespace.translate('theme.message', [active]), items.length,  items, selected);  
     if (result) {
-      mpagespace.view.changeTheme(items[selected.value]);
+      mpagespace.view.setTheme(items[selected.value]);
       mpagespace.fuelApplication.prefs.setValue('extensions.mpagespace.theme', items[selected.value]);
     }
     return false;

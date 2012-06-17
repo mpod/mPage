@@ -9,8 +9,8 @@
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   title="mPage"
   tooltiptext=""
-  onload="mpagespace.start();"
-  onunload="mpagespace.unload();">
+  onload="mpagespace.initPage();"
+  onunload="mpagespace.unloadPage();">
 
   <script type="application/javascript" src="chrome://mpagespace/content/main.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/ajax.js"/>

@@ -19,8 +19,18 @@ mpagespace.feed = function(id, url, panelId, entriesToShow) {
 mpagespace.feed.prototype = {
   set: function(property, value) {
     this[property] = value;
-    mpagespace.model.save(this);
+    mpagespace.model.commit();
     mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-' + property + ':' + this.id);  
+  },
+
+  getConfig: function() {
+    return {
+      widgetId: this.id,
+      panelId: this.panelId,
+      title: this.title,
+      url: this.url,
+      entriesToShow: this.entriesToShow
+    };      
   },
 
   load: function() {
@@ -30,7 +40,7 @@ mpagespace.feed.prototype = {
         self.inError = true;
         self.initialized = true;
         mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-error:' + self.id);  
-        mpagespace.dump('Error occured during feed loading.');
+        mpagespace.dump('Error occured on loading feed ' + self.id + '.');
     }
 
     var processHandler = function(request) {
@@ -62,7 +72,7 @@ mpagespace.feed.prototype = {
       }*/
 
       try {
-        if (self.url.indexOf('reddit.com') != -1) {
+        if (self.url.indexOf('reddit.com') != -1 && self.url.indexOf('.rss') == -1) {
           self.siteUrl = self.url;         
           self.processReddit(request.responseText);
         } else {

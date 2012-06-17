@@ -1,12 +1,17 @@
 <?xml version="1.0"?>
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
+<?xml-stylesheet type="text/css" href="chrome://mpagespace/skin/overlay.css" ?>
 
 <!DOCTYPE overlay SYSTEM "chrome://mpagespace/locale/mpage.dtd">
 
 <overlay id="mpagespace-browser-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/javascript" src="chrome://mpagespace/content/main.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/app.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/storage.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/converter.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/overlay.js"/> 
 
   <stringbundleset>
     <stringbundle id="mpagespace-labels" src="chrome://mpagespace/locale/mpage.properties" />
@@ -25,4 +30,25 @@
       insertafter="appmenu_addons"
       oncommand="mpagespace.openPage()"/>
   </vbox>
+
+  <toolbarpalette id="BrowserToolbarPalette">
+    <toolbarbutton id="mpagespace-button-3" 
+      type="menu"
+      tooltiptext="&mpagespace.showMenuItem.label;" 
+      label="&mpagespace.showMenuItem.label;" 
+      class="chromeclass-toolbar-additional">
+      <menupopup id="mpagespace-menu-1" position="before_start">
+        <menu label="&mpagespace.configure.label;">
+          <menupopup>
+            <menuitem label="Export to OPML" oncommand="mpagespace.overlay.exportToOpml();"/>
+            <menuitem label="Import from OPML" oncommand="mpagespace.overlay.importFromOpml();"/>
+            <menuitem label="Export to bookmarks" oncommand="mpagespace.overlay.exportToBookmarks();"/>
+            <menuitem label="Import from bookmarks" oncommand="mpagespace.overlay.importFromBookmarks();"/>
+          </menupopup>
+        </menu>
+        <menuseparator/>
+      </menupopup>
+    </toolbarbutton>
+  </toolbarpalette>
+
 </overlay>

@@ -3,3 +3,4 @@ skin      mpagespace   classic/1.0    chrome/skin/
 locale    mpagespace   en-US          chrome/locale/en-US/
 
 overlay chrome://browser/content/browser.xul  chrome://mpagespace/content/overlay.xul
+style chrome://global/content/customizeToolbar.xul chrome://mpagespace/skin/overlay.css

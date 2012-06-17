@@ -5,18 +5,15 @@ else if (typeof mpagespace.view != 'object')
   throw new Error('mpagespace.view already exists and is not an object');
 
 mpagespace.view = {
-  modelChangedObserver: {
+  observer: {
     observe : function(subject, topic, data) {  
       if (topic == 'mpage-model-changed') {  
         var self = mpagespace.view;
         var widget;
-        mpagespace.dump('event: ' + data);
+        mpagespace.dump('event: ' + topic + '/' + data);
         data = data.split(':');
         widget = mpagespace.model.getWidget(data[1]);
         switch (data[0]) {
-          case 'widget-changed-id': 
-            self.updateWidgetId(data[1], data[2]);
-            break;
           case 'widget-removed':
             self.removeWidget(widget);
             break;
@@ -81,14 +78,14 @@ mpagespace.view = {
   },
 
   registerObserver: function() {
-    mpagespace.observerService.addObserver(mpagespace.view.modelChangedObserver, 'mpage-model-changed', false); 
+    mpagespace.observerService.addObserver(mpagespace.view.observer, 'mpage-model-changed', false); 
   },
 
   unregisterObserver: function() {
-    mpagespace.observerService.removeObserver(mpagespace.view.modelChangedObserver, 'mpage-model-changed');
+    mpagespace.observerService.removeObserver(mpagespace.view.observer, 'mpage-model-changed');
   },
 
-  changeTheme: function(theme) {
+  setTheme: function(theme) {
     mpagespace.view.getDoc().body.className = theme; 
   },
 
@@ -104,14 +101,6 @@ mpagespace.view = {
 
   getWidgetEl: function(widgetId) {
     return mpagespace.view.getDoc().getElementById('widget-' + widgetId);
-  },
-
-  updateWidgetId: function(oldId, newId) {
-    var widgetEl = mpagespace.view.getWidgetEl(oldId);
-    if (widgetEl) {
-      widgetEl.setAttribute('id', 'widget-' + newId);
-      widgetEl.setAttribute('widget-id', newId);
-    }
   },
 
   getWidgetId: function(el) {

@@ -7,3 +7,4 @@
 <!ENTITY about.close.label               "Close">
 <!ENTITY mpagespace.showMenuItem.label        "mPage">
 <!ENTITY mpagespace.showMenuItem.accesskey    "m">
+<!ENTITY mpagespace.configure.label    "Configure...">
