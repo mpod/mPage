@@ -8,12 +8,13 @@ mpagespace.controller = {
 
   observer: {
     observe : function(subject, topic, data) {  
-      if (topic == 'mpage-model-changed') {  
+      if (topic == 'mpage-model') {  
         var widget;
         data = data.split(':');
-        widget = mpagespace.model.getWidget(data[1]);
+        widget = mpagespace.app.getModel().getPage().getWidget(data[1]);
         switch (data[0]) {
-          case 'widget-error': 
+          case 'widget-loading-exception': 
+            mpagespace.dump('controller.observe: ' + topic + '/' + data);
             mpagespace.controller.handleWidgetLoadingError(widget);     
             break;
         }
@@ -22,11 +23,11 @@ mpagespace.controller = {
   },
 
   registerObserver: function() {
-    mpagespace.observerService.addObserver(mpagespace.controller.observer, 'mpage-model-changed', false); 
+    mpagespace.observerService.addObserver(mpagespace.controller.observer, 'mpage-model', false); 
   },
 
   unregisterObserver: function() {
-    mpagespace.observerService.removeObserver(mpagespace.controller.observer, 'mpage-model-changed');
+    mpagespace.observerService.removeObserver(mpagespace.controller.observer, 'mpage-model');
   },
   
   subscribe: function() {
@@ -42,32 +43,23 @@ mpagespace.controller = {
           mpagespace.translate('invalidUrl.message'));
       subscribeUrlEl.value = '';
       subscribeUrlEl.blur();
-      return;
+      return false;
     }
     if (schemeLen.value == -1) url = 'http://' + url;
     if (pathLen.value == -1) url = url + '/'; 
 
-    var widget = new mpagespace.feed(mpagespace.model.getNextWidgetId(), url);
-    widget.setup = true;
-    mpagespace.model.widgets[widget.id] = widget;
-    var panel = mpagespace.model.layout[1];
-    var refWidget;
-    if (panel.length > 0) {
-      refWidget = mpagespace.model.widgets[panel[0]];
-    }
-    mpagespace.model.insertToPanel(widget, 1, refWidget);
-    widget.load();
+    mpagespace.app.getModel().getPage().createAndAddWidget(url, true, false);
+
     subscribeUrlEl.value = '';
     subscribeUrlEl.blur();
+    return false;
   },
 
   handleWidgetLoadingError: function(widget) {
     var index = 0;
-    var text = widget.responseText;
+    var text = widget.responseText.toLowerCase();
     var titles = [];
     var urls = [];
-
-    if (text == null || widget.setup == false) return;
 
     widget.setup = false;
 
@@ -95,7 +87,7 @@ mpagespace.controller = {
     if (titles.length == 0) {
       mpagespace.promptsService.alert(null, mpagespace.translate('availableFeedsError.title'), 
           mpagespace.translate('availableFeedsError.message')); 
-      mpagespace.model.remove(widget);  
+      widget.page.deleteWidget(widget);  
       return;
     }
     
@@ -125,59 +117,46 @@ mpagespace.controller = {
         widget.url = url2;
       
       widget.load();
-      mpagespace.model.save(widget);
     } else {
-      mpagespace.model.remove(widget);  
+      widget.page.deleteWidget(widget);  
     }
   },
 
   configure: function(event) {
     var widgetId = mpagespace.view.getWidgetId(this);
-    var widget = mpagespace.model.getWidget(widgetId);
-    var value = {value: widget.entriesToShow};
-    var result = mpagespace.promptsService.prompt(null, mpagespace.translate('configuration.title'), 
-        mpagespace.translate('configuration.message'), value, null, {value: false});  
-    if (result) {
-      if (!isNaN(parseInt(value.value))) {
-        widget.set('entriesToShow', parseInt(value.value));  
+    var model = mpagespace.app.getModel();
+    var widget = model.getPage().getWidget(widgetId);
+    var pageOrder = model.getPageOrder();
+    var activePageId = model.activePageId;
+    var pages = model.getPages(model.GET_PAGES_ARRAY);
+    var returnValue = {accepted: false};
+    window.openDialog('chrome://mpagespace/content/feed-setup.xul','','chrome,modal,centerscreen', widget, pages, activePageId, returnValue);  
+
+    if (returnValue.accepted) {
+      widget.setBulk(returnValue.config);
+      if (activePageId != returnValue.pageId) {
+        model.moveWidgetToPage(widget, returnValue.pageId);
       }
     }
   },
 
   remove: function(event, self) {
     var widgetId = mpagespace.view.getWidgetId(this);
-    var widget = mpagespace.model.getWidget(widgetId);
+    var page = mpagespace.app.getModel().getPage();
+    var widget = page.getWidget(widgetId);
 
-    mpagespace.model.remove(widget);
+    //if (mpagespace.promptsService.confirm(null, mpagespace.translate('deleteWidget.title'), 
+    //      mpagespace.translate('deleteWidget.message'))) {  
+      page.deleteWidget(widget);
+    //}
   },
 
-  changeTheme: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    var items = ['light', 'kellys']; 
-    var selected = {};  
-    var active = mpagespace.view.getTheme();
+  toggleWidget: function(event, self) {
+    var widgetId = mpagespace.view.getWidgetId(this);
+    var widget = mpagespace.app.getModel().getPage().getWidget(widgetId);
+    var hide = !widget.minimized;
 
-    var result = mpagespace.promptsService.select(null, mpagespace.translate('theme.title'), 
-        mpagespace.translate('theme.message', [active]), items.length,  items, selected);  
-    if (result) {
-      mpagespace.view.setTheme(items[selected.value]);
-      mpagespace.fuelApplication.prefs.setValue('extensions.mpagespace.theme', items[selected.value]);
-    }
-    return false;
-  },
-
-  openAbout: function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    window.open('chrome://mpagespace/content/about.xul','','chrome,centerscreen,dialog');  
-    return false;
-  },
-
-  handleReturnKey: function(event) {
-    if (event.keyCode == 13) {
-      mpagespace.controller.subscribe();
-    }
+    widget.set('minimized', hide);
   }
 }
 

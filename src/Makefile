@@ -62,8 +62,7 @@ xpi_built := install.rdf \
              $(wildcard chrome/skin/*.png) \
              $(wildcard chrome/skin/*.gif) \
              $(wildcard chrome/locale/*/*.dtd) \
-             $(wildcard chrome/locale/*/*.properties) \
-             $(wildcard defaults/preferences/*.js)
+             $(wildcard chrome/locale/*/*.properties) 
 
 # This builds everything except for the actual XPI, and then it copies it to the
 # specified profile directory, allowing a quick update that requires no install.

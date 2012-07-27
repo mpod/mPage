@@ -1,10 +1,63 @@
-<!ENTITY subscribe.label            "Subscribe">
-<!ENTITY placeholder.label          "Paste a URL here.">
-<!ENTITY theme.label                "Theme">
-<!ENTITY about.label                "About">
-<!ENTITY about.version.label             "Version">
-<!ENTITY about.createdby.label           "Created by:">
-<!ENTITY about.close.label               "Close">
-<!ENTITY mpagespace.showMenuItem.label        "mPage">
-<!ENTITY mpagespace.showMenuItem.accesskey    "m">
-<!ENTITY mpagespace.configure.label    "Configure...">
+<!ENTITY subscribe.label                          "Subscribe">
+<!ENTITY placeholder.label                        "Paste a URL here.">
+<!ENTITY mpagespace.showMenuItem.label            "mPage">
+<!ENTITY mpagespace.showMenuItem.accesskey        "m">
+<!ENTITY mpagespace.options.label                 "Options">
+<!ENTITY mpagespace.options.accesskey             "O">
+<!ENTITY mpagespace.addpage.label                 "Add page">
+<!ENTITY mpagespace.addpage.accesskey             "A">
+<!ENTITY mpagespace.deletepage.label              "Delete page">
+<!ENTITY mpagespace.deletepage.accesskey          "D">
+<!ENTITY options.title                            "Options">
+<!ENTITY options.display                          "Display">
+<!ENTITY options.pages                            "Pages">
+<!ENTITY options.export                           "Export">
+<!ENTITY options.import                           "Import">
+<!ENTITY options.reset                            "Reset">
+<!ENTITY options.about                            "About">
+<!ENTITY options.theme                            "Theme">
+<!ENTITY options.usetheme                         "Use theme:">
+<!ENTITY options.customcssfile                    "Custom CSS file:">
+<!ENTITY options.browse.label                     "Browse">
+<!ENTITY options.browse.accesskey                 "b">
+<!ENTITY options.icons                            "Icons">
+<!ENTITY options.showicons.label                  "Show URL icons">
+<!ENTITY options.showicons.accesskey              "i">
+<!ENTITY options.destination                      "Destination">
+<!ENTITY options.exporttoopml.label               "Export to OPML file">
+<!ENTITY options.exporttoopml.accesskey           "o">
+<!ENTITY options.exporttobkmks.label              "Export to bookmarks">
+<!ENTITY options.exporttobkmks.accesskey          "b">
+<!ENTITY options.export.accesskey                 "e">
+<!ENTITY options.source                           "Source">
+<!ENTITY options.importfromopml.label             "Import from OPML file">
+<!ENTITY options.importfromopml.accesskey         "o">
+<!ENTITY options.importfrombkmks.label            "Import from bookmarks">
+<!ENTITY options.importfrombkmks.accesskey        "b">
+<!ENTITY options.options                          "Options">
+<!ENTITY options.merge                            "Merge with current configuration">
+<!ENTITY options.merge.accesskey                  "m">
+<!ENTITY options.overwrite                        "Overwrite current configuration">
+<!ENTITY options.overwrite.accesskey              "w">
+<!ENTITY options.import.label                     "Import">
+<!ENTITY options.import.accesskey                 "i">
+<!ENTITY options.reset.description                "This action returns add-on to the original state.">
+<!ENTITY options.reset.accesskey                  "r">
+<!ENTITY options.rename.label                     "Rename">
+<!ENTITY options.rename.accesskey                 "R">
+<!ENTITY options.choosepage                       "Choose page:">
+<!ENTITY options.delete.label                     "Delete">
+<!ENTITY options.delete.accesskey                 "D">
+<!ENTITY options.createdby.label                  "Created by:">
+<!ENTITY options.version.label                    "Version">
+<!ENTITY feedsetup.title                          "Feed setup">
+<!ENTITY feedsetup.feedtitle                      "Title">
+<!ENTITY feedsetup.filters                        "Filters">
+<!ENTITY feedsetup.filterbydate.label             "Filter by date">
+<!ENTITY feedsetup.filterbydate.accesskey         "d">
+<!ENTITY feedsetup.filtercount                    "Show entries in last">
+<!ENTITY feedsetup.hours                          "hours">
+<!ENTITY feedsetup.days                           "days">
+<!ENTITY feedsetup.entriestoshow                  "Number of entries to show:">
+<!ENTITY feedsetup.container                      "Container">
+<!ENTITY feedsetup.pagename                       "Feed is placed in page:">

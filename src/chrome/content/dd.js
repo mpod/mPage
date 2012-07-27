@@ -7,17 +7,18 @@ else if (typeof mpagespace.dd != 'object')
 mpagespace.dd = {
   dragStart: function(event) {
     var doc = mpagespace.view.getDoc();
-    event.dataTransfer.setData('text/plain', this.getAttribute('id')); 
-    var feedbackEl = doc.createElement('img');  
-    feedbackEl.setAttribute('src', 'chrome://mpagespace/skin/feedback.png');
-    event.dataTransfer.setDragImage(feedbackEl, 19, 19);
-    event.dataTransfer.effectAllowed = 'none';
+    event.dataTransfer.setData('application/mpage-widget', this.getAttribute('id')); 
+    event.dataTransfer.setDragImage(doc.getElementById('dd-feedback'), 19, 19);
+    event.dataTransfer.effectAllowed = 'link';
     this.style.opacity = 0.3;
+    event.stopPropagation();
   },
 
   dragOver: function(event) {
+    if (!event.dataTransfer.types.contains('application/mpage-widget'))
+      return;
+
     event.preventDefault();
-    event.stopPropagation();
 
     var doc = mpagespace.view.getDoc();
     var placeholderEl = doc.getElementById('dd-placeholder'); 
@@ -27,62 +28,102 @@ mpagespace.dd = {
       placeholderEl.setAttribute('class', 'widget');
     }
 
-    if (this.className.indexOf('column') != -1) {
+    if (this.className.indexOf('column') != -1) { 
+      event.stopPropagation();
+      var refEl = null;
       for (var n=this.lastChild; n; n=n.previousSibling) {
-        if (n.className && n.className.indexOf('widget') != -1) {
-          if (event.layerY > (n.offsetTop + n.offsetHeight)) {
-            break;  
-          } else {
-            return;
-          }
+        if (n.nodeName.toLowerCase() == 'div' && n.className.indexOf('widget') != -1 
+            && n.getAttribute('id') != 'dd-placeholder'){
+          if ((event.layerY + 1 - n.offsetTop) / n.offsetHeight < 0.5) {
+            refEl = n;
+          } else
+            break;
         }
       }
-      this.appendChild(placeholderEl); 
-      return;
-    }
-
-    if ((event.layerY + 1 - this.offsetTop) / this.offsetHeight < 0.5) {
-      this.parentNode.insertBefore(placeholderEl, this);
-    } else {
-      if (this.nextSibling) {
-        this.parentNode.insertBefore(placeholderEl, this.nextSibling);
-      } else {
-        this.parentNode.appendChild(placeholderEl);
+      if ((refEl == null && placeholderEl.getAttribute('refElId') != '') ||
+          (refEl != null && placeholderEl.getAttribute('refElId') != refEl.getAttribute('id'))) {
+        this.insertBefore(placeholderEl, refEl);
+        var el = doc.getElementById(event.dataTransfer.getData('application/mpage-widget')); 
+        placeholderEl.style.height = el.offsetHeight + 'px';
+        placeholderEl.style.display = 'block';
+        placeholderEl.setAttribute('refElId', refEl ? refEl.getAttribute('id') : '');
       }
     }
-    var el = doc.getElementById(event.dataTransfer.getData('text/plain')); 
-    placeholderEl.style.height = el.offsetHeight + 'px';
-    placeholderEl.style.display = 'block';
   },
 
   drop: function(event) {
-    var doc = mpagespace.view.getDoc();
-    var data = event.dataTransfer.getData('text/plain');
-    var placeholderEl = doc.getElementById('dd-placeholder'); 
-    var el = doc.getElementById(data);
-    el.style.opacity = 1;
-    placeholderEl.parentNode.replaceChild(el, placeholderEl);
-    event.preventDefault();
-    event.stopPropagation();
+    var doc = mpagespace.view.getDoc(), data, el;
+
+    if (event.dataTransfer.types.contains('text/plain')) {
+      data = event.dataTransfer.getData('text/plain');
+      el = doc.getElementById('subscribe-url');
+      el.value = data;
+      mpagespace.controller.subscribe();
+
+      event.preventDefault();
+      event.stopPropagation();
+
+    } else if (event.dataTransfer.types.contains('application/mpage-widget')) {
+      var placeholderEl = doc.getElementById('dd-placeholder'); 
+      if (placeholderEl) {
+        data = event.dataTransfer.getData('application/mpage-widget');
+        el = doc.getElementById(data);
+        var page = mpagespace.app.getModel().getPage();
+        var widget = page.getWidget(el.getAttribute('widget-id'));
+        var refWidgetEl = placeholderEl.nextSibling;
+        var refWidget = null;
+        if (refWidgetEl && refWidgetEl.className.indexOf('widget') != -1) {
+          refWidget = page.getWidget(refWidgetEl.getAttribute('widget-id')); 
+        }
+        var panelId = placeholderEl.parentNode.getAttribute('id').substr('panel-'.length);
+        if (refWidget == null || widget.id != refWidget.id) {
+          page.removeFromPanel(widget);
+          page.insertToPanel(widget, panelId, refWidget);
+        }
+        placeholderEl.parentNode.removeChild(placeholderEl);
+        el.style.opacity = 1; 
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+    }
   }, 
 
-  dragEnd: function(event) {
+  dragEnter: function(event) {
+    if (!event.dataTransfer.types.contains('application/mpage-widget'))
+      return;
+
+    event.preventDefault();
+    event.stopPropagation();
+  },
+
+  dragLeave: function(event) {
+    if (!event.dataTransfer.types.contains('application/mpage-widget'))
+      return;
+
     var doc = mpagespace.view.getDoc();
     var placeholderEl = doc.getElementById('dd-placeholder'); 
-    if (placeholderEl) {
-      var data = event.dataTransfer.getData('text/plain');
-      var el = doc.getElementById(data);
-      var widget = mpagespace.model.getWidget(el.getAttribute('widget-id'));
-      var refWidgetEl = placeholderEl.nextSibling;
-      var refWidget = null;
-      if (refWidgetEl && refWidgetEl.className.indexOf('widget') != -1) {
-        refWidget = mpagespace.model.getWidget(refWidgetEl.getAttribute('widget-id')); 
-      }
-      var panelId = placeholderEl.parentNode.getAttribute('id').substr('panel-'.length);
-      mpagespace.model.insertToPanel(widget, panelId, refWidget);
+    var isDescendant = function(parentEl, childEl) {
+      if (childEl == null)
+        return false;
+      else if (childEl.parentNode == parentEl)
+        return true;
+      else
+        return isDescendant(parentEl, childEl.parentNode);
+      
+    };
+    if (!isDescendant(this, event.relatedTarget))
       placeholderEl.parentNode.removeChild(placeholderEl);
-      el.style.opacity = 1; 
-    }
+    
+    event.preventDefault();
+    event.stopPropagation();
+  },
+
+  dragEnd: function(event) {
+    var data = event.dataTransfer.getData('application/mpage-widget');
+    var doc = mpagespace.view.getDoc();
+    var el = doc.getElementById(data);
+    el.style.opacity = 1; 
     event.preventDefault();
     event.stopPropagation();
   }

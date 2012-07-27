@@ -6,56 +6,25 @@ else if (typeof mpagespace != 'object')
   throw new Error('mpagespace already exists and is not an object');
 
 mpagespace = {
-  version: '0.3',
-
-  initApp: function() {
-    mpagespace.app.init();
-  },
+  version: '0.5',
 
   initPage: function() {
-    var pageId = window.location.hash.substr(1);
+    var model = mpagespace.app.getModel();
+    var page = model.getPage();
+    if (page == null) {
+      model.changeActivePage();
+    } else {
+      page.load();
+    }
     mpagespace.view.init();
     mpagespace.view.registerObserver();
     mpagespace.controller.registerObserver();
-    mpagespace.view.setTheme(mpagespace.fuelApplication.prefs.getValue('extensions.mpagespace.theme', 'kellys'));
-    mpagespace.model.init(pageId);
+    mpagespace.view.draw();
   },
 
   unloadPage: function() {
     mpagespace.view.unregisterObserver();
     mpagespace.controller.unregisterObserver();
-    mpagespace.model.close();
-  },
-
-  openPage: function(pageId) {
-    var baseUrl = 'chrome://mpagespace/content/main.xul';
-    var url = baseUrl;
-    if (pageId) 
-      url += '#' + pageId;
-
-    var wm = mpagespace.windowMediator;
-    var browserEnumerator = wm.getEnumerator("navigator:browser");  
-    var found = false;
-    while (!found && browserEnumerator.hasMoreElements()) {  
-      var browserWin = browserEnumerator.getNext();  
-      var tabbrowser = browserWin.gBrowser;  
-      var numTabs = tabbrowser.browsers.length;  
-      for (var index = 0; index < numTabs; index++) {  
-        var currentBrowser = tabbrowser.getBrowserAtIndex(index);  
-        if (currentBrowser.currentURI.spec.indexOf(baseUrl) != -1) {  
-          tabbrowser.selectedTab = tabbrowser.tabContainer.childNodes[index];  
-          browserWin.focus();  
-          currentBrowser.loadURI(url);
-          if (pageId)
-            currentBrowser.reload();
-          found = true;
-          break;  
-        }  
-      }  
-    }  
-    if (!found) {
-      openUILinkIn(url, 'tab');
-    }
   },
 
   dump: function(v) {

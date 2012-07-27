@@ -17,66 +17,43 @@ table.container{
   border-collapse: collapse;
   padding: 0;
   width: 100%;
+  height: 100%;
 }
 
 td.column{
   width: 33%;
   height: 100%;
-  padding: 7px 0 50px 0;
+  padding: 0 0 0 0;
   vertical-align: top;
 }
 
 div.toolbar{
   font: 11px arial,sans-serif;
-  margin: 0 3px 0 4px;
+  padding: 7px 7px 7px 7px;
 }
 
-div.toolbar input{
-  width: 250px; 
-  margin: 0 7px 7px 0;
-  float: left;
+div.toolbar form{
+  display: -moz-box;
+  width: 100%;
+  margin: 0;
 }
 
-div.toolbar .button{
-  float: left;
-  width: 70px;
-  height: 20px;
-  margin: 0 7px 7px 0;
-  background-color: #F1F1F1; 
-  position: relative;
-  border: 1px solid #DCDCDC;
-  border-radius: 2px 2px 2px 2px;
-  text-align: center;
-  font-weight: bold;
-  line-height: 20px;
-  color: #444444;
+div.toolbar input[type="text"]{
+  -moz-box-flex: 1;
+  padding: 4px 6px;
+  max-width: 300px;
+  border-radius: 4px 0 0 4px;
 }
 
-div.toolbar .button:hover{
-  background-color: #E0E0E0;
-  cursor: pointer;
-}
-
-div.toolbar .loading{
-  background-image: url('loading_16.png');
-  background-repeat: no-repeat;
-  background-position: right center;
-}
-
-div.toolbar a{
-  float: left;  
-  display: block;
-  margin: 0 7px 7px 0;
-  line-height: 20px;
-  text-decoration: none;
-}
-
-div.toolbar a:hover{
-  text-decoration: underline;
+div.toolbar input[type="submit"]{
+  -moz-margin-start: -1px;
+  padding: 0 3px;
+  border-radius: 0 4px 4px 0;
+  font: 11px arial,sans-serif;
 }
 
 div.widget{
-  margin: 0;
+  margin: 3px 0 0 0;
   font: 13px arial,sans-serif;
 }
 
@@ -99,6 +76,14 @@ div.header div.action{
   width: 10px;
   height: 10px;
   display: inline-block;
+}
+
+div.header div.minimize{
+  background-image: url('arrow2_s.gif');
+}
+
+div.header div.maximize{
+  background-image: url('arrow2_n.gif');
 }
 
 div.header div.remove{
@@ -151,36 +136,34 @@ div.body div.loading{
 #dd-placeholder {
   border-style: dashed; 
   border-width: 2px; 
-  display:none;
+  display: none;
 }
 
-.about-page{
-  padding: 7px;
-}
-
-.about-box{
-  padding: 13px;
-  padding-top: 5px;
-}
-
-.about-product-name{
+#about-panel .about-product-name{
+  margin-top: 0.5em;
   font-weight: bold; 
   font-size: x-large;  
 }
 
-.about-sub-title{
+#about-panel .about-sub-title{
+  margin-top: 1em;;
   font-weight: bold;
 }
 
-.about-author{
+#about-panel .about-author{
+  margin-bottom: 1em;
 }
 
-.about-email{
+#about-panel .about-email{
   color: #3A69A6;
+  cursor: pointer;
+  margin: 0;
+  text-decoration: none;
 }
 
 /* Kellys theme */
 body.kellys{
+  margin-top: 3px;
   background-color: #2a2b2f;
 }
 
@@ -190,24 +173,25 @@ body.kellys{
 
 .kellys div.toolbar{
   border-bottom: 1px dashed #67686b;
+  padding: 7px 7px 7px 7px;
 }
 
-.kellys div.toolbar .button{
+.kellys div.toolbar input[type="text"]{
+  border: 1px solid #8F886B;
+}
+
+.kellys div.toolbar input[type="submit"]{
   background-color: #d1c79e;   
   color: #444444;
-  border: 1px solid #d1c79e;
+  border: 1px solid #8F886B; 
 }
 
-.kellys div.toolbar a{
-  color: #9ab2c8;
-}
-
-.kellys div.toolbar .button:hover{
+.kellys div.toolbar input[type="submit"]:hover{
   background-color: #B2A985;
-  border-color: #B2A985;
 }
 
 .kellys div.widget{
+  margin: 0;
   border-bottom: 1px dashed #67686b;  
   font: 13px "Lucida Sans", Helvetica, sans-serif;
 }
@@ -216,12 +200,24 @@ body.kellys{
   color: #62acce;
 }
 
+.kellys div.header div.minimize{
+  background-image: url('kellys_arrow2_s.gif');
+}
+
+.kellys div.header div.maximize{
+  background-image: url('kellys_arrow2_n.gif');
+}
+
 .kellys div.header div.remove{
   background-image: url('kellys_trash.gif');
 }
 
 .kellys div.header div.configure{
   background-image: url('kellys_equalizer.gif');
+}
+
+.kellys div.header img.favicon{
+  margin: 0 5px -3px 0;
 }
 
 .kellys div.body li{
@@ -246,6 +242,14 @@ body.light{
   background-color: #FFFFFF;
 }
 
+div.header div.minimize{
+  background-image: url('light_arrow2_s.gif');
+}
+
+div.header div.maximize{
+  background-image: url('light_arrow2_n.gif');
+}
+
 .light div.header div.remove{
   background-image: url('light_trash.gif');
 }
@@ -255,9 +259,10 @@ body.light{
 }
 
 .light div.widget{
-  margin: 0 4px 7px 3px;
+  margin: 7px 4px 7px 3px;
   border: 1px solid #C6C6C6;  
   font: 13px arial,sans-serif;
+  border-radius: 4px;
 }
 
 .light div.header{
@@ -268,15 +273,41 @@ body.light{
   color: #3E8780;
 }
 
+.light div.header img.favicon{
+  margin: 0 5px -3px -4px;
+}
+
 .light div.body li{
   color: #1155CC;
 }
 
 .light div.body a:visited{
-  color: #6611CC;
+  /*color: #6611CC;*/
+  color: #7C17BF;
 }
 
 .light div.body div.loading{
   color: #1155CC;
 } 
+
+.light div.toolbar{
+  margin: 7px 4px 7px 3px;
+  padding: 0;
+}
+
+.light div.toolbar input[type="text"]{
+  border: 1px solid #C6C6C6;
+}
+
+.light div.toolbar input[type="submit"]{
+  background-color: #F1F1F1;   
+  color: #444444;
+  border: 1px solid #C6C6C6; 
+}
+
+.light div.toolbar input[type="submit"]:hover{
+  background-color: #E0E0E0;
+  cursor: pointer;
+}
+
 

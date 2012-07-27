@@ -1,45 +1,96 @@
 // Author: Matija Podravec, 2012.
 
-if (!mpagespace.feed) mpagespace.feed = {};
-else if (typeof mpagespace.feed != 'object')
+if (!mpagespace.model.feed) mpagespace.model.feed = {};
+else if (typeof mpagespace.model.feed != 'object')
   throw new Error('mpagespace.feed already exists and is not an object');
 
-mpagespace.feed = function(id, url, panelId, entriesToShow) {
-  this.url = url;
-  this.title = url;
-  this.id = id;
-  this.panelId = panelId;
+mpagespace.model.feed = function(data, page) {
+  this.url = data.url;
+  this.title = data.title;
+  this.id = data.widgetId;
+  this.panelId = data.panelId;
+  this.entriesToShow = data.entriesToShow ? data.entriesToShow : 5;
+  this.hoursFilter = data.hoursFilter ? data.hoursFilter : 0;
+  this.minimized = data.minimized ? true : false;
   this.entries = [];
-  this.entriesToShow = entriesToShow ? entriesToShow : 5;
-  this.initialized = false;
-  this.inError = false;
-  this.setup = false;
+  this.page = page;
+  this.model = page.model;
+  this.state = 'BLANK';  // possible values: BLANK, INITIALIZED, LOADING, ERROR, EXCEPTION, SUBSCRIBING
+  this.dirty = false;
 }
 
-mpagespace.feed.prototype = {
-  set: function(property, value) {
-    this[property] = value;
-    mpagespace.model.commit();
-    mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-changed-' + property + ':' + this.id);  
-  },
-
+mpagespace.model.feed.prototype = {
   getConfig: function() {
     return {
       widgetId: this.id,
       panelId: this.panelId,
       title: this.title,
       url: this.url,
-      entriesToShow: this.entriesToShow
+      hoursFilter: this.hoursFilter,
+      entriesToShow: this.entriesToShow,
+      minimized: this.minimized
     };      
   },
 
-  load: function() {
+  isDirty: function() {
+    return this.dirty == true;
+  },
+
+  isInitialized: function() {
+    return ['INITIALIZED', 'ERROR'].indexOf(this.state) != -1;
+  },
+
+  isInError: function() {
+    return this.state == 'ERROR';
+  },
+
+  set: function(property, value) {
+    this[property] = value;
+    this.setDirty();
+    mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-changed:' + this.id + ':' + property);  
+  },
+
+  setBulk: function(config) {
+    for (property in config){
+      this[property] = config[property];
+    }
+    this.setDirty();
+    mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-changed:' + this.id);  
+  },
+
+  setDirty: function() {
+    this.dirty = true;
+    this.page.setDirty();
+  },
+
+  getEntriesToShow: function() {
+    if (this.hoursFilter > 0) {
+      var filter = (new Date()).getTime() - this.hoursFilter * 60 * 60 * 1000;
+      var result = [];
+      for (var i=0; i<this.entries.length; i++) {
+        var e = this.entries[i];
+        if (e.date.getTime() > filter)
+          result.push(e);
+        if (result.length >= this.entriesToShow)
+          break;
+      }    
+      return result;
+    } else {
+      return this.entries.slice(0, this.entriesToShow);
+    }
+  },
+
+  releaseMemory: function() {
+    this.entries = [];
+    this.state = 'BLANK';
+  },
+
+  load: function(subscribing) {
     var self = this;
 
     var errorHandler = function() {
-        self.inError = true;
-        self.initialized = true;
-        mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-error:' + self.id);  
+        self.state = 'ERROR';
+        mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-error:' + self.id);  
         mpagespace.dump('Error occured on loading feed ' + self.id + '.');
     }
 
@@ -78,19 +129,25 @@ mpagespace.feed.prototype = {
         } else {
           self.process(request.responseText);
         }
-        mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-loaded:' + self.id);  
+        mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-loaded:' + self.id);  
       } catch (e) {
-        mpagespace.dump('error: ' + e.message);
-        if (self.responseText || self.url.indexOf('reddit.com') != -1 || self.setup == false) {
+        mpagespace.dump('feed.load: Error - ' + e.message);
+        if (self.responseText || self.url.indexOf('reddit.com') != -1 || ['LOADING', 'EXCEPTION'].indexOf(self.state) != -1) {
           errorHandler();
         } else {
+          self.state = 'EXCEPTION';
           self.responseText = request.responseText;
-          mpagespace.observerService.notifyObservers(null, 'mpage-model-changed', 'widget-error:' + self.id);  
+          mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-loading-exception:' + self.id);  
           mpagespace.dump('Trying to extract feed URLs from HTML.');
         }
       }
     }
 
+    this.entries = [];
+    if (subscribing)
+      this.state = 'SUBSCRIBING';
+    else if (this.state != 'EXCEPTION')
+      this.state = 'LOADING';
     mpagespace.ajax.load(this.url, processHandler, {errorHandler: errorHandler});  
   },
 
@@ -102,7 +159,9 @@ mpagespace.feed.prototype = {
     htmlDoc.documentElement.appendChild(bodyEl);
     bodyEl.appendChild(mpagespace.htmlService.parseFragment(htmlText, false, null, bodyEl));
 
-    this.title = 'reddit: ' + htmlDoc.getElementById('header-img-a').nextSibling.nextSibling.firstChild.firstChild.nodeValue; 
+    if (this.title == null) {
+      this.title = 'reddit: ' + htmlDoc.getElementById('header-img-a').nextSibling.nextSibling.firstChild.firstChild.nodeValue; 
+    }
     
     var contentEl = htmlDoc.getElementById('siteTable');
     if (contentEl.childNodes.length < 3) {
@@ -127,8 +186,7 @@ mpagespace.feed.prototype = {
       }
     }
 
-    this.initialized = true;
-    this.inError = false;
+    this.state = 'INITIALIZED';
   },
 
   process: function(feedText) {
@@ -147,7 +205,9 @@ mpagespace.feed.prototype = {
 
     var channelEl = xmlDoc.getElementsByTagName('channel')[0];
     if (!channelEl) channelEl = xmlDoc;
-    this.title = channelEl.getElementsByTagName('title')[0].firstChild.nodeValue;
+    if (this.title == null) {
+      this.title = channelEl.getElementsByTagName('title')[0].firstChild.nodeValue;
+    }
     for (n = channelEl.firstChild; n; n = n.nextSibling){
       if (n.tagName && n.tagName.toLowerCase() == 'link') {
         this.siteUrl = n.firstChild.nodeValue;  
@@ -203,18 +263,17 @@ mpagespace.feed.prototype = {
             }
             break;
           case 'updated':
-            entry.date = n.firstChild ? new Date(n.firstChild.nodeValue).getTime() : null; 
+            entry.date = n.firstChild ? new Date(n.firstChild.nodeValue) : null; 
             break;
           case 'modified':
           case 'pubDate':
           case 'dc:date':
-            if (!entry.date) entry.date = n.firstChild ? new Date(n.firstChild.nodeValue).getTime() : null; 
+            if (!entry.date) entry.date = n.firstChild ? new Date(n.firstChild.nodeValue) : null; 
             break;
         }
       } 
       this.entries.push(entry);
     } 
-    this.initialized = true;
-    this.inError = false;
+    this.state = 'INITIALIZED';
   }
 }

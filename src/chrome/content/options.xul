@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet type="text/css" href="chrome://mpagespace/skin/mpage.css" ?>
+
+<!DOCTYPE window SYSTEM "chrome://mpagespace/locale/mpage.dtd">
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+  title="&options.title;" 
+  buttons="accept,cancel"
+  onload="mpagespace.options.init()"
+  ondialogaccept="return mpagespace.options.acceptDialog();"
+  ondialogcancel="return mpagespace.options.cancelDialog();">
+
+  <script type="application/javascript" src="chrome://mpagespace/content/main.js"/> 
+  <script type="application/javascript" src="chrome://mpagespace/content/app.js"/> 
+  <script type="application/javascript" src="chrome://mpagespace/content/converter.js"/> 
+  <script type="application/javascript" src="chrome://mpagespace/content/options.js"/> 
+
+  <stringbundleset>
+    <stringbundle id="mpagespace-labels" src="chrome://mpagespace/locale/mpage.properties"/>
+  </stringbundleset>
+
+  <tabbox>
+    <tabs>
+      <tab label="&options.display;"/>
+      <tab label="&options.pages;"/>
+      <tab label="&options.export;"/>
+      <tab label="&options.import;"/>
+      <tab label="&options.about;"/>
+    </tabs>
+    <tabpanels>
+      <tabpanel>
+        <vbox>
+          <groupbox>
+            <caption label="&options.theme;"/>
+            <hbox align="center">
+              <label value="&options.usetheme;" control="themes"/>
+              <menulist id="themes" style="width: 150px;" 
+                oncommand="mpagespace.options.themeSelected();">
+                <menupopup>
+                  <menuitem label="Light" value="light"/>
+                  <menuitem label="Kellys" value="kellys"/>
+                  <menuitem label="Custom" value="custom"/>
+                </menupopup>
+              </menulist>
+            </hbox>
+            <label id="custom-css-label" value="&options.customcssfile;" accesskey=""/>
+            <hbox class="indent" align="center">
+              <filefield id="custom-css-file" flex="1"/>
+              <button id="custom-css-button" accesskey="&options.browse.accesskey;" label="&options.browse.label;"
+                oncommand="mpagespace.options.chooseCssFile();"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&options.icons;"/>
+            <checkbox id="favicon-flag" label="&options.showicons.label;" accesskey="&options.showicons.accesskey;"/>
+          </groupbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel>
+        <vbox>
+          <groupbox>
+            <caption label="&options.pages;"/>
+            <hbox align="center">
+              <label value="&options.choosepage;" control="pages"/>
+              <menulist id="pages" flex="1">
+                <menupopup>
+                </menupopup>
+              </menulist>
+            </hbox>
+            <spacer style="height: 10px"/>
+            <hbox align="right">
+              <textbox id="new-page-title" flex="1"/>
+              <button label="&options.rename.label;" accesskey="&options.rename.accesskey;"
+                oncommand="mpagespace.options.renamePage();"/>
+            </hbox>
+            <hbox align="right">
+              <button label="&options.delete.label;" accesskey="&options.delete.accesskey;"
+                oncommand="mpagespace.options.deletePage();"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&options.reset;"/>
+            <description>&options.reset.description;</description>
+            <hbox align="right">
+              <button label="&options.reset;" accesskey="&options.reset.accesskey;"
+                oncommand="mpagespace.options.reset();"/>
+            </hbox>
+          </groupbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel>
+        <vbox>
+          <groupbox>
+            <caption label="&options.destination;"/>
+            <radiogroup id="export-to">
+              <radio label="&options.exporttoopml.label;" accesskey="&options.exporttoopml.accesskey;" value="true"/>
+              <radio label="&options.exporttobkmks.label;" accesskey="&options.exporttobkmks.accesskey;" />
+            </radiogroup>
+            <spacer style="height: 10px"/>
+            <hbox>
+              <button label="&options.export;" accesskey="&options.export.accesskey;" 
+                oncommand="mpagespace.options.export();"/>
+            </hbox>
+            <spacer style="height: 10px"/>
+            <text id="export-results" value=""/>
+          </groupbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel>
+        <vbox>
+          <groupbox>
+            <caption label="&options.source;"/>
+            <radiogroup id="import-from">
+              <radio label="&options.importfromopml.label;" accesskey="&options.importfromopml.accesskey;" value="true"/>
+              <radio label="&options.importfrombkmks.label;" accesskey="&options.importfrombkmks.accesskey;"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox>
+            <caption label="&options.options;"/>
+            <radiogroup id="import-mode">
+              <radio label="&options.merge;" accesskey="&options.merge.accesskey;" value="true"/>
+              <radio label="&options.overwrite;" accesskey="&options.overwrite.accesskey;"/>
+            </radiogroup>
+          </groupbox>
+          <spacer style="height: 10px"/>
+          <hbox>
+            <button class="indent" label="&options.import.label;" accesskey="&options.import.accesskey;"
+              oncommand="mpagespace.options.import();"/>
+          </hbox>
+          <spacer style="height: 10px"/>
+          <text id="import-results" value="" class="indent"/>
+        </vbox>
+      </tabpanel>
+      <tabpanel id="about-panel">
+        <groupbox align="start">
+          <vbox>
+            <text value="mPage" class="about-product-name"/>
+            <hbox>
+              <text value="&options.version.label;"/>
+              <text id="version" value="X"/>
+            </hbox>
+            <separator/>
+            <text value="&options.createdby.label;" class="about-sub-title"/>
+            <text value="Matija Podravec" class="about-author"/>
+            <text value="matija.podravec@gmail.com" class="about-email" 
+              onclick="mpagespace.options.sendEmail('matija.podravec@gmail.com');"/>
+            <label value="https://github.com/mpod/mPage"
+              class="text-link about-email" href="https://github.com/mpod/mPage"/>
+          </vbox>
+        </groupbox>
+      </tabpanel>
+    </tabpanels>
+  </tabbox>
+
+</dialog>
+
