@@ -132,7 +132,7 @@ mpagespace.model.feed.prototype = {
         mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-loaded:' + self.id);  
       } catch (e) {
         mpagespace.dump('feed.load: Error - ' + e.message);
-        if (self.responseText || self.url.indexOf('reddit.com') != -1 || ['LOADING', 'EXCEPTION'].indexOf(self.state) != -1) {
+        if (self.responseText || ['LOADING', 'EXCEPTION'].indexOf(self.state) != -1) {
           errorHandler();
         } else {
           self.state = 'EXCEPTION';

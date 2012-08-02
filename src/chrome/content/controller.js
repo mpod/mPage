@@ -68,7 +68,7 @@ mpagespace.controller = {
       if (endIndex == -1) endIndex = text.indexOf('</link>', index);
       if (endIndex != -1) {
         var attributes = text.substr(index, endIndex - index).match(/\w+\s*=\s*("[^"]*")|('[^']*')/ig);
-        var title, href, type;
+        var title = mpagespace.translate('noFeedTitle'), href = '', type = '';
         for (var i=0; i<attributes.length; i++) {
           var attribute = attributes[i].split('=');
           if (attribute.length != 2) continue;
@@ -77,7 +77,9 @@ mpagespace.controller = {
           if (attribute[0].trim() == 'href') href = attribute[1];
           if (attribute[0].trim() == 'title') title = attribute[1];
         }
-        if (type == 'application/rss+xml' || type == 'application/atom+xml') {
+        var feedTypes = ['text/xml', 'application/rss+xml', 'application/atom+xml', 'application/xml', 'application/rdf+xml']; 
+        if (feedTypes.indexOf(type) != -1) {
+          mpagespace.dump(title + ' ' + href + ' ' + type);
           titles.push(title);
           urls.push(href);
         }

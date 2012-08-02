@@ -32,7 +32,9 @@ mpagespace.storage.json.prototype = {
         throw new Error('Error in storage loading.');
       }  
   
-      var text = NetUtil.readInputStreamToString(inputStream, inputStream.available());  
+      var text = NetUtil.readInputStreamToString(inputStream, inputStream.available(),
+        {charset: 'UTF-8'});  
+
       self.data = JSON.parse(text);
       mpagespace.dump('storage.load: Done');
       
@@ -54,14 +56,14 @@ mpagespace.storage.json.prototype = {
 
   writeToFile: function(model, synchronous) {
     var ostream = FileUtils.openSafeFileOutputStream(this.file)  
-    var data = JSON.stringify(model);  
+    this.data = JSON.stringify(model);  
     
     if (synchronous) {
-      ostream.write(data, data.length)
+      ostream.write(this.data, this.data.length);
       FileUtils.closeSafeFileOutputStream(ostream); 
     } else {
       mpagespace.unicodeConverter.charset = "UTF-8";  
-      var istream = mpagespace.unicodeConverter.convertToInputStream(data);  
+      var istream = mpagespace.unicodeConverter.convertToInputStream(this.data);  
       NetUtil.asyncCopy(istream, ostream, function(status) {  
         if (!Components.isSuccessCode(status)) {  
           mpagespace.dump('Error in model saving.');

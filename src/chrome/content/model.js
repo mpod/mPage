@@ -32,12 +32,27 @@ mpagespace.model = function(){
     }
   };
   mpagespace.observerService.addObserver(observer, 'mpage-storage', false); 
+
+  self.timer = Components.classes["@mozilla.org/timer;1"]
+      .createInstance(Components.interfaces.nsITimer);
+  var timerCallback = {
+    notify: function() {
+      mpagespace.dump('Commit timer fired.');
+      if (self.isDirty()) {
+        self.commit();
+      }
+    }
+  };
+  self.timer.initWithCallback(timerCallback, 5*60*1000, self.timer.TYPE_REPEATING_SLACK);
+
   try {
     this.storage.load();
   } catch (e) {
     this.reset();
     this.commit();
-    this.storage.load();
+    window.setTimeout(function(){
+      self.storage.load();
+    }, 200);
   }
 }
 
@@ -75,6 +90,7 @@ mpagespace.model.prototype = {
     }
 
     this.loaded = true;
+
     mpagespace.dump('model.init: Done');
     mpagespace.observerService.notifyObservers(null, 'mpage-model', 'model-loaded');  
   },
@@ -103,6 +119,7 @@ mpagespace.model.prototype = {
   commit: function() {
     if (this.isDirty()) {
       this.storage.save(this.getConfig());
+      this.dirty = false;
     }
     mpagespace.dump('model.commit: Done');
   },
@@ -203,6 +220,7 @@ mpagespace.model.prototype = {
     if (this.activePageId == pageId) {
       this.changeActivePage();
     }
+    this.dirty = true;
     mpagespace.observerService.notifyObservers(null, 'mpage-model', 'page-deleted');  
   },
 

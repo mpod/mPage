@@ -44,7 +44,13 @@ mpagespace.converter = {
               newPage = pages[n.getAttribute('title')];
             }
             if (!merge || !newPage) {
-              newPage = page.model.addPage(n.getAttribute('title'));
+              try {
+                newPage = page.model.addPage(n.getAttribute('title'));
+              } catch (e) {
+                // Page with the same name already exists.
+                var model = page.model;
+                newPage = model.getPages(model.GET_PAGES_TITLE)[n.getAttribute('title')];
+              }
             }
             processOutlines(n, newPage, merge, pages);
           }
@@ -55,7 +61,7 @@ mpagespace.converter = {
       var page, pages, homePage;
       if (!merge) {
         model.empty();
-        page = model.getPage(1);
+        page = model.getPage();
       } else {
         pages = model.getPages(model.GET_PAGES_TITLE);
         if (pages['Home'])
@@ -220,7 +226,8 @@ mpagespace.converter = {
             var options = bkmkserv.getKeywordForBookmark(bkmkId).split('|');
             if (options.length == 4) {
               page.removeFromPanel(widget);
-              page.insertToPanel(widget, options[0], null);
+              var refWidget = page.getWidget(page.layout[options[0]][0]);
+              page.insertToPanel(widget, options[0], refWidget);
               widget.entriesToShow = options[1];
               widget.hoursFilter = options[2];
               widget.minimized = options[3] == 'true';
@@ -231,7 +238,14 @@ mpagespace.converter = {
               newPage = pages[bkmkserv.getItemTitle(bkmkId)];
             }
             if (!merge || !newPage) {
-              newPage = page.model.addPage(bkmkserv.getItemTitle(bkmkId));
+              try {
+                newPage = page.model.addPage(bkmkserv.getItemTitle(bkmkId));
+              } catch (e) {
+                // Page with the same name already exists.
+                var model = page.model;
+                newPage = model.getPages(model.GET_PAGES_TITLE)[bkmkserv.getItemTitle(bkmkId)];
+              }
+
             }
             processBookmarks(bkmkId, newPage, merge, pages);
           }

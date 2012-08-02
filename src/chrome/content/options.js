@@ -52,8 +52,12 @@ mpagespace.options = {
     fp.appendFilter('CSS files', '*.css');
 
     var css = mpagespace.app.getCustomCssFile();
-    if (css) 
-      fp.displayDirectory = css;
+    if (css) {
+      var cssFile = Components.classes["@mozilla.org/file/local;1"]
+                .createInstance(Components.interfaces.nsILocalFile);
+      cssFile.initWithPath(css);
+      fp.displayDirectory = cssFile.parent;
+    }
 
     if (fp.show() == nsIFilePicker.returnOK) {
       mpagespace.options.setCssFileControl(fp.file);

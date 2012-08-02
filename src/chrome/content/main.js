@@ -41,26 +41,6 @@ mpagespace = {
       return strbundle.getString(message);
   },
 
-  test: function(option) {
-    var conv = mpagespace.converter.getConverter();
-    var file = FileUtils.getFile('ProfD', ['opml.xml']);  
-
-    switch (option) {
-      case 1:
-        conv.exportToOpml(file);
-        break;
-      case 2:
-        conv.importFromOpml(file);
-        break;
-      case 3:
-        conv.exportToBookmars();
-        break;
-      case 4:
-        conv.importFromBookmarks();
-        break;
-    }
-  },
-
   observerService: Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService), 
 
   promptsService: Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService),  

@@ -320,6 +320,7 @@ mpagespace.view = {
       var linkEl = doc.createElement('a');
       linkEl.setAttribute('href', entry.link);
       linkEl.setAttribute('target', '_blank');
+      linkEl.setAttribute('title', entry.title);
       linkEl.addEventListener('click', function(){this.blur();}, false); 
       linkEl.appendChild(doc.createTextNode(entry.title));
       entryEl.appendChild(linkEl);

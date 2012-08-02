@@ -48,13 +48,20 @@ mpagespace.dd = {
         placeholderEl.style.display = 'block';
         placeholderEl.setAttribute('refElId', refEl ? refEl.getAttribute('id') : '');
       }
+      var wnd = doc.defaultView;
+      if (wnd.scrollMaxY > wnd.scrollY && event.layerY - wnd.scrollY + 35 > wnd.innerHeight) {
+        wnd.scrollBy(0, 10);
+      } else if (wnd.scrollY > 0 && event.layerY - wnd.scrollY < 35) {
+        wnd.scrollBy(0, -10);
+      }
     }
   },
 
   drop: function(event) {
     var doc = mpagespace.view.getDoc(), data, el;
 
-    if (event.dataTransfer.types.contains('text/plain')) {
+    if (event.dataTransfer.types.contains('text/plain') &&
+        !event.dataTransfer.types.contains('application/mpage-widget')) {
       data = event.dataTransfer.getData('text/plain');
       el = doc.getElementById('subscribe-url');
       el.value = data;

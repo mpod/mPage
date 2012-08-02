@@ -30,7 +30,7 @@
     </tabs>
     <tabpanels>
       <tabpanel>
-        <vbox>
+        <vbox flex="1">
           <groupbox>
             <caption label="&options.theme;"/>
             <hbox align="center">
@@ -58,7 +58,7 @@
         </vbox>
       </tabpanel>
       <tabpanel>
-        <vbox>
+        <vbox flex="1">
           <groupbox>
             <caption label="&options.pages;"/>
             <hbox align="center">
@@ -90,7 +90,7 @@
         </vbox>
       </tabpanel>
       <tabpanel>
-        <vbox>
+        <vbox flex="1">
           <groupbox>
             <caption label="&options.destination;"/>
             <radiogroup id="export-to">
@@ -108,7 +108,7 @@
         </vbox>
       </tabpanel>
       <tabpanel>
-        <vbox>
+        <vbox flex="1">
           <groupbox>
             <caption label="&options.source;"/>
             <radiogroup id="import-from">
@@ -133,22 +133,19 @@
         </vbox>
       </tabpanel>
       <tabpanel id="about-panel">
-        <groupbox align="start">
-          <vbox>
-            <text value="mPage" class="about-product-name"/>
-            <hbox>
-              <text value="&options.version.label;"/>
-              <text id="version" value="X"/>
-            </hbox>
-            <separator/>
-            <text value="&options.createdby.label;" class="about-sub-title"/>
-            <text value="Matija Podravec" class="about-author"/>
-            <text value="matija.podravec@gmail.com" class="about-email" 
-              onclick="mpagespace.options.sendEmail('matija.podravec@gmail.com');"/>
-            <label value="https://github.com/mpod/mPage"
-              class="text-link about-email" href="https://github.com/mpod/mPage"/>
-          </vbox>
-        </groupbox>
+        <vbox class="indent">
+          <text value="mPage" class="about-product-name"/>
+          <hbox>
+            <text value="&options.version.label;"/>
+            <text id="version" value="X"/>
+          </hbox>
+          <separator/>
+          <text value="&options.createdby.label;" class="about-sub-title"/>
+          <text value="Matija Podravec" class="about-author"/>
+          <text value="matija.podravec@gmail.com" class="about-email"/>
+          <label value="https://github.com/mpod/mPage"
+            class="about-email" href="https://github.com/mpod/mPage"/>
+        </vbox>
       </tabpanel>
     </tabpanels>
   </tabbox>

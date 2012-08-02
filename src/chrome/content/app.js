@@ -18,6 +18,7 @@ mpagespace.app = {
           case 'page-renamed':
           case 'page-reordered':
             self.populatePageTreeMenu();
+            break;
           default:
             mpagespace.dump('app.observe: Event ignored!');
             break;
@@ -31,18 +32,6 @@ mpagespace.app = {
     self.firstRun(); 
     mpagespace.observerService.addObserver(self.observer, 'mpage-model', false); 
     mpagespace.fuelApplication.storage.set('mpage-model', new mpagespace.model()); 
-
-    var timer = Components.classes["@mozilla.org/timer;1"]
-      .createInstance(Components.interfaces.nsITimer);
-    var timerCallback = {
-      notify: function() {
-        var model = self.getModel();
-        if (model.isDirty()) {
-          model.commit();
-        }
-      }
-    };
-    timer.initWithCallback(timerCallback, 10*60*1000, timer.TYPE_REPEATING_SLACK);
   },
 
   close: function() {
