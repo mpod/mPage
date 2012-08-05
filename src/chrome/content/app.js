@@ -141,7 +141,12 @@ mpagespace.app = {
     var indicatorBarEl = document.getElementById('mpagespace-drop-indicator-bar'); 
     var menuIds = ['mpagespace-toolbar-button', 'mpagespace-button-1', 'mpagespace-button-2'];
     for (var i=0; i<menuIds.length; i++) {
-      var menu = document.getElementById(menuIds[i]).firstChild;
+      var menu = document.getElementById(menuIds[i]);
+      
+      if (!menu) 
+        continue;
+
+      menu = menu.firstChild;
       menu.removeChild(menu.lastChild);
       for (let el=menu.lastChild; 
           el && el.nodeName.toLowerCase() != 'menuseparator';
@@ -160,6 +165,28 @@ mpagespace.app = {
         menu.appendChild(item);
       }
       menu.appendChild(document.createElement('menuseparator'));
+    }
+  },
+
+  checkToolbarButtonMenu: function(menu) {
+    var pageOrder = [];
+    for (var el = menu.firstChild; el; el = el.nextSibling) {
+      if (el.getAttribute('id').indexOf('mpagespace-page-menuitem-') != -1) {
+        pageOrder.push(parseInt(el.getAttribute('id').substr('mpagespace-page-menuitem-'.length)));
+      }
+    }
+    var modelPageOrder = mpagespace.app.getModel().getPageOrder();
+    if (pageOrder.length != modelPageOrder.length) {
+      mpagespace.app.populatePageTreeMenu();
+      mpagespace.dump('app.checkToolbarButtonMenu: Toolbar menu updated.');
+    } else {
+      for (var i=0; i<pageOrder.length; i++) {
+        if (pageOrder[i] != modelPageOrder[i]) {
+          mpagespace.app.populatePageTreeMenu();
+          mpagespace.dump('app.checkToolbarButtonMenu: Toolbar menu updated.');
+          break;
+        } 
+      }
     }
   },
 

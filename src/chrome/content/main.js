@@ -15,7 +15,7 @@ mpagespace = {
       model.changeActivePage();
     } else {
       page.load();
-    }
+    } 
     mpagespace.view.init();
     mpagespace.view.registerObserver();
     mpagespace.controller.registerObserver();

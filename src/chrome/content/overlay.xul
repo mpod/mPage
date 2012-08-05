@@ -36,6 +36,11 @@
           oncommand="mpagespace.app.addPage();"/>
         <menuitem label="&mpagespace.options.label;" accesskey="&mpagespace.options.accesskey;"
           oncommand="mpagespace.app.openOptions();"/>
+        <hbox id="mpagespace-drop-indicator-bar" flex="1" hidden="true">
+          <vbox class="menupopup-drop-indicator-bar">
+            <image class="menupopup-drop-indicator" mousethrough="always"/>
+          </vbox>
+        </hbox>
         <menuseparator/>
         <menuseparator/>
       </menupopup>
@@ -71,6 +76,7 @@
       class="chromeclass-toolbar-additional"
       ondragenter="mpagespace.app.menuDndHandler.dragEnter.call(this, event);">
       <menupopup position="before_start" type="places"
+        onpopupshowing="mpagespace.app.checkToolbarButtonMenu(this);"
         ondragover="mpagespace.app.menuDndHandler.dragOver.call(this, event);"
         ondrop="mpagespace.app.menuDndHandler.drop.call(this, event);"
         ondragenter="mpagespace.app.menuDndHandler.dragEnter.call(this, event);"
@@ -79,11 +85,6 @@
           oncommand="mpagespace.app.addPage();"/>
         <menuitem label="&mpagespace.options.label;" accesskey="&mpagespace.options.accesskey;"
           oncommand="mpagespace.app.openOptions();"/>
-        <hbox id="mpagespace-drop-indicator-bar" flex="1" hidden="true">
-          <vbox class="menupopup-drop-indicator-bar">
-            <image class="menupopup-drop-indicator" mousethrough="always"/>
-          </vbox>
-        </hbox>
         <menuseparator/>
         <menuseparator/>
       </menupopup>

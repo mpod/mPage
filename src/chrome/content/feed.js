@@ -123,6 +123,7 @@ mpagespace.model.feed.prototype = {
       }*/
 
       try {
+        self.entries = [];
         if (self.url.indexOf('reddit.com') != -1 && self.url.indexOf('.rss') == -1) {
           self.siteUrl = self.url;         
           self.processReddit(request.responseText);
@@ -143,7 +144,6 @@ mpagespace.model.feed.prototype = {
       }
     }
 
-    this.entries = [];
     if (subscribing)
       this.state = 'SUBSCRIBING';
     else if (this.state != 'EXCEPTION')
