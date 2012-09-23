@@ -40,6 +40,9 @@ mpagespace.view = {
             }
             break;
           case 'active-page-changed':
+            self.draw(null);
+            page.load();
+            break;
           case 'model-reset':
             self.draw(null);
             break;

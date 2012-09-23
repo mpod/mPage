@@ -12,6 +12,7 @@ mpagespace.feedSetup = {
     var activePageId = window.arguments[2];
     
     document.getElementById('title').value = widget.title;
+    document.getElementById('url').value = widget.url;
     document.getElementById('entries-to-show').value = widget.entriesToShow;
 
     if (widget.hoursFilter > 0) {

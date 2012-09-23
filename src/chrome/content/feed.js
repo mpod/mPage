@@ -69,7 +69,7 @@ mpagespace.model.feed.prototype = {
       var result = [];
       for (var i=0; i<this.entries.length; i++) {
         var e = this.entries[i];
-        if (e.date.getTime() > filter)
+        if (e.date > filter)
           result.push(e);
         if (result.length >= this.entriesToShow)
           break;
@@ -95,33 +95,6 @@ mpagespace.model.feed.prototype = {
     }
 
     var processHandler = function(request) {
-      /* XPCOM implementation seems too slow...  
-      var ioService = Components.classes['@mozilla.org/network/io-service;1']
-                        .getService(Components.interfaces.nsIIOService);
-      var uri = mpage.ioService.newURI(self.url, null, null);
-      var feedResultListener = {
-        handleResult: function(result) {
-          var feed = result.doc;
-          feed.QueryInterface(Components.interfaces.nsIFeed);
-          console.log(feed);
-		    }
-      }
-      try {
-        var feedProcessor = Components.classes["@mozilla.org/feed-processor;1"]
-                              .createInstance(Components.interfaces.nsIFeedProcessor);
-        feedProcessor.listener = {
-          handleResult: function(result) {
-            var feed = result.doc;
-            feed.QueryInterface(Components.interfaces.nsIFeed);
-            console.log(feed);
-          }
-        } 
-        feedProcessor.parseFromString(request.responseText, uri);
-      }
-      catch(e) {
-        console.log('Error parsing feed.', e);
-      }*/
-
       try {
         self.entries = [];
         if (self.url.indexOf('reddit.com') != -1 && self.url.indexOf('.rss') == -1) {
@@ -134,7 +107,12 @@ mpagespace.model.feed.prototype = {
       } catch (e) {
         mpagespace.dump('feed.load: Error - ' + e.message);
         if (self.responseText || ['LOADING', 'EXCEPTION'].indexOf(self.state) != -1) {
-          errorHandler();
+          try {
+            self.processNative(request.responseText, errorHandler);
+          } catch (e) {
+            mpagespace.dump(e.message);
+            errorHandler();
+          }
         } else {
           self.state = 'EXCEPTION';
           self.responseText = request.responseText;
@@ -149,6 +127,39 @@ mpagespace.model.feed.prototype = {
     else if (this.state != 'EXCEPTION')
       this.state = 'LOADING';
     mpagespace.ajax.load(this.url, processHandler, {errorHandler: errorHandler});  
+  },
+
+  processNative: function(feedText, errorHandler) {
+    mpagespace.dump('Using native feed processor.');
+    var ios = Components.classes["@mozilla.org/network/io-service;1"]
+                    .getService(Components.interfaces.nsIIOService);
+    var uri = ios.newURI(this.url, null, null);
+    var feedProcessor = Components.classes["@mozilla.org/feed-processor;1"]
+                          .createInstance(Components.interfaces.nsIFeedProcessor);
+    var self = this;
+
+    feedProcessor.listener = {
+      handleResult: function(result) {
+        if (result.doc == null) {
+          errorHandler();
+          return;
+        }
+
+        var feed = result.doc;
+        feed.QueryInterface(Components.interfaces.nsIFeed);
+        for (var i=0; i<feed.items.length; i++){
+          var entry = feed.items.queryElementAt(i, Components.interfaces.nsIFeedEntry);
+          self.entries.push({
+            title: entry.title.text,
+            link: entry.link.resolve(''),
+            date: Date.parse(entry.published)
+          });
+        }
+        self.state = 'INITIALIZED';
+        mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-loaded:' + self.id);  
+      }
+    } 
+    feedProcessor.parseFromString(feedText, uri);
   },
 
   processReddit: function(htmlText) {
@@ -180,7 +191,7 @@ mpagespace.model.feed.prototype = {
           title: titleEl.firstChild.nodeValue,
           link: commentsEl.getAttribute('href'),  
           link2: titleEl.getAttribute('href'),
-          date: new Date(dateEl.getAttribute('datetime')).getTime(),
+          date: Date.parse(dateEl.getAttribute('datetime')),
           content: ''
         });
       }
@@ -249,7 +260,8 @@ mpagespace.model.feed.prototype = {
             if (!entry.content) entry.content = n.firstChild ? n.firstChild.nodeValue : '';
             break;
           case 'enclosure':
-            if (n.getAttribute('type').indexOf('image') == 0) entry.image = n.getAttribute('url');
+            if (n.getAttribute('type') && n.getAttribute('type').indexOf('image') == 0) 
+              entry.image = n.getAttribute('url');
             break;
           case 'link':
             if (n.getAttribute('rel') == 'enclosure') {
@@ -263,12 +275,12 @@ mpagespace.model.feed.prototype = {
             }
             break;
           case 'updated':
-            entry.date = n.firstChild ? new Date(n.firstChild.nodeValue) : null; 
+            entry.date = n.firstChild ? Date.parse(n.firstChild.nodeValue) : null; 
             break;
           case 'modified':
           case 'pubDate':
           case 'dc:date':
-            if (!entry.date) entry.date = n.firstChild ? new Date(n.firstChild.nodeValue) : null; 
+            if (!entry.date) entry.date = n.firstChild ? Date.parse(n.firstChild.nodeValue) : null; 
             break;
         }
       } 

@@ -38,6 +38,18 @@ mpagespace.converter = {
               widget = page.createAndAddWidget(n.getAttribute('xmlUrl'), false, true);
             }
             widget.title = n.getAttribute('title');
+            if (n.hasAttribute('mpage')) {
+              var options = n.getAttribute('mpage').split('|');
+              if (options.length == 4) {
+                page.removeFromPanel(widget);
+                //var refWidget = page.getWidget(page.layout[options[0]][0]);
+                //page.insertToPanel(widget, options[0], refWidget);
+                page.insertToPanel(widget, options[0], null);
+                widget.entriesToShow = options[1];
+                widget.hoursFilter = options[2];
+                widget.minimized = options[3] == 'true';
+              }
+            }
           } else {
             var newPage;
             if (merge) {
@@ -104,13 +116,16 @@ mpagespace.converter = {
         let item = xmlDoc.createElement('outline');
         item.setAttribute('title', p.title);
         item.setAttribute('text', p.title);
-        for (var widgetId in p.getWidgets()) {
-          var w = p.getWidget(widgetId);
+        var widgets = p.getWidgets(p.GET_WIDGETS_ARRAY);
+        for (var j=0; j<widgets.length; j++) {
+          var w = widgets[j];
           let subitem = xmlDoc.createElement('outline');
           subitem.setAttribute('title', w.title);
           subitem.setAttribute('text', w.title);
           subitem.setAttribute('type', 'rss');
           subitem.setAttribute('xmlUrl', w.url);
+          var options = [w.panelId, w.entriesToShow, w.hoursFilter, w.minimized].join('|');
+          subitem.setAttribute('mpage', options);
           item.appendChild(subitem);
         }
         parentEl.appendChild(item);
@@ -168,8 +183,9 @@ mpagespace.converter = {
           for (let i=0; i<pageOrder.length; i++) {
             let p = model.getPage(pageOrder[i]);
             folderId = bkmkserv.createFolder(parentFolderId, p.title, bkmkserv.DEFAULT_INDEX);
-            for (var widgetId in p.getWidgets()) {
-              var w = p.getWidget(widgetId);
+            var widgets = p.getWidgets(p.GET_WIDGETS_ARRAY);
+            for (var j=0; j<widgets.length; j++) {
+              var w = widgets[j];
               uri = ios.newURI(w.url, null, null);
               bkmkId = bkmkserv.insertBookmark(folderId, uri, bookmarks.DEFAULT_INDEX, w.title);
               var options = [w.panelId, w.entriesToShow, w.hoursFilter, w.minimized].join('|');

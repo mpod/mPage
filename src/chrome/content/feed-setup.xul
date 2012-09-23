@@ -12,7 +12,6 @@
   
   <script type="application/javascript" src="chrome://mpagespace/content/main.js"/> 
   <script type="application/javascript" src="chrome://mpagespace/content/app.js"/> 
-  <script type="application/javascript" src="chrome://mpagespace/content/storage.js"/> 
   <script type="application/javascript" src="chrome://mpagespace/content/feed-setup.js"/> 
 
   <groupbox>
@@ -47,6 +46,10 @@
         </menupopup>
       </menulist>
     </hbox>
+  </groupbox>
+  <groupbox>
+    <caption label="&feedsetup.feedurl;"/>
+    <textbox id="url" flex="1" readonly="true"/>
   </groupbox>
 </dialog>
 

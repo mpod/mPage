@@ -15,6 +15,7 @@ mpagespace.storage = {
 
 mpagespace.storage.json = function() {
   this.file = FileUtils.getFile('ProfD', ['mpage.extension.json']);  
+  this.backupFile = FileUtils.getFile('ProfD', ['mpage.extension.json.bak']);  
   this.data = null;
 }
 
@@ -28,14 +29,18 @@ mpagespace.storage.json.prototype = {
     channel.contentType = "application/json";  
     NetUtil.asyncFetch(this.file, function(inputStream, status) {  
       if (!Components.isSuccessCode(status)) {  
-        mpagespace.dump('Error in storage loading.');
+        mpagespace.dump('storage.load: Error in storage loading.');
         throw new Error('Error in storage loading.');
       }  
   
       var text = NetUtil.readInputStreamToString(inputStream, inputStream.available(),
         {charset: 'UTF-8'});  
 
-      self.data = JSON.parse(text);
+      try {
+        self.data = JSON.parse(text);
+      } catch (e) {
+        self.data = {};
+      }
       mpagespace.dump('storage.load: Done');
       
       mpagespace.observerService.notifyObservers(null, 'mpage-storage', 'data-loaded');  
@@ -54,9 +59,29 @@ mpagespace.storage.json.prototype = {
     return this.data;
   },
 
+  backup: function() {
+    if (this.backupFile.exists()) {
+      this.backupFile.remove(false);
+      mpagespace.dump('storage.backup: Old backup file is deleted.');
+    }
+    if (this.file.exists())
+      this.file.copyTo(null, this.backupFile.leafName); 
+    mpagespace.dump('storage.backup: Done');
+  },
+
+  restore: function() {
+    if (this.backupFile.exists()) 
+      this.backupFile.copyTo(null, this.file.leafName);
+    else
+      mpagespace.dump('storage.restore: Backup file is missing.');
+
+    mpagespace.dump('storage.restore: Done');
+  },
+
   writeToFile: function(model, synchronous) {
     var ostream = FileUtils.openSafeFileOutputStream(this.file)  
     this.data = JSON.stringify(model);  
+    this.backup();
     
     if (synchronous) {
       ostream.write(this.data, this.data.length);

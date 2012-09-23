@@ -65,6 +65,7 @@ mpagespace.model.prototype = {
 
   init: function() {
     this.config = this.storage.getData();
+    var confAdapted = false;
 
     if (this.config == null) {
       this.loaded = false;
@@ -73,6 +74,7 @@ mpagespace.model.prototype = {
 
     if (this.config.version != mpagespace.version) {
       this.adaptConfiguration();
+      confAdapted = true;
     }
 
     this.maxPageId = 0;
@@ -89,6 +91,17 @@ mpagespace.model.prototype = {
           this.maxWidgetId = widgets[i].id;
     }
 
+    if (confAdapted && this.maxWidgetId == 0 && !this.restoreInProgress) {
+      mpagespace.dump('model.init: Possible configuration error, trying to restore.');
+      this.storage.restore();
+      this.restoreInProgress = true;
+      this.dirty = true;
+      this.activePageId = null;
+      this.storage.load();
+      return;
+    }
+
+    delete this.restoreInProgress;
     this.loaded = true;
 
     mpagespace.dump('model.init: Done');
@@ -136,7 +149,6 @@ mpagespace.model.prototype = {
     } 
     page = this.getPage(pageId);
     this.activePageId = page.id;
-    page.load();
     
     mpagespace.dump('model.changeActivePage: Active page is ' + pageId);
     mpagespace.observerService.notifyObservers(null, 'mpage-model', 'active-page-changed');  
@@ -275,16 +287,23 @@ mpagespace.model.prototype = {
     this.empty();
     this.loaded = false;
     
-    for (var panelId in oldConfig) {
-      var panel = oldConfig[panelId];
-      for (var i=0; i<panel.length; i++) {
-        var widget = panel[i];
+    try {
+      for (var panelId in oldConfig) {
+        var panel = oldConfig[panelId];
+        if (['1', '2', '3'].indexOf(panelId) == -1)
+          throw new Error('Invalid old configuration.');
+        for (var i=0; i<panel.length; i++) {
+          var widget = panel[i];
 
-        widget.widgetId = widget.id;
-        delete widget.id;
-        widget.panelId = panelId;
-        this.config.pages['page-' + this.activePageId].widgets.push(widget);
+          widget.widgetId = widget.id;
+          delete widget.id;
+          widget.panelId = panelId;
+          this.config.pages['page-' + this.activePageId].widgets.push(widget);
+        }
       }
+      mpagespace.dump('model.adaptConfiguration: Done');
+    } catch (e) {
+      mpagespace.dump('model.adaptConfiguration: Failed');
     }
   },
 

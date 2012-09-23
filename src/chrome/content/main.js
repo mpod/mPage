@@ -13,9 +13,9 @@ mpagespace = {
     var page = model.getPage();
     if (page == null) {
       model.changeActivePage();
-    } else {
-      page.load();
-    } 
+      page = model.getPage();
+    }
+    page.load();
     mpagespace.view.init();
     mpagespace.view.registerObserver();
     mpagespace.controller.registerObserver();

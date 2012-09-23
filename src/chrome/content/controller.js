@@ -79,7 +79,6 @@ mpagespace.controller = {
         }
         var feedTypes = ['text/xml', 'application/rss+xml', 'application/atom+xml', 'application/xml', 'application/rdf+xml']; 
         if (feedTypes.indexOf(type) != -1) {
-          mpagespace.dump(title + ' ' + href + ' ' + type);
           titles.push(title);
           urls.push(href);
         }

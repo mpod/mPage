@@ -119,8 +119,8 @@
           <groupbox>
             <caption label="&options.options;"/>
             <radiogroup id="import-mode">
-              <radio label="&options.merge;" accesskey="&options.merge.accesskey;" value="true"/>
-              <radio label="&options.overwrite;" accesskey="&options.overwrite.accesskey;"/>
+              <radio label="&options.overwrite;" accesskey="&options.overwrite.accesskey;" value="true"/>
+              <radio label="&options.merge;" accesskey="&options.merge.accesskey;"/>
             </radiogroup>
           </groupbox>
           <spacer style="height: 10px"/>

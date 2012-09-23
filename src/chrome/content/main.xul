@@ -13,12 +13,8 @@
   onunload="mpagespace.unloadPage();">
 
   <script type="application/javascript" src="chrome://mpagespace/content/main.js"/>
-  <script type="application/javascript" src="chrome://mpagespace/content/ajax.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/model.js"/>
-  <script type="application/javascript" src="chrome://mpagespace/content/page.js"/>
-  <script type="application/javascript" src="chrome://mpagespace/content/feed.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/view.js"/>
-  <script type="application/javascript" src="chrome://mpagespace/content/storage.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/dd.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/controller.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/app.js"/>

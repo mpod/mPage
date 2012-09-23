@@ -52,6 +52,7 @@
 <!ENTITY options.version.label                    "Version">
 <!ENTITY feedsetup.title                          "Feed setup">
 <!ENTITY feedsetup.feedtitle                      "Title">
+<!ENTITY feedsetup.feedurl                        "URL">
 <!ENTITY feedsetup.filters                        "Filters">
 <!ENTITY feedsetup.filterbydate.label             "Filter by date">
 <!ENTITY feedsetup.filterbydate.accesskey         "d">

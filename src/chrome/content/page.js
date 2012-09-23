@@ -69,9 +69,16 @@ mpagespace.model.page.prototype = {
 
     if (mode == this.GET_WIDGETS_ARRAY) {
       result = [];
-      for (var widgetId in this.widgets) {
-        result.push(this.widgets[widgetId]);
+      for (var panelId in this.layout) {
+        var panel = this.layout[panelId];
+        for (var i=0; i<panel.length; i++) {
+          var w = this.getWidget(panel[i]);
+          result.push(w);
+        }
       }
+      /*for (var widgetId in this.widgets) {
+        result.push(this.widgets[widgetId]);
+      }*/
       return result;
     } else if (mode == this.GET_WIDGETS_URL) {
       result = {};
