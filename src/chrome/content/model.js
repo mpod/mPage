@@ -8,6 +8,10 @@ mpagespace.model = function(){
   this.storage = mpagespace.storage.storageFactory();
   this.activePageId = null;
   this.pages = {};
+  this.preferences = null;
+  this.preferencesTmp = null;
+  this.colorSchemes = null;
+  this.sync = null;
   this.config = null;
   this.maxWidgetId = 0;
   this.maxPageId = 0;
@@ -43,7 +47,10 @@ mpagespace.model = function(){
       }
     }
   };
-  self.timer.initWithCallback(timerCallback, 5*60*1000, self.timer.TYPE_REPEATING_SLACK);
+
+  if (!mpagespace.fuelApplication.prefs.getValue('extensions.mpagespace.debug', false)) {
+    self.timer.initWithCallback(timerCallback, 5*60*1000, self.timer.TYPE_REPEATING_SLACK);
+  }
 
   try {
     this.storage.load();
@@ -91,6 +98,10 @@ mpagespace.model.prototype = {
           this.maxWidgetId = widgets[i].id;
     }
 
+    this.preferences = new mpagespace.model.preferences(this.config.preferences);
+    this.colorSchemes = new mpagespace.model.colors(this.config.colorSchemes, this);
+    this.sync = new mpagespace.model.sync(this.config.sync, this);
+
     if (confAdapted && this.maxWidgetId == 0 && !this.restoreInProgress) {
       mpagespace.dump('model.init: Possible configuration error, trying to restore.');
       this.storage.restore();
@@ -117,6 +128,9 @@ mpagespace.model.prototype = {
       for (var pageId in this.pages) {
         this.config.pages['page-' + pageId] = this.pages[pageId].getConfig();
       }
+      this.config.preferences = this.preferences.getConfig();
+      this.config.colorSchemes = this.colorSchemes.getConfig();
+      this.config.sync = this.sync.getConfig();
     }
     return this.config; 
   },
@@ -149,13 +163,13 @@ mpagespace.model.prototype = {
     } 
     page = this.getPage(pageId);
     this.activePageId = page.id;
+    page.load();
     
     mpagespace.dump('model.changeActivePage: Active page is ' + pageId);
-    mpagespace.observerService.notifyObservers(null, 'mpage-model', 'active-page-changed');  
   },
 
   moveWidgetToPage: function(widget, pageId) {
-    this.getPage().deleteWidget(widget);
+    this.getPage(widget.page.id).deleteWidget(widget);
     this.getPage(pageId).addWidget(widget);
     this.dirty = true;
   },
@@ -223,6 +237,9 @@ mpagespace.model.prototype = {
       throw new Error(mpagespace.translate('deletePage.error.message'));
     }
 
+    if (pageId == null) 
+      pageId = this.activePageId;
+
     var page = this.getPage(pageId);
     var idx = this.config.pageOrder.indexOf(pageId);
     this.config.pageOrder.splice(idx, 1);
@@ -239,7 +256,7 @@ mpagespace.model.prototype = {
   addPage: function(pageTitle) {
     var pageOrder = this.getPageOrder();
     for (var i=0; i<pageOrder.length; i++) {
-      if (this.pages[pageOrder[i]].title == pageTitle) {
+      if (this.getPage(pageOrder[i]).title == pageTitle) {
         mpagespace.dump('model.addPage: Page with the same name already exists.');
         throw new Error(mpagespace.translate('addPage.error.message'));
       }
@@ -260,35 +277,78 @@ mpagespace.model.prototype = {
     return page;
   },
 
-  renamePage: function(pageId, pageTitle) {
+  renamePage: function(pageId, newTitle) {
     var page = this.getPage(pageId);
-    page.title = pageTitle;
+    var pageOrder = this.getPageOrder();
+    for (var i=0; i<pageOrder.length; i++) {
+      if (pageOrder[i] != pageId && this.getPage(pageOrder[i]).title == newTitle) {
+        mpagespace.dump('model.renamePage: Page with the same name already exists.');
+        throw new Error(mpagespace.translate('renamePage.error.message'));
+      }
+    }
+    page.title = newTitle;
     this.dirty = true;
     mpagespace.observerService.notifyObservers(null, 'mpage-model', 'page-renamed');  
   },
 
-  empty: function() {
-    this.config = {
-      version: mpagespace.version, 
-      pageOrder: [], 
-      pages: {}
-    };
-    this.pages = {};
-    this.maxWidgetId = 0;
-    this.maxPageId = 0;
-    this.activePageId = this.addPage('Home').id;
-    this.loaded = true;
-    mpagespace.dump('model.empty: Done');
+  findWidget: function(widgetId) {
+    var pageOrder = this.getPageOrder();
+    for (var i=0; i<pageOrder.length; i++) {
+      var p = this.pages[pageOrder[i]];
+      var w = p.getWidget(widgetId);
+      if (w != null)
+        return w;
+    }
+    return null;
+  },
+
+  setPreferences: function(preferences, temp) {
+    if (temp) {
+      this.preferencesTmp = preferences;
+    } else {
+      this.preferences = preferences;
+      this.preferencesTmp = null;
+      this.setDirty();
+    }
+    mpagespace.observerService.notifyObservers(null, 'mpage-model', 'preferences-changed');  
+  },
+
+  acceptTempPreferences: function() {
+    if (this.preferencesTmp) {
+      this.preferences = this.preferencesTmp;
+      this.preferencesTmp = null;
+      this.setDirty();
+    }
+  },
+
+  getPreferences: function() {
+    return this.preferencesTmp || this.preferences;
+  },
+
+  getColorSchemes: function() {
+    return this.colorSchemes;
+  },
+
+  getSync: function() {
+    return this.sync;
   },
 
   adaptConfiguration: function() {
     var oldConfig = this.config;
-    
+    var panelId;
+
+    for (panelId in oldConfig) {
+      if (['1', '2', '3'].indexOf(panelId) == -1) {
+        mpagespace.dump('model.adaptConfiguration: Invalid old configuration. Exiting...');
+        return; 
+      }
+    }
+
     this.empty();
     this.loaded = false;
     
     try {
-      for (var panelId in oldConfig) {
+      for (panelId in oldConfig) {
         var panel = oldConfig[panelId];
         if (['1', '2', '3'].indexOf(panelId) == -1)
           throw new Error('Invalid old configuration.');
@@ -307,15 +367,58 @@ mpagespace.model.prototype = {
     }
   },
 
+  empty: function() {
+    this.config = {
+      version: mpagespace.version, 
+      sync: null,
+      pageOrder: [], 
+      pages: {}
+    };
+    this.preferences = new mpagespace.model.preferences({});
+    this.preferencesTmp = null;
+    this.colorSchemes = new mpagespace.model.colors({}, this);
+    this.sync = new mpagespace.model.sync({}, this);
+    this.pages = {};
+    this.maxWidgetId = 0;
+    this.maxPageId = 0;
+    this.activePageId = this.addPage('News').id;
+    this.loaded = true;
+    mpagespace.dump('model.empty: Done');
+  },
+
   reset: function() {
     this.empty();
     var page = this.getPage();
-    page.createAndAddWidget('http://blog.mozilla.com/feed/', false, false);
-    page.createAndAddWidget('http://www.reddit.com/r/worldnews/', false, false);
-    page.createAndAddWidget('http://rss.slashdot.org/Slashdot/slashdot', false, false);
-    page.createAndAddWidget('http://feeds.wired.com/wired/index', false, false);
-    page.createAndAddWidget('http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml', false, false);
-    page.createAndAddWidget('http://feeds.guardian.co.uk/theguardian/rss', false, false);
+    page.createAndAddWidget('http://blog.mozilla.com/feed/', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/worldnews/', null, null);
+    page.createAndAddWidget('http://rss.slashdot.org/Slashdot/slashdot', null, null);
+    page.createAndAddWidget('http://feeds.wired.com/wired/index', null, null);
+    page.createAndAddWidget('http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml', null, null);
+    page.createAndAddWidget('http://feeds.guardian.co.uk/theguardian/rss', null, null);
+    page.load();
+
+    page = this.addPage('Technology');
+    page.createAndAddWidget('http://feeds.arstechnica.com/arstechnica/everything', null, null);
+    page.createAndAddWidget('http://rss.slashdot.org/Slashdot/slashdot', null, null);
+    page.createAndAddWidget('http://feeds.wired.com/wired/index', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/technology/', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/programming/', null, null);
+
+    page = this.addPage('Music');
+    page.createAndAddWidget('http://www.mtv.com/rss/news/news_full.jhtml', null, null);
+    page.createAndAddWidget('http://www.spin.com/news/rss/', null, null);
+    page.createAndAddWidget('http://www.rollingstone.com/siteServices/rss/allNews', null, null);
+    page.createAndAddWidget('http://pitchfork.com/rss/news/', null, null);
+    page.createAndAddWidget('http://feeds.feedburner.com/stereogum/cBYa?format=xml', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/Music/', null, null);
+
+    page = this.addPage('Science');
+    page.createAndAddWidget('http://www.sciencenews.org/view/feed/name/allrss', null, null);
+    page.createAndAddWidget('http://feeds.sciencedaily.com/sciencedaily?format=xml', null, null);
+    page.createAndAddWidget('http://feeds.guardian.co.uk/theguardian/science/rss', null, null);
+    page.createAndAddWidget('http://www.nasa.gov/rss/breaking_news.rss', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/science/', null, null);
+
     mpagespace.observerService.notifyObservers(null, 'mpage-model', 'model-reset');  
   }
 }

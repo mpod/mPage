@@ -5,17 +5,17 @@ else if (typeof mpagespace.converter != 'object')
   throw new Error('mpagespace.converter already exists and is not an object');
 
 mpagespace.converter = {
-  mPageBookmarkUri: 'http://mpage.firefox.extension/',
-
-  importFromOpml: function(opmlFile, merge) {
+  importFromOpml: function(opmlFile, merge, statusCallback) {
     var channel = NetUtil.newChannel(opmlFile);  
     channel.contentType = "text/xml";  
     NetUtil.asyncFetch(opmlFile, function(inputStream, status) {  
       if (!Components.isSuccessCode(status)) {  
-        mpagespace.dump('Error in model loading.');
+        mpagespace.dump('converter.importFromOpml: Error in model loading.');
+        if (statusCallback)
+          statusCallback(mpagespace.translate('converter.import.error'));
         return;  
       }  
-      var opmlText = NetUtil.readInputStreamToString(inputStream, inputStream.available());  
+      var opmlText = NetUtil.readInputStreamToString(inputStream, inputStream.available(), {charset: 'UTF-8'});  
       var parser = new DOMParser();
       var xmlDoc = parser.parseFromString(opmlText, 'text/xml');
       var body = xmlDoc.getElementsByTagName('body')[0];
@@ -30,20 +30,21 @@ mpagespace.converter = {
             continue;
 
           if (n.hasAttribute('xmlUrl')) {
-            var widget;
+            var widget = null;
             if (merge) {
+              mpagespace.dump('converter.importFromOpml: Searching for widget with url ' + n.getAttribute('xmlUrl'));
               widget = widgets[n.getAttribute('xmlUrl')];
             }
             if (!merge || !widget) {
-              widget = page.createAndAddWidget(n.getAttribute('xmlUrl'), false, true);
+              mpagespace.dump('converter.importFromOpml: Creating widget with url ' + n.getAttribute('xmlUrl'));
+              widget = page.createAndAddWidget(n.getAttribute('xmlUrl'), null, null);
             }
+            mpagespace.dump('converter.importFromOpml: Update widget ' + widget.id);
             widget.title = n.getAttribute('title');
             if (n.hasAttribute('mpage')) {
               var options = n.getAttribute('mpage').split('|');
               if (options.length == 4) {
                 page.removeFromPanel(widget);
-                //var refWidget = page.getWidget(page.layout[options[0]][0]);
-                //page.insertToPanel(widget, options[0], refWidget);
                 page.insertToPanel(widget, options[0], null);
                 widget.entriesToShow = options[1];
                 widget.hoursFilter = options[2];
@@ -51,12 +52,14 @@ mpagespace.converter = {
               }
             }
           } else {
-            var newPage;
+            var newPage = null;
             if (merge) {
+              mpagespace.dump('converter.importFromOpml: Searching for page ' + n.getAttribute('title'));
               newPage = pages[n.getAttribute('title')];
             }
             if (!merge || !newPage) {
               try {
+                mpagespace.dump('converter.importFromOpml: Creating page ' + n.getAttribute('title'));
                 newPage = page.model.addPage(n.getAttribute('title'));
               } catch (e) {
                 // Page with the same name already exists.
@@ -83,23 +86,41 @@ mpagespace.converter = {
       }
       homePageId = page.id;
 
-      processOutlines(body, page, merge, pages);
+      try {
+        processOutlines(body, page, merge, pages);
+      } catch (e) {
+        mpagespace.dump('converter.import: Error in processing OPML file - ' + e.message);
+        if (homePageId != null) {
+          page = model.getPage(homePageId);
+          if (page.getWidgets(page.GET_WIDGETS_ARRAY).length == 0) {
+            model.deletePage(page.id);
+          }
+        }
+        if (statusCallback)
+          statusCallback(mpagespace.translate('converter.import.error'));
+        return;
+      }
 
       if (homePageId != null) {
         page = model.getPage(homePageId);
         if (page.getWidgets(page.GET_WIDGETS_ARRAY).length == 0) {
+          mpagespace.dump('converter.import: Deleting home page.');
           model.deletePage(page.id);
         }
       }
 
+      var pref = model.getPreferences().deserialize(body.getAttribute('mpage'));
+      model.setPreferences(pref);
       model.changeActivePage();
 
+      if (statusCallback)
+        statusCallback(mpagespace.translate('converter.import.success'));
       mpagespace.observerService.notifyObservers(null, 'mpage-model', 'model-loaded');  
       mpagespace.dump('converter.importFromOpml: Done');
     });  
   },
 
-  exportToOpml: function(opmlFile) {
+  exportToOpml: function(opmlFile, errorHandler) {
     var xmlDoc = (new DOMParser()).parseFromString(
         '<opml version="1.0"><head>mPage export</head><body></body></opml>', 
         'application/xml'
@@ -108,6 +129,8 @@ mpagespace.converter = {
     var docEl = xmlDoc.documentElement;
     var body = xmlDoc.getElementsByTagName('body')[0];
     var model = mpagespace.app.getModel();
+
+    body.setAttribute('mpage', model.preferences.serialize());
 
     var createOutlineElements = function(model, parentEl) {
       var pageOrder = model.getPageOrder();
@@ -143,161 +166,12 @@ mpagespace.converter = {
     NetUtil.asyncCopy(istream, ostream, function(status) {  
       if (!Components.isSuccessCode(status)) {  
         mpagespace.dump('converter.exportToOpml: Error while saving opml file.');
+        if (errorHandler) errorHandler();
         return;  
       }  
       FileUtils.closeSafeFileOutputStream(ostream); 
       mpagespace.dump('converter.exportToOpml: Done');
     });    
-  },
-
-  exportToBookmarks: function() {
-    var bkmkserv = Components.classes["@mozilla.org/browser/nav-bookmarks-service;1"]
-                             .getService(Components.interfaces.nsINavBookmarksService);
-    var ios = Components.classes["@mozilla.org/network/io-service;1"]
-                    .getService(Components.interfaces.nsIIOService);
-
-    var model = mpagespace.app.getModel();
-    if (!model.loaded) {
-      mpagespace.dump('converter.exportToBookmarks: Model not loaded');
-      return;
-    }
-    var uri, bookmarks, folderId, bkmkId;
-
-    // Search for mPage sync folder
-    uri = ios.newURI(this.mPageBookmarkUri, null, null);
-    bookmarks = bkmkserv.getBookmarkIdsForURI(uri, {});
-    for (let i=0; i < bookmarks.length; i++) {
-      folderId = bkmkserv.getFolderIdForItem(bookmarks[i]);
-      bkmkserv.removeItem(folderId);
-    }
-
-    // Create new sync folder
-    folderId = bkmkserv.createFolder(bkmkserv.bookmarksMenuFolder, 'mPage sync folder', bkmkserv.DEFAULT_INDEX);
-    uri = ios.newURI(this.mPageBookmarkUri, null, null);
-    bkmkId = bkmkserv.insertBookmark(folderId, uri, bookmarks.DEFAULT_INDEX, 'Do not delete this bookmark!');
-
-    var batchCallback = {
-      runBatched: function(params) {
-        var createBookmarks = function(model, parentFolderId) {
-          var pageOrder = model.getPageOrder();
-          for (let i=0; i<pageOrder.length; i++) {
-            let p = model.getPage(pageOrder[i]);
-            folderId = bkmkserv.createFolder(parentFolderId, p.title, bkmkserv.DEFAULT_INDEX);
-            var widgets = p.getWidgets(p.GET_WIDGETS_ARRAY);
-            for (var j=0; j<widgets.length; j++) {
-              var w = widgets[j];
-              uri = ios.newURI(w.url, null, null);
-              bkmkId = bkmkserv.insertBookmark(folderId, uri, bookmarks.DEFAULT_INDEX, w.title);
-              var options = [w.panelId, w.entriesToShow, w.hoursFilter, w.minimized].join('|');
-              bkmkserv.setKeywordForBookmark(bkmkId, options);
-            }
-          }
-        }
-
-        createBookmarks(model, folderId);
-        mpagespace.dump('converter.exportToBookmarks: Done');
-      }
-    }
-
-    bkmkserv.runInBatchMode(batchCallback, null);
-  },
-
-  importFromBookmarks: function(merge) {
-    var bkmkserv = Components.classes["@mozilla.org/browser/nav-bookmarks-service;1"]
-                             .getService(Components.interfaces.nsINavBookmarksService);
-    var ios = Components.classes["@mozilla.org/network/io-service;1"]
-                    .getService(Components.interfaces.nsIIOService);
-    
-    var uri, mPageBkmks, folderId, bkmkId;
-    uri = ios.newURI(this.mPageBookmarkUri, null, null);
-    mPageBkmks = bkmkserv.getBookmarkIdsForURI(uri, {});
-    if (mPageBkmks.length == 0) {
-        mpagespace.dump('converter.importFromBookmarks: Bookmarks are not set.');
-        mpagespace.observerService.notifyObservers(null, 'mpage-error', 'import-bookmarks-not-set'); 
-        return;
-    }
-    folderId = bkmkserv.getFolderIdForItem(mPageBkmks[0]);
-
-    var widgetId=0, pageId=0;
-
-    var processBookmarks = function(folderId, page, merge, pages) {
-      var i = 0;
-      var widgets;
-      if (merge) {
-        widgets = page.getWidgets(page.GET_WIDGETS_URL);
-      }
-      
-      bkmkId = bkmkserv.getIdForItemAt(folderId, i);  
-      while (bkmkId != -1) {
-        if (bkmkId != mPageBkmks[0]) {
-          if (bkmkserv.getItemType(bkmkId) == bkmkserv.TYPE_BOOKMARK) {
-            var widget;
-            if (merge) {
-              widget = widgets[bkmkserv.getBookmarkURI(bkmkId).spec];
-            }
-            if (!merge || !widget) {
-              widget = page.createAndAddWidget(bkmkserv.getBookmarkURI(bkmkId).spec, false, true);
-            }
-            widget.title = bkmkserv.getItemTitle(bkmkId);
-            var options = bkmkserv.getKeywordForBookmark(bkmkId).split('|');
-            if (options.length == 4) {
-              page.removeFromPanel(widget);
-              var refWidget = page.getWidget(page.layout[options[0]][0]);
-              page.insertToPanel(widget, options[0], refWidget);
-              widget.entriesToShow = options[1];
-              widget.hoursFilter = options[2];
-              widget.minimized = options[3] == 'true';
-            }
-          } else if (bkmkserv.getItemType(bkmkId) == bkmkserv.TYPE_FOLDER) {
-            var newPage;
-            if (merge) {
-              newPage = pages[bkmkserv.getItemTitle(bkmkId)];
-            }
-            if (!merge || !newPage) {
-              try {
-                newPage = page.model.addPage(bkmkserv.getItemTitle(bkmkId));
-              } catch (e) {
-                // Page with the same name already exists.
-                var model = page.model;
-                newPage = model.getPages(model.GET_PAGES_TITLE)[bkmkserv.getItemTitle(bkmkId)];
-              }
-
-            }
-            processBookmarks(bkmkId, newPage, merge, pages);
-          }
-        }
-        i++;
-        bkmkId = bkmkserv.getIdForItemAt(folderId, i);  
-      }
-    }
-
-    var model = mpagespace.app.getModel();
-    var page, pages, homePageId = null;
-    if (!merge) {
-      model.empty();
-      page = model.getPage(1);
-    } else {
-      pages = model.getPages(model.GET_PAGES_TITLE);
-      if (pages['Home'])
-        page = pages['Home'];
-      else
-        page = model.addPage('Home');
-    }
-    homePageId = page.id;
-
-    processBookmarks(folderId, page, merge, pages);
-
-    if (homePageId != null) {
-      page = model.getPage(homePageId);
-      if (page.getWidgets(page.GET_WIDGETS_ARRAY).length == 0) {
-        model.deletePage(page.id);
-      }
-    }
-    
-    model.changeActivePage();
-
-    mpagespace.observerService.notifyObservers(null, 'mpage-model', 'model-loaded');  
-    mpagespace.dump('converter.importFromBookmarks: Done');
   }
 }
 

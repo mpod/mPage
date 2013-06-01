@@ -36,16 +36,11 @@
       <label value="&feedsetup.entriestoshow;" control="entries-to-show"/>
       <textbox id="entries-to-show" type="number" max="100" size="3" value="10"/>
     </hbox>
+    <checkbox id="visited-filter" label="&feedsetup.filtervisited.label;" accesskey="&feedsetup.filtervisited.accesskey;"/>
   </groupbox>
   <groupbox>
-    <caption label="&feedsetup.container;"/>
-    <hbox align="center">
-      <label value="&feedsetup.pagename;" control="pages"/>
-      <menulist id="pages" flex="1">
-        <menupopup>
-        </menupopup>
-      </menulist>
-    </hbox>
+    <caption label="&feedsetup.tweaking;"/>
+    <checkbox id="use-guid" label="&feedsetup.useguid.label;" accesskey="&feedsetup.useguid.accesskey;"/>
   </groupbox>
   <groupbox>
     <caption label="&feedsetup.feedurl;"/>

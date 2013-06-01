@@ -17,16 +17,18 @@ mpagespace.view = {
         switch (data[0]) {
           case 'widget-deleted':
             widget = page.getWidget(data[1]);
-            self.removeWidget(widget);
+            if (widget) {
+              self.removeWidget(widget);
+            }
             break;
-          case 'widget-inserted-to-panel':
+          case 'widget-added-to-page':
+          case 'widget-moved':
             widget = page.getWidget(data[1]);
             if (widget) {
               self.draw(widget, false);
             }
             break;
           case 'widget-loaded':
-          case 'widget-loading-exception':
           case 'widget-error':
           case 'widget-changed':
             widget = page.getWidget(data[1]);
@@ -37,33 +39,32 @@ mpagespace.view = {
           case 'page-loaded':
             if (page.id == data[1]) {
               self.draw(null);
+              self.setActivePageOnToolbar();
             }
             break;
-          case 'active-page-changed':
-            self.draw(null);
-            page.load();
-            break;
           case 'model-reset':
+          case 'preferences-changed':
+            self.createPanels();
+            self.createToolbar();
+            self.setStyles();
             self.draw(null);
+            break;
+          case 'model-loaded':
+            self.createPanels();
+            self.createToolbar();
+            self.setStyles();
+            break;
+          case 'page-deleted':
+          case 'page-added':
+          case 'page-renamed':
+          case 'page-reordered':
+            self.createToolbar();
             break;
           default:
             mpagespace.dump('view.observe: Event ignored!');
             break;
         }
-      } else if (topic == 'mpage-app') {
-        mpagespace.dump('view.observe: ' + topic + '/' + data);
-        switch (data) {
-          case 'faviconflag-changed':
-            self.faviconFlag = mpagespace.app.getFaviconFlag();
-            self.draw(null);
-            break;
-          case 'theme-changed':
-            var theme = mpagespace.app.getTheme();
-            var customCssFile = mpagespace.app.getCustomCssFile();
-            self.setTheme(theme, customCssFile);
-            break;  
-        }
-      }  
+      } 
     }
   },
 
@@ -72,22 +73,31 @@ mpagespace.view = {
       '<html>',
       '  <head>',
       '  <link rel="stylesheet" type="text/css" href="chrome://mpagespace/skin/mpage.css"/>',
+      '  <style id="styles"></style>',
       '  </head>',
-      '  <body class="kellys">',
+      '  <body>',
       '    <img id="dd-feedback" src="chrome://mpagespace/skin/feedback.png" style="display:none;"/>',
-      '    <table class="container">',
-      '      <tr>',
-      '        <td id="panel-1" class="column first"></td>',
-      '        <td id="panel-2" class="column"></td>',
-      '        <td id="panel-3" class="column">',
-      '          <div class="toolbar">',
-      '            <form id="subscribe-form" name="subscribe-form" onsubmit="return false;">',
-      '            <input id="subscribe-url" type="text" placeholder="' + mpagespace.translate('placeholder.label') + '" name="subscribe" />',
-      '            <input id="subscribe-button" type="submit" value="' + mpagespace.translate('subscribe.label') + '"/>',
-      '            </form>',
-      '          </div>',
-      '        </td>',
-      '      </tr>',
+      '    <div id="message">',
+      '      <div class="dialog">',
+      '        <p></p>',
+      '        <div class="button">Close</div>',
+      '      </div>',
+      '    </div>',
+      '    <div id="toolbar">',     
+      '      <div id="nav-container">',
+      '        <div id="nav-action-left">\u25C0</div>',
+      '        <div class="nav-width-clip">',
+      '          <div id="nav-drop-indicator-bar"></div>',
+      '          <ul id="nav-list"></ul>',
+      '        </div>',
+      '        <div id="nav-action-right">\u25B6</div>',
+      '      </div>',
+      '      <div id="mpage-menu">\u273F',
+      '        <ul id="mpage-menu-list" class="menu-list"></ul>',
+      '      </div>',
+      '    </div>', 
+      '    <table id="page-container">',
+      '      <tr id="panel-container"></tr>',
       '    </table>',
       '  </body>',
       '</html>'];
@@ -97,28 +107,47 @@ mpagespace.view = {
     doc.write(html.join(''));
     doc.close();
 
-    var el = doc.getElementById('panel-1');
-    el.addEventListener('dragover', mpagespace.dd.dragOver, false);
-    el.addEventListener('drop', mpagespace.dd.drop, false);
-    el.addEventListener('dragenter', mpagespace.dd.dragEnter, false);
-    el.addEventListener('dragleave', mpagespace.dd.dragLeave, false);
-    el = doc.getElementById('panel-2');
-    el.addEventListener('dragover', mpagespace.dd.dragOver, false);
-    el.addEventListener('drop', mpagespace.dd.drop, false);
-    el.addEventListener('dragenter', mpagespace.dd.dragEnter, false);
-    el.addEventListener('dragleave', mpagespace.dd.dragLeave, false);
-    el = doc.getElementById('panel-3');
-    el.addEventListener('dragover', mpagespace.dd.dragOver, false);
-    el.addEventListener('drop', mpagespace.dd.drop, false);
-    el.addEventListener('dragenter', mpagespace.dd.dragEnter, false);
-    el.addEventListener('dragleave', mpagespace.dd.dragLeave, false);
-    el = doc.getElementById('subscribe-form');
-    el.addEventListener('submit', mpagespace.controller.subscribe, false);
+    var menu = doc.getElementById('nav-list');
+    menu.addEventListener('dragover', mpagespace.dd.pageHandler.dragOver, false);
+    menu.addEventListener('drop', mpagespace.dd.pageHandler.drop, false);
+    menu.addEventListener('dragenter', mpagespace.dd.pageHandler.dragEnter, false);
+    menu.addEventListener('dragleave', mpagespace.dd.pageHandler.dragLeave, false);
 
-    mpagespace.view.faviconFlag = mpagespace.app.getFaviconFlag();
-    var theme = mpagespace.app.getTheme();
-    var customCssFile = mpagespace.app.getCustomCssFile();
-    mpagespace.view.setTheme(theme, customCssFile);
+    var prepareScrollFunc = function(scrollLeft){
+      return function(e) {
+        let mleft = menu.style.marginLeft;
+        if (mleft != '')
+          mleft = parseInt(mleft.substring(0, mleft.length - 2));
+        else
+          mleft = 0;
+
+        mleft = mleft + (scrollLeft ? 1 : -1) * 48;
+        if (scrollLeft && mleft >= 0) {
+          mleft = 0;
+        } else if (!scrollLeft && menu.offsetWidth <= menu.parentNode.offsetWidth) {
+          mleft = 0;
+        } else if (!scrollLeft && menu.offsetWidth + mleft <= menu.parentNode.offsetWidth) {
+          mleft = menu.parentNode.offsetWidth - menu.offsetWidth;
+        }
+        menu.style.marginLeft = mleft + 'px';
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+      }
+    }
+
+    var btn = doc.getElementById('nav-action-left');
+    btn.addEventListener('mousedown', prepareScrollFunc(true), false);
+    btn = doc.getElementById('nav-action-right');
+    btn.addEventListener('mousedown', prepareScrollFunc(false), false);
+
+    btn = doc.getElementById('message').querySelector('div.button');
+    btn.addEventListener('mousedown', function() {doc.getElementById('message').style.display = 'none';}, false);
+
+    mpagespace.view.createToolbarMenu();
+    mpagespace.view.createToolbar();
+    mpagespace.view.createPanels();
+    mpagespace.view.setStyles();
   },
 
   getDoc: function() {
@@ -135,26 +164,14 @@ mpagespace.view = {
     mpagespace.observerService.removeObserver(mpagespace.view.observer, 'mpage-app');
   },
 
-  setTheme: function(theme, customCssFile) {
+  alert: function(message) {
     var doc = mpagespace.view.getDoc();
-    doc.body.className = theme; 
-    if (theme == 'custom') {
-      var head = doc.getElementsByTagName('head')[0];
-      while (head.getElementsByTagName('link').length > 1) {
-        head.removeChild(head.lastChild);
-      }
-
-      var el = doc.createElement('link');
-      el.setAttribute('rel', 'stylesheet');
-      el.setAttribute('type', 'text/css');
-      el.setAttribute('href', 'file://' + customCssFile);
-      
-      head.appendChild(el);
-    }
-  },
-
-  getTheme: function() {
-    return mpagespace.view.getDoc().body.className;
+    var msgEl = doc.getElementById('message');
+    var pEl = msgEl.querySelector('p');
+    
+    while (pEl.hasChildNodes()) pEl.removeChild(pEl.firstChild)
+    pEl.appendChild(doc.createTextNode(message));
+    msgEl.style.display = 'block';
   },
 
   getWidgetEl: function(widgetId) {
@@ -179,13 +196,16 @@ mpagespace.view = {
     var panelEl;
     var panel;
     var doc = mpagespace.view.getDoc();
-    var page = mpagespace.app.getModel().getPage();
+    var model = mpagespace.app.getModel();
+    var page = model.getPage();
 
     document.getElementById('main').setAttribute('title', 'mPage - ' + page.title);
 
     if (widget) {
       var widgetEl = doc.getElementById('widget-' + widget.id);
       panelEl = doc.getElementById('panel-' + widget.panelId);   
+      if (panelEl == null) 
+        throw new Error('Invalid model - panel not found.');
       panel = page.layout[widget.panelId];
       if (widgetEl && refresh) {
         widgetEl.parentNode.removeChild(widgetEl);
@@ -206,24 +226,24 @@ mpagespace.view = {
         }
       }
     } else {
-      var widgets = page.widgets;
       var layout = page.layout;
-      
-      for (var panelId in layout) {
+      var panelId, panelEl;
+      var nPanels = model.getPreferences().layout.numberOfPanels;
+
+      page.alignLayout();
+
+      for (panelId=1; panelId<=nPanels; panelId++) {
         panelEl = doc.getElementById('panel-' + panelId);
-        var n1, n2;
-        n1 = panelEl.firstChild;
-        while (n1) {
-          n2 = n1.nextSibling;
-          if (n1.className == 'widget') panelEl.removeChild(n1);
-          n1 = n2;
+        while (panelEl.hasChildNodes()) panelEl.removeChild(panelEl.firstChild);
+        
+        if (panelId in layout) {
+          var widgetIds = layout[panelId];
+          for (var i=0; i<widgetIds.length; i++) {
+            widget = page.getWidget(widgetIds[i]);
+            panelEl.appendChild(mpagespace.view.createWidgetEl(widget));
+          }
         }
-        var widgetIds = layout[panelId];
-        for (var i=0; i<widgetIds.length; i++) {
-          widget = widgets[widgetIds[i]];
-          if (widget) panelEl.appendChild(mpagespace.view.createWidgetEl(widget));
-        }
-      } 
+      }
     }
   },
 
@@ -233,34 +253,37 @@ mpagespace.view = {
     var widgetEl = doc.createElement('div');
     var headerEl = doc.createElement('div');
     var bodyEl = doc.createElement('div');
-    var listEl = doc.createElement('ul');
     var titleEl = doc.createElement('a');
     var el;
 
     widgetEl.setAttribute('class', 'widget');
     widgetEl.setAttribute('id', 'widget-' + widget.id);
     widgetEl.setAttribute('draggable', 'true');
-    widgetEl.addEventListener('dragstart', mpagespace.dd.dragStart, false);
-    widgetEl.addEventListener('dragend', mpagespace.dd.dragEnd, false);
     widgetEl.setAttribute('widget-id', widget.id);
     headerEl.setAttribute('class', 'header');
     titleEl.setAttribute('class', 'title');
 
-    if (self.faviconFlag) {
+    if (widget.model.getPreferences().favicon) {
       var ios = Components.classes["@mozilla.org/network/io-service;1"]
                     .getService(Components.interfaces.nsIIOService);
       var faviconService = Components.classes["@mozilla.org/browser/favicon-service;1"]
                        .getService(Components.interfaces.nsIFaviconService);
-      var uri;
-      if (widget.siteUrl) {
-        uri = faviconService.getFaviconImageForPage(ios.newURI(widget.siteUrl, null, null));
-      } else {
-        uri = faviconService.defaultFavicon;
-      }
+
       el = doc.createElement('img');
-      el.setAttribute('src', uri.spec);
+      el.setAttribute('src', faviconService.defaultFavicon.spec);
       el.setAttribute('class', 'favicon');
       headerEl.appendChild(el);
+
+      if (widget.siteUrl) {
+        var asyncFaviconService = faviconService.QueryInterface(Components.interfaces.mozIAsyncFavicons);
+        asyncFaviconService.getFaviconURLForPage(ios.newURI(widget.siteUrl, null, null), {
+          onComplete: function(favUri, dataLen, data, mimeType) {
+            if (favUri != null) {
+              el.setAttribute('src', favUri.spec);
+            }
+          }
+        });
+      }
     }
 
     if (widget.siteUrl) {
@@ -272,18 +295,11 @@ mpagespace.view = {
 
     headerEl.appendChild(titleEl);
 
-    el = doc.createElement('div');
-    el.setAttribute('class', 'action configure');
-    el.addEventListener('click', mpagespace.controller.configure, false);
-    headerEl.appendChild(el);
-    el = doc.createElement('div');
-    el.setAttribute('class', 'action remove');
-    el.addEventListener('click', mpagespace.controller.remove, false);
-    headerEl.appendChild(el);
-    el = doc.createElement('div');
-    el.setAttribute('class', widget.minimized ? 'action maximize' : 'action minimize');
-    el.addEventListener('click', mpagespace.controller.toggleWidget, false);
-    headerEl.appendChild(el);
+    if (!widget.model.getPreferences().lock) {
+      widgetEl.addEventListener('dragstart', mpagespace.dd.widgetHandler.dragStart, false);
+      widgetEl.addEventListener('dragend', mpagespace.dd.widgetHandler.dragEnd, false);
+      headerEl.appendChild(self.createWidgetActionMenu(widget));
+    }
 
     widgetEl.appendChild(headerEl);
     bodyEl.setAttribute('class', 'body');
@@ -299,6 +315,63 @@ mpagespace.view = {
     return widgetEl;
   },
 
+  createWidgetActionMenu: function(widget) {
+    var self = mpagespace.view;
+    var doc = self.getDoc();
+    var el, listEl, itemEl, linkEl
+
+    el = doc.createElement('div');
+    el.setAttribute('class', 'action');
+    el.appendChild(doc.createTextNode('\u2318'));
+    listEl = doc.createElement('ul');
+    listEl.setAttribute('id', 'widget-menu-list-' + widget.id);
+    listEl.setAttribute('class', 'menu-list');
+    listEl.style.left = 0;
+
+    var preventHiding = false;
+    var toggleMenu = function(e){
+      if (listEl.style.display == 'block' && !preventHiding)
+        listEl.style.display = 'none';
+      else if (this == el) {
+        var left = Math.min(0, this.parentNode.offsetWidth - (
+              this.offsetLeft - this.parentNode.getBoundingClientRect().left + 125));
+        listEl.style.left = left;
+        listEl.style.display = 'block';
+        preventHiding = true;
+      } else
+        preventHiding = false;
+    };
+    el.addEventListener('mousedown', toggleMenu, false);
+    doc.getElementsByTagName('body')[0].addEventListener('mousedown', toggleMenu, false);
+
+    var actions = [
+      {label: 'widget.action.configure', 
+        listener: function(event) {
+          toggleMenu();
+          mpagespace.controller.configure.call(this);
+          event.stopPropagation();
+        }
+      },
+      {label: 'widget.action.remove', listener: mpagespace.controller.remove},
+      {label: 'widget.action.minimize', listener: mpagespace.controller.toggleWidget, condition: !widget.minimized},
+      {label: 'widget.action.maximize', listener: mpagespace.controller.toggleWidget, condition: widget.minimized}
+    ];
+
+    for (let i=0; i<actions.length; i++) {
+      if (actions[i].condition !== undefined && !actions[i].condition) 
+        continue; 
+      itemEl = doc.createElement('li');
+      linkEl = doc.createElement('a');
+      linkEl.addEventListener('mousedown', actions[i].listener, false);
+      linkEl.appendChild(doc.createTextNode(mpagespace.translate(actions[i].label)));
+      itemEl.appendChild(linkEl);
+      listEl.appendChild(itemEl);
+    }
+
+    el.appendChild(listEl);
+    return el;
+  },
+
   createLoadingBody: function() {
     var self = mpagespace.view;
     var doc = self.getDoc();
@@ -309,29 +382,34 @@ mpagespace.view = {
     return divEl;
   }, 
 
-  createFeedBody: function(feed) {
+  createFeedBody: function(widget) {
     var self = mpagespace.view;
     var doc = self.getDoc();
     var listEl = doc.createElement('ul');
 
-    if (feed.isInError()) return self.createErrorBody();
+    if (widget.isInError()) return self.createErrorBody(widget);
+    if (widget.isInFeedSelectingState()) return self.createFeedSelectingBody(widget);
 
-    var entries = feed.getEntriesToShow();
+    var entries = widget.getEntriesToShow();
     for (var i=0; i<entries.length; i++) {
       var entry = entries[i];
       var entryEl = doc.createElement('li');
       var linkEl = doc.createElement('a');
-      linkEl.setAttribute('href', entry.link);
+      if (entry.link) {
+        linkEl.setAttribute('href', entry.link.spec);
+      } else {
+        linkEl.setAttribute('href', 'javascript:void(0)');
+      }
       linkEl.setAttribute('target', '_blank');
       linkEl.setAttribute('title', entry.title);
-      linkEl.addEventListener('click', function(){this.blur();}, false); 
+      linkEl.addEventListener('click', mpagespace.controller.onLinkClick, false); 
       linkEl.appendChild(doc.createTextNode(entry.title));
       entryEl.appendChild(linkEl);
-      if (entry.link2) {
+      if (entry.reddit) {
           var link2El = doc.createElement('a');
-          link2El.setAttribute('href', entry.link2);
+          link2El.setAttribute('href', entry.reddit.spec);
           link2El.setAttribute('target', '_blank');
-          link2El.appendChild(doc.createTextNode('#'));
+          link2El.appendChild(doc.createTextNode('[link]'));
           link2El.addEventListener('click', function(){this.blur();}, false); 
           entryEl.appendChild(doc.createTextNode(' '));
           entryEl.appendChild(link2El);
@@ -342,14 +420,290 @@ mpagespace.view = {
     return listEl;
   },
 
-  createErrorBody: function() {
+  createErrorBody: function(widget) {
     var self = mpagespace.view;
     var doc = self.getDoc();
     var divEl = doc.createElement('div');  
     divEl.className = 'error';
-    var titleTextEl = doc.createTextNode(mpagespace.translate('widget.error.message'));
+    var titleTextEl = doc.createTextNode(widget.getErrorMessage());
     divEl.appendChild(titleTextEl);
     return divEl;  
+  },
+
+  createFeedSelectingBody: function(widget) {
+    var self = mpagespace.view;
+    var doc = self.getDoc();
+    var wrapperEl = doc.createElement('div');
+    var html = [];
+  
+    wrapperEl.className = 'available-feeds';
+    html.push('<p>' + mpagespace.translate('subscribe.availableFeeds') + '</p>');
+    html.push('<select class="feeds">');
+    for (var i=0; i<widget.availableFeeds.length; i++) {
+      var f = widget.availableFeeds[i];
+      html.push('<option value="' + f.href + '">' + f.title + '</option>');
+    }
+    html.push('</select>');
+    html.push('<a class="button" href="javascript:void(0)">');
+    html.push(mpagespace.translate('subscribe.availableFeeds.continue'));
+    html.push('</a>');
+
+    wrapperEl.innerHTML = html.join('\n');
+
+    wrapperEl.querySelector('a.button').addEventListener('click', function() {
+      var selEl = this.parentNode.querySelector('select');
+      var opt = selEl.options[selEl.selectedIndex];
+
+      widget.set('url', opt.value); 
+      this.blur();
+    }, false); 
+
+    return wrapperEl;
+  },
+
+  createPanels: function() {
+    var model = mpagespace.app.getModel();
+    var doc = mpagespace.view.getDoc();
+    var container = doc.getElementById('panel-container');
+    var nPanels = model.getPreferences().layout.numberOfPanels;
+    var el, width;
+
+    while (container.hasChildNodes()) container.removeChild(container.firstChild);
+
+    for (var i=1; i<=nPanels; i++) {
+      el = doc.createElement('td');
+      el.setAttribute('id', 'panel-' + i);
+      el.style.width = 100 / nPanels + '%';
+      el.className = i == 1 ? 'column first' : 'column';
+      el.addEventListener('dragover', mpagespace.dd.widgetHandler.dragOver, false);
+      el.addEventListener('drop', mpagespace.dd.widgetHandler.drop, false);
+      el.addEventListener('dragenter', mpagespace.dd.widgetHandler.dragEnter, false);
+      el.addEventListener('dragleave', mpagespace.dd.widgetHandler.dragLeave, false);
+      container.appendChild(el);
+    }
+  },
+
+  setStyles: function() {
+    var pref = mpagespace.app.getModel().getPreferences();
+    var colors = pref.colors;
+    var font = pref.font;
+    var doc = mpagespace.view.getDoc();
+    var el, styles = [];
+
+    styles.push('body { background-color: ' + colors.background + '; border-color: ' + colors.border + '; }');
+    styles.push('#nav-list li a { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
+    styles.push('#nav-list li.first a { border-color: ' + colors.border + '; }');
+    styles.push('#nav-list li.active a { color: ' + colors.visited + '; }');
+    styles.push('#nav-action-left, #nav-action-right, #mpage-menu { color: ' + colors.visited + '; }');
+    styles.push('#panel-container td.column { border-color: ' + colors.border + '; }');
+    styles.push('div.widget { border-color: ' + colors.border + '; }');
+    styles.push('div.header a, div.header .action { color: ' + colors.title + '; }');
+    styles.push('div.body li { color: ' + colors.link + '; }');
+    styles.push('div.body a:visited{ color: ' + colors.visited + '; }');
+    styles.push('div.body .available-feeds .button { color: ' + colors.visited + '; }');
+    styles.push('div.body .available-feeds p { color: ' + colors.link + '; }');
+    styles.push('div.body div.loading{ color: ' + colors.link + '; }');
+    styles.push('div.body div.error{ color: ' + colors.link + '; }');
+    styles.push('ul.menu-list { background-color: ' + colors.menu + ';');
+    styles.push('  box-shadow: 1px 1px ' + colors.border + '; }'); 
+    styles.push('ul.menu-list a { color: ' + colors.menuText + '; }'); 
+    styles.push('ul.menu-list a:hover { background-color: ' + colors.menuSel + '; }');
+
+    styles.push('body { font-size: ' + font.size + '; }');
+    styles.push('body { font-family: ' + font.family + '; }');
+
+    el = doc.getElementById('styles');
+
+    while (el.hasChildNodes()) el.removeChild(el.firstChild);
+    el.appendChild(doc.createTextNode(styles.join('\n')));
+
+    if (pref.customCss) {
+      el = doc.getElementById('customCss');
+      if (el == null) {
+        el = doc.createElement('link');
+        el.setAttribute('id', 'customCss');
+        el.setAttribute('type', 'text/css');
+        el.setAttribute('rel', 'stylesheet');
+        doc.getElementsByTagName('head')[0].appendChild(el);
+      }
+      el.setAttribute('href', 'file://' + pref.customCss);
+    } else {
+      el = doc.getElementById('customCss');
+      if (el) el.parentNode.removeChild(el);
+    }
+  },
+
+  createToolbar: function() {
+    var prepareOpenPageFunc = function(pageId) {
+      return function() { 
+        mpagespace.app.openPage(pageId);
+      };
+    }
+
+    var doc = mpagespace.view.getDoc();
+    var model = mpagespace.app.getModel();
+    if (model == null) {
+      return;
+    }
+    var menu = doc.getElementById('nav-list');
+    while (menu.hasChildNodes()) menu.removeChild(menu.firstChild);
+
+    var activePage = model.getPage();
+    for (var j=0, pageOrder=model.getPageOrder(); j<pageOrder.length; j++) {
+      let p = model.getPage(pageOrder[j]); 
+      let item = doc.createElement('li');
+      let className = '';
+      item.setAttribute('id', 'page-' + p.id);
+      if (p.id == activePage.id) className = 'active'; 
+      if (!model.getPreferences().lock) {
+        item.setAttribute('draggable', 'true');
+        item.addEventListener('dragstart', mpagespace.dd.pageHandler.dragStart, false);
+        item.addEventListener('dragend', mpagespace.dd.pageHandler.dragEnd, false);
+      }
+      if (j == 0) className = className + ' first';
+
+      item.setAttribute('class', className);
+
+      let link = doc.createElement('a');
+      link.appendChild(doc.createTextNode(p.title));
+      link.addEventListener('click', prepareOpenPageFunc(p.id), false); 
+
+      item.appendChild(link);
+      menu.appendChild(item);
+    }
+  },
+
+  setActivePageOnToolbar: function() {
+    var model = mpagespace.app.getModel();
+    if (model == null) return;
+
+    var r = new RegExp('\\bactive\\b\\s*', 'g');
+    var activePage = model.getPage();
+    var menu = mpagespace.view.getDoc().getElementById('nav-list');
+    for (var i=0; i<menu.childNodes.length; i++) {
+      var el = menu.childNodes[i];
+      if (el.nodeName.toLowerCase() == 'li') {
+        el.className = el.className.replace(r, '');
+        if (parseInt(el.getAttribute('id').substr('page-'.length)) == activePage.id)
+          el.className += ' active';
+      }  
+    }
+  },
+
+  createToolbarMenu: function(widget) {
+    var self = mpagespace.view;
+    var doc = self.getDoc();
+    var el, listEl, itemEl, linkEl
+
+    el = doc.getElementById('mpage-menu');
+    listEl = doc.getElementById('mpage-menu-list');
+
+    var preventHiding = false;
+    var toggleMenu = function(){
+      if (listEl.style.display == 'block' && !preventHiding)
+        listEl.style.display = 'none';
+      else if (this == el) {
+        listEl.style.right = 0;
+        listEl.style.display = 'block';
+        preventHiding = true;
+      } else
+        preventHiding = false;
+    };
+
+    el.addEventListener('mousedown', toggleMenu, false);
+    doc.getElementsByTagName('body')[0].addEventListener('mousedown', toggleMenu, false);
+
+    var actions = [
+      {label: 'toolbar.action.addfeed', 
+        listener: function(event) {
+          toggleMenu();
+          var check = {value: false};
+          var input = {value: ''};
+          var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addFeed.title'), 
+              mpagespace.translate('addFeed.message'), input, null, check);   
+          if (result) {
+            var data = input.value;
+            var page = mpagespace.app.getModel().getPage();
+            var parser = mpagespace.urlParser;
+            var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
+            parser.parseURL(data, data.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
+            if (authLen.value == -1 || authLen.value == 0) {
+              mpagespace.view.alert(mpagespace.translate('invalidUrl.message'));
+            } else {
+              if (schemeLen.value == -1) data = 'http://' + data;
+              if (pathLen.value == -1) data = data + '/'; 
+
+              widget = page.createAndAddWidget(data, null, page.getFirstWidget());
+              widget.load(true);
+            }
+          }
+          event.stopPropagation();
+        }
+      },
+      {label: 'toolbar.action.addpage', 
+        listener: function(event) {
+          toggleMenu();
+          var check = {value: false};
+          var input = {value: ''};
+          var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addPage.title'), 
+              mpagespace.translate('addPage.message'), input, null, check);   
+          if (result) {
+            var model = mpagespace.app.getModel();
+            try {
+              var page = model.addPage(input.value);
+              model.changeActivePage(page.id);
+            } catch (e) {
+              mpagespace.view.alert(e.message);
+            }
+          }
+          event.stopPropagation();
+        }
+      },
+      {label: 'toolbar.action.deletepage', 
+        listener: function(event) {
+          toggleMenu();
+          if (mpagespace.promptsService.confirm(null, mpagespace.translate('deletePage.title'), 
+              mpagespace.translate('deletePage.message'))) {  
+            try {
+              mpagespace.app.getModel().deletePage(); 
+            } catch (e) {
+              mpagespace.view.alert(e.message);
+            }
+          } 
+          event.stopPropagation();
+        }
+      },
+      {label: 'toolbar.action.renamepage', 
+        listener: function(event) {
+          toggleMenu();
+          var page = mpagespace.app.getModel().getPage();
+          var check = {value: false};
+          var input = {value: page.title};
+          var result = mpagespace.promptsService.prompt(null, mpagespace.translate('renamePage.title'), 
+              mpagespace.translate('renamePage.message'), input, null, check);   
+          if (result) {
+            try {
+              mpagespace.app.getModel().renamePage(page.id, input.value); 
+            } catch (e) {
+              mpagespace.view.alert(e.message); 
+            }
+          }
+          event.stopPropagation();
+        }
+      },
+      {label: 'toolbar.action.options', listener: mpagespace.app.openOptions}
+    ];
+
+    for (let i=0; i<actions.length; i++) {
+      if (actions[i].condition !== undefined && !actions[i].condition) 
+        continue; 
+      itemEl = doc.createElement('li');
+      linkEl = doc.createElement('a');
+      linkEl.addEventListener('mousedown', actions[i].listener, false);
+      linkEl.appendChild(doc.createTextNode(mpagespace.translate(actions[i].label)));
+      itemEl.appendChild(linkEl);
+      listEl.appendChild(itemEl);
+    }
   }
 }
 

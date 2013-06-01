@@ -28,22 +28,9 @@ mpagespace.feedSetup = {
       document.getElementById('date-filter').checked = false;
     }
     mpagespace.feedSetup.toggleDateFilter();
-    
-    var pagesMenu = document.getElementById('pages');
-    pagesMenu.selectedIndex = -1;
-    
-    while (pagesMenu.firstChild != null)
-      pagesMenu.removeChild(pagesMenu.firstChild);
 
-    pagesMenu.appendChild(document.createElement('menupopup'));
-    for (var i=0; i<pages.length; i++) {
-      var el = document.createElement('menuitem');
-      el.setAttribute('label', pages[i].title);
-      el.setAttribute('value', pages[i].id);
-      pagesMenu.firstChild.appendChild(el);
-      if (pages[i].id == activePageId)
-        pagesMenu.selectedIndex = i;
-    }
+    document.getElementById('visited-filter').checked = widget.visitedFilter;
+    document.getElementById('use-guid').checked = widget.useGuid;
   },  
 
   toggleDateFilter: function() {
@@ -69,8 +56,10 @@ mpagespace.feedSetup = {
     } else {
       config.hoursFilter = 0;
     }
+    config.visitedFilter = document.getElementById('visited-filter').checked;
+    config.useGuid = document.getElementById('use-guid').checked;
+
     result.config = config;
-    result.pageId = document.getElementById('pages').value;
     result.accepted = true;
   },
 

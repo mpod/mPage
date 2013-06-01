@@ -1,64 +1,86 @@
-<!ENTITY subscribe.label                          "Subscribe">
-<!ENTITY placeholder.label                        "Paste a URL here.">
 <!ENTITY mpagespace.showMenuItem.label            "mPage">
 <!ENTITY mpagespace.showMenuItem.accesskey        "m">
 <!ENTITY mpagespace.options.label                 "Options">
 <!ENTITY mpagespace.options.accesskey             "O">
 <!ENTITY mpagespace.addpage.label                 "Add page">
 <!ENTITY mpagespace.addpage.accesskey             "A">
-<!ENTITY mpagespace.deletepage.label              "Delete page">
-<!ENTITY mpagespace.deletepage.accesskey          "D">
+
 <!ENTITY options.title                            "Options">
-<!ENTITY options.display                          "Display">
-<!ENTITY options.pages                            "Pages">
-<!ENTITY options.export                           "Export">
-<!ENTITY options.import                           "Import">
-<!ENTITY options.reset                            "Reset">
-<!ENTITY options.about                            "About">
-<!ENTITY options.theme                            "Theme">
-<!ENTITY options.usetheme                         "Use theme:">
-<!ENTITY options.customcssfile                    "Custom CSS file:">
+<!ENTITY options.tab.display                      "Display">
+<!ENTITY options.colors.caption                   "Colors">
+<!ENTITY options.colors.type                      "Choose color scheme type:">
+<!ENTITY options.colors.type.light                "Light">
+<!ENTITY options.colors.type.dark                 "Dark">
+<!ENTITY options.colors.schemes                   "Choose a scheme:">
+<!ENTITY options.colors.random                    "or">
+<!ENTITY options.colors.randombtn.label           "Shuffle colors">
+<!ENTITY options.colors.randombtn.accesskey       "F">
+<!ENTITY options.colors.customsave.label          "Save">
+<!ENTITY options.colors.customsave.accesskey      "S">
+<!ENTITY options.fonts.caption                    "Fonts">
+<!ENTITY options.fonts.families                   "Available fonts:">
+<!ENTITY options.fonts.size                       "Size:">
+<!ENTITY options.custom.caption                   "Custom CSS">
+<!ENTITY options.custom.label                     "Override styles with:">
+<!ENTITY options.custom.accesskey                 "O">
 <!ENTITY options.browse.label                     "Browse">
-<!ENTITY options.browse.accesskey                 "b">
-<!ENTITY options.icons                            "Icons">
-<!ENTITY options.showicons.label                  "Show URL icons">
-<!ENTITY options.showicons.accesskey              "i">
-<!ENTITY options.destination                      "Destination">
-<!ENTITY options.exporttoopml.label               "Export to OPML file">
-<!ENTITY options.exporttoopml.accesskey           "o">
-<!ENTITY options.exporttobkmks.label              "Export to bookmarks">
-<!ENTITY options.exporttobkmks.accesskey          "b">
-<!ENTITY options.export.accesskey                 "e">
-<!ENTITY options.source                           "Source">
-<!ENTITY options.importfromopml.label             "Import from OPML file">
-<!ENTITY options.importfromopml.accesskey         "o">
-<!ENTITY options.importfrombkmks.label            "Import from bookmarks">
-<!ENTITY options.importfrombkmks.accesskey        "b">
-<!ENTITY options.options                          "Options">
-<!ENTITY options.merge                            "Merge with current configuration">
-<!ENTITY options.merge.accesskey                  "m">
-<!ENTITY options.overwrite                        "Overwrite current configuration">
-<!ENTITY options.overwrite.accesskey              "w">
-<!ENTITY options.import.label                     "Import">
-<!ENTITY options.import.accesskey                 "i">
-<!ENTITY options.reset.description                "This action returns add-on to the original state.">
-<!ENTITY options.reset.accesskey                  "r">
-<!ENTITY options.rename.label                     "Rename">
-<!ENTITY options.rename.accesskey                 "R">
-<!ENTITY options.choosepage                       "Choose page:">
-<!ENTITY options.delete.label                     "Delete">
-<!ENTITY options.delete.accesskey                 "D">
+<!ENTITY options.browse.accesskey                 "B">
+<!ENTITY options.layout.caption                   "Layout">
+<!ENTITY options.layout.label                     "Choose number of panels:">
+<!ENTITY options.favicons.caption                 "Favicons">
+<!ENTITY options.favicons.label                   "Show site favicon in feed title">
+<!ENTITY options.favicons.accesskey               "F">
+
+<!ENTITY options.tab.sync                         "Sync">
+<!ENTITY options.sync.description                 "This is description of sync operation.">
+<!ENTITY options.sync.pages.label                 "Choose a page: ">
+<!ENTITY options.sync.bookmarks.label             "Choose bookmark folder: ">
+<!ENTITY options.sync.add.label                   "Add sync relation">
+<!ENTITY options.sync.add.accesskey               "A">
+<!ENTITY options.sync.remove.label                "Remove sync relation">
+<!ENTITY options.sync.remove.accesskey            "R">
+
+<!ENTITY options.tab.importexport                 "Import / Export">
+<!ENTITY options.import.caption                   "Import from...">
+<!ENTITY options.import.description               "This is a description of import operation.">
+<!ENTITY options.importbtn.label                  "Import">
+<!ENTITY options.importbtn.accesskey              "I">
+<!ENTITY options.export.caption                   "Export to...">
+<!ENTITY options.export.description               "This is a description of export operation.">
+<!ENTITY options.exportbtn.label                  "Export">
+<!ENTITY options.exportbtn.accesskey              "E">
+
+<!ENTITY options.tab.miscellaneous                "Misc">
+<!ENTITY options.lock.caption                     "Lock">
+<!ENTITY options.lock.label                       "Disable drag and drop features and hide widget action menu">
+<!ENTITY options.lock.accesskey                   "D">
+<!ENTITY options.reset.caption                    "Reset">
+<!ENTITY options.reset.complete.label             "Restore plugin to default configuration">
+<!ENTITY options.reset.completebtn.label          "Restore">
+<!ENTITY options.reset.completebtn.accesskey      "R">
+<!ENTITY options.reset.schemes.label              "Remove saved custom color schemes">
+<!ENTITY options.reset.schemesbtn.label           "Remove">
+<!ENTITY options.reset.schemesbtn.accesskey       "M">
+<!ENTITY options.reset.sync.label                 "Clear synchronization history">
+<!ENTITY options.reset.syncbtn.label              "Clear">
+<!ENTITY options.reset.syncbtn.accesskey          "C">
+
+<!ENTITY options.tab.about                        "About">
 <!ENTITY options.createdby.label                  "Created by:">
 <!ENTITY options.version.label                    "Version">
+
 <!ENTITY feedsetup.title                          "Feed setup">
 <!ENTITY feedsetup.feedtitle                      "Title">
 <!ENTITY feedsetup.feedurl                        "URL">
 <!ENTITY feedsetup.filters                        "Filters">
 <!ENTITY feedsetup.filterbydate.label             "Filter by date">
-<!ENTITY feedsetup.filterbydate.accesskey         "d">
+<!ENTITY feedsetup.filterbydate.accesskey         "D">
 <!ENTITY feedsetup.filtercount                    "Show entries in last">
 <!ENTITY feedsetup.hours                          "hours">
 <!ENTITY feedsetup.days                           "days">
 <!ENTITY feedsetup.entriestoshow                  "Number of entries to show:">
-<!ENTITY feedsetup.container                      "Container">
-<!ENTITY feedsetup.pagename                       "Feed is placed in page:">
+<!ENTITY feedsetup.filtervisited.label            "Hide visited links">
+<!ENTITY feedsetup.filtervisited.accesskey        "V">
+<!ENTITY feedsetup.tweaking                       "Tweaking">
+<!ENTITY feedsetup.useguid.label                  "Use guid value for the URL of the entry">
+<!ENTITY feedsetup.useguid.accesskey              "G">

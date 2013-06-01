@@ -6,7 +6,14 @@ else if (typeof mpagespace.ajax != 'object')
 
 mpagespace.ajax = {
   load: function(url, callback, options) {  
-    var req = new XMLHttpRequest();  
+    var req;
+   
+    try {
+      req = new XMLHttpRequest(); 
+    } catch (e) {
+      req = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"]
+                        .createInstance(Components.interfaces.nsIXMLHttpRequest);
+    }
     var n = 0;
     var timer;
 

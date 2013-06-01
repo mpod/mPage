@@ -9,10 +9,15 @@
 
   <script type="application/javascript" src="chrome://mpagespace/content/main.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/app.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/dd.js"/> 
   <script type="application/javascript" src="chrome://mpagespace/content/storage.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/model.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/page.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/feed.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/preferences.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/colors.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/lib/husl.js"/>
+  <script type="application/javascript" src="chrome://mpagespace/content/sync.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/ajax.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/converter.js"/>
   <script type="application/javascript" src="chrome://mpagespace/content/overlay.js"/> 
@@ -28,10 +33,10 @@
       class="menu-iconic"
       image="chrome://mpagespace/skin/page-livemarks.png">
       <menupopup
-        ondragover="mpagespace.app.menuDndHandler.dragOver.call(this, event);"
-        ondrop="mpagespace.app.menuDndHandler.drop.call(this, event);"
-        ondragenter="mpagespace.app.menuDndHandler.dragEnter.call(this, event);"
-        ondragleave="mpagespace.app.menuDndHandler.dragLeave.call(this, event);">
+        ondragover="mpagespace.dd.menuHandler.dragOver.call(this, event);"
+        ondrop="mpagespace.dd.menuHandler.drop.call(this, event);"
+        ondragenter="mpagespace.dd.menuHandler.dragEnter.call(this, event);"
+        ondragleave="mpagespace.dd.menuHandler.dragLeave.call(this, event);">
         <menuitem label="&mpagespace.addpage.label;" accesskey="&mpagespace.addpage.accesskey;"
           oncommand="mpagespace.app.addPage();"/>
         <menuitem label="&mpagespace.options.label;" accesskey="&mpagespace.options.accesskey;"
@@ -54,10 +59,10 @@
       class="menu-iconic"
       image="chrome://mpagespace/skin/page-livemarks.png">
       <menupopup
-        ondragover="mpagespace.app.menuDndHandler.dragOver.call(this, event);"
-        ondrop="mpagespace.app.menuDndHandler.drop.call(this, event);"
-        ondragenter="mpagespace.app.menuDndHandler.dragEnter.call(this, event);"
-        ondragleave="mpagespace.app.menuDndHandler.dragLeave.call(this, event);">
+        ondragover="mpagespace.dd.menuHandler.dragOver.call(this, event);"
+        ondrop="mpagespace.dd.menuHandler.drop.call(this, event);"
+        ondragenter="mpagespace.dd.menuHandler.dragEnter.call(this, event);"
+        ondragleave="mpagespace.dd.menuHandler.dragLeave.call(this, event);">
         <menuitem label="&mpagespace.addpage.label;" accesskey="&mpagespace.addpage.accesskey;"
           oncommand="mpagespace.app.addPage();"/>
         <menuitem label="&mpagespace.options.label;" accesskey="&mpagespace.options.accesskey;"
@@ -74,13 +79,13 @@
       tooltiptext="&mpagespace.showMenuItem.label;" 
       label="&mpagespace.showMenuItem.label;" 
       class="chromeclass-toolbar-additional"
-      ondragenter="mpagespace.app.menuDndHandler.dragEnter.call(this, event);">
+      ondragenter="mpagespace.dd.menuHandler.dragEnter.call(this, event);">
       <menupopup position="before_start" type="places"
         onpopupshowing="mpagespace.app.checkToolbarButtonMenu(this);"
-        ondragover="mpagespace.app.menuDndHandler.dragOver.call(this, event);"
-        ondrop="mpagespace.app.menuDndHandler.drop.call(this, event);"
-        ondragenter="mpagespace.app.menuDndHandler.dragEnter.call(this, event);"
-        ondragleave="mpagespace.app.menuDndHandler.dragLeave.call(this, event);">
+        ondragover="mpagespace.dd.menuHandler.dragOver.call(this, event);"
+        ondrop="mpagespace.dd.menuHandler.drop.call(this, event);"
+        ondragenter="mpagespace.dd.menuHandler.dragEnter.call(this, event);"
+        ondragleave="mpagespace.dd.menuHandler.dragLeave.call(this, event);">
         <menuitem label="&mpagespace.addpage.label;" accesskey="&mpagespace.addpage.accesskey;"
           oncommand="mpagespace.app.addPage();"/>
         <menuitem label="&mpagespace.options.label;" accesskey="&mpagespace.options.accesskey;"

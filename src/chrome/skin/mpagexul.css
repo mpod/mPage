@@ -1,0 +1,21 @@
+#about-panel .about-product-name {
+  margin-top: 0.5em;
+  font-weight: bold; 
+  font-size: x-large;  
+}
+
+#about-panel .about-sub-title {
+  margin-top: 1em;;
+  font-weight: bold;
+}
+
+#about-panel .about-author {
+  margin-bottom: 1em;
+}
+
+#about-panel .about-email {
+  color: #3A69A6;
+  margin: 0;
+  text-decoration: none;
+}
+
