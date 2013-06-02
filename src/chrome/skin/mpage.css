@@ -111,7 +111,6 @@ body {
   top: 0.25em;
   left: 0;
   text-align: center;
-  /*background-image: url('left.png');*/
   cursor: pointer;
 }
 
@@ -122,7 +121,6 @@ body {
   top: 0.25em;
   right: 2em;
   text-align: center;
-  /*background-image: url('right.png');*/
   cursor: pointer;
 }
 
@@ -134,7 +132,6 @@ body {
   top: 0.25em;
   right: 0.5em;
   text-align: center;
-  /*background-image: url('plus.png');*/
   cursor: pointer;
 }
 

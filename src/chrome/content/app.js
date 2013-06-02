@@ -10,7 +10,8 @@ mpagespace.app = {
       var self = mpagespace.app;
       if (topic == 'mpage-model') {
         mpagespace.dump('app.observe: ' + topic + '/' + data);
-        switch (data) {
+        data = data.split(':');
+        switch (data[0]) {
           case 'model-reset':
           case 'model-loaded':
           case 'page-deleted':
@@ -18,6 +19,9 @@ mpagespace.app = {
           case 'page-renamed':
           case 'page-reordered':
             self.populatePageTreeMenu();
+            break;
+          case 'page-loaded':
+            self.setActivePageInTreeMenu(data[1]);
             break;
           default:
             mpagespace.dump('app.observe: Event ignored!');
@@ -86,10 +90,59 @@ mpagespace.app = {
     if (result) {
       var model = mpagespace.app.getModel();
       try {
-        var page = model.addPage(input.value);
+        var page = model.addPage(input.value, model.getPage());
         model.changeActivePage(page.id);
       } catch (e) {
-        alert(e.message);
+        mpagespace.view.alert(e.message);
+      }
+    }
+  },
+
+  deletePage: function() {
+    if (mpagespace.promptsService.confirm(null, mpagespace.translate('deletePage.title'), 
+        mpagespace.translate('deletePage.message'))) {  
+      try {
+        mpagespace.app.getModel().deletePage(); 
+      } catch (e) {
+        mpagespace.view.alert(e.message);
+      }
+    } 
+  },
+
+  renamePage: function() {
+    var page = mpagespace.app.getModel().getPage();
+    var check = {value: false};
+    var input = {value: page.title};
+    var result = mpagespace.promptsService.prompt(null, mpagespace.translate('renamePage.title'), 
+        mpagespace.translate('renamePage.message'), input, null, check);   
+    if (result) {
+      try {
+        mpagespace.app.getModel().renamePage(page.id, input.value); 
+      } catch (e) {
+        mpagespace.view.alert(e.message); 
+      }
+    }
+  },
+
+  addFeed: function() {
+    var check = {value: false};
+    var input = {value: ''};
+    var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addFeed.title'), 
+        mpagespace.translate('addFeed.message'), input, null, check);   
+    if (result) {
+      var data = input.value;
+      var page = mpagespace.app.getModel().getPage();
+      var parser = mpagespace.urlParser;
+      var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
+      parser.parseURL(data, data.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
+      if (authLen.value == -1 || authLen.value == 0) {
+        mpagespace.view.alert(mpagespace.translate('invalidUrl.message'));
+      } else {
+        if (schemeLen.value == -1) data = 'http://' + data;
+        if (pathLen.value == -1) data = data + '/'; 
+
+        widget = page.createAndAddWidget(data, null, page.getFirstWidget());
+        widget.load(true);
       }
     }
   },
@@ -97,6 +150,28 @@ mpagespace.app = {
   openOptions: function() {
     window.open('chrome://mpagespace/content/options-form.xul','','chrome,centerscreen');  
     return false;
+  },
+
+  setActivePageInTreeMenu: function(pageId) {
+    mpagespace.map(['mpagespace-toolbar-button', 'mpagespace-button-1', 'mpagespace-button-2'],
+      function(menuid) {
+        var menu = document.getElementById(menuid);
+        var page = mpagespace.app.getModel().getPage();
+
+        if (!menu || pageId == null || page == null || page.id != pageId) {
+          return;
+        }
+
+        var items = menu.querySelectorAll('menuitem[checked="true"]');
+        for (var i=0; i<items.length; i++) {
+          items[i].setAttribute('checked', 'false');
+        }
+        var suffix = menuid.substr(menuid.lastIndexOf('-'));
+        item = menu.querySelector('#mpagespace-page-menuitem-' + pageId + suffix);
+        if (item)
+          item.setAttribute('checked', 'true');
+      }
+    );
   },
 
   populatePageTreeMenu: function() {

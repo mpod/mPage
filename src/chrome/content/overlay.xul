@@ -37,8 +37,14 @@
         ondrop="mpagespace.dd.menuHandler.drop.call(this, event);"
         ondragenter="mpagespace.dd.menuHandler.dragEnter.call(this, event);"
         ondragleave="mpagespace.dd.menuHandler.dragLeave.call(this, event);">
+        <menuitem label="&mpagespace.addfeed.label;" accesskey="&mpagespace.addfeed.accesskey;"
+          oncommand="mpagespace.app.addFeed();"/>
         <menuitem label="&mpagespace.addpage.label;" accesskey="&mpagespace.addpage.accesskey;"
           oncommand="mpagespace.app.addPage();"/>
+        <menuitem label="&mpagespace.deletepage.label;" accesskey="&mpagespace.deletepage.accesskey;"
+          oncommand="mpagespace.app.deletePage();"/>
+        <menuitem label="&mpagespace.renamepage.label;" accesskey="&mpagespace.renamepage.accesskey;"
+          oncommand="mpagespace.app.renamePage();"/>
         <menuitem label="&mpagespace.options.label;" accesskey="&mpagespace.options.accesskey;"
           oncommand="mpagespace.app.openOptions();"/>
         <hbox id="mpagespace-drop-indicator-bar" flex="1" hidden="true">
@@ -63,8 +69,14 @@
         ondrop="mpagespace.dd.menuHandler.drop.call(this, event);"
         ondragenter="mpagespace.dd.menuHandler.dragEnter.call(this, event);"
         ondragleave="mpagespace.dd.menuHandler.dragLeave.call(this, event);">
+        <menuitem label="&mpagespace.addfeed.label;" accesskey="&mpagespace.addfeed.accesskey;"
+          oncommand="mpagespace.app.addFeed();"/>
         <menuitem label="&mpagespace.addpage.label;" accesskey="&mpagespace.addpage.accesskey;"
           oncommand="mpagespace.app.addPage();"/>
+        <menuitem label="&mpagespace.deletepage.label;" accesskey="&mpagespace.deletepage.accesskey;"
+          oncommand="mpagespace.app.deletePage();"/>
+        <menuitem label="&mpagespace.renamepage.label;" accesskey="&mpagespace.renamepage.accesskey;"
+          oncommand="mpagespace.app.renamePage();"/>
         <menuitem label="&mpagespace.options.label;" accesskey="&mpagespace.options.accesskey;"
           oncommand="mpagespace.app.openOptions();"/>
         <menuseparator/>
@@ -86,8 +98,14 @@
         ondrop="mpagespace.dd.menuHandler.drop.call(this, event);"
         ondragenter="mpagespace.dd.menuHandler.dragEnter.call(this, event);"
         ondragleave="mpagespace.dd.menuHandler.dragLeave.call(this, event);">
+        <menuitem label="&mpagespace.addfeed.label;" accesskey="&mpagespace.addfeed.accesskey;"
+          oncommand="mpagespace.app.addFeed();"/>
         <menuitem label="&mpagespace.addpage.label;" accesskey="&mpagespace.addpage.accesskey;"
           oncommand="mpagespace.app.addPage();"/>
+        <menuitem label="&mpagespace.deletepage.label;" accesskey="&mpagespace.deletepage.accesskey;"
+          oncommand="mpagespace.app.deletePage();"/>
+        <menuitem label="&mpagespace.renamepage.label;" accesskey="&mpagespace.renamepage.accesskey;"
+          oncommand="mpagespace.app.renamePage();"/>
         <menuitem label="&mpagespace.options.label;" accesskey="&mpagespace.options.accesskey;"
           oncommand="mpagespace.app.openOptions();"/>
         <menuseparator/>

@@ -2,8 +2,15 @@
 <!ENTITY mpagespace.showMenuItem.accesskey        "m">
 <!ENTITY mpagespace.options.label                 "Options">
 <!ENTITY mpagespace.options.accesskey             "O">
+
+<!ENTITY mpagespace.addfeed.label                 "Add feed">
+<!ENTITY mpagespace.addfeed.accesskey             "F">
 <!ENTITY mpagespace.addpage.label                 "Add page">
 <!ENTITY mpagespace.addpage.accesskey             "A">
+<!ENTITY mpagespace.renamepage.label              "Rename page">
+<!ENTITY mpagespace.renamepage.accesskey          "R">
+<!ENTITY mpagespace.deletepage.label              "Delete page">
+<!ENTITY mpagespace.deletepage.accesskey          "D">
 
 <!ENTITY options.title                            "Options">
 <!ENTITY options.tab.display                      "Display">
@@ -51,9 +58,11 @@
 <!ENTITY options.exportbtn.accesskey              "E">
 
 <!ENTITY options.tab.miscellaneous                "Misc">
-<!ENTITY options.lock.caption                     "Lock">
+<!ENTITY options.general.caption                  "General">
 <!ENTITY options.lock.label                       "Disable drag and drop features and hide widget action menu">
 <!ENTITY options.lock.accesskey                   "D">
+<!ENTITY options.toolbar.label                    "Hide top page navigation menu">
+<!ENTITY options.toolbar.accesskey                "H">
 <!ENTITY options.reset.caption                    "Reset">
 <!ENTITY options.reset.complete.label             "Restore plugin to default configuration">
 <!ENTITY options.reset.completebtn.label          "Restore">

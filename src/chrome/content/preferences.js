@@ -12,14 +12,14 @@ mpagespace.model.preferences = function(config) {
     colors: {
       light: {
         background: '#ffffff',
-        border: '#67686b',
+        border: '#D3D3D3',
         link: '#d1c79e',
         visited: '#e6ac32',
         title: '#62acce',
-        menu: '#9ab2c8',
-        menuText: '#2a2b2f',
-        menuSel: '#62acce',  
-        error: '#e6ac32'
+        menu: '#E5E5E5',
+        menuText: '#000000',
+        menuSel: '#BEBEBE',  
+        misc: '#e6ac32'
       },
       dark: {
         background: '#2a2b2f',
@@ -30,18 +30,19 @@ mpagespace.model.preferences = function(config) {
         menu: '#9ab2c8',
         menuText: '#2a2b2f',
         menuSel: '#62acce',  
-        error: '#e6ac32'
+        misc: '#e6ac32'
       }
     },
     font: {
-      size: '12',
-      family: 'Helvetica,Arial,Verdana,sans-serif'
+      size: '13',
+      family: 'Verdana,sans-serif'
     },
     layout: {
       numberOfPanels: 3
     },
     customCss: null,
     lock: false,
+    toolbar: false,
     favicon: true 
   };
   this.schemeType = ['dark', 'light'].indexOf(config.schemeType) == -1 ? defaultConfig.schemeType : config.schemeType;
@@ -49,8 +50,9 @@ mpagespace.model.preferences = function(config) {
   this.colors = mpagespace.extend({}, defaultConfig.colors[this.schemeType], config.colors);
   this.font = mpagespace.extend({}, defaultConfig.font, config.font);
   this.customCss = config.customCss || defaultConfig.customCss;
-  this.lock = config.lock == null ? defaultConfig.lock : config.lock == true;
-  this.favicon = config.favicon == null ? defaultConfig.favicon : config.favicon == true;
+  this.lock = config.lock == null ? defaultConfig.lock : config.lock === true;
+  this.toolbar = config.toolbar == null ? defaultConfig.toolbar : config.toolbar === true;
+  this.favicon = config.favicon == null ? defaultConfig.favicon : config.favicon === true;
 
   this.layout = {
     numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ? 
@@ -68,6 +70,7 @@ mpagespace.model.preferences.prototype = {
       layout: mpagespace.extend({}, this.layout),
       customCss: this.customCss,
       lock: this.lock,
+      toolbar: this.toolbar,
       favicon: this.favicon
     }
   },
@@ -110,6 +113,13 @@ mpagespace.model.preferences.prototype = {
     return new mpagespace.model.preferences(config);
   },
 
+  setToolbar: function(toolbar) {
+    var config = this.getConfig();
+    config.toolbar = toolbar;
+
+    return new mpagespace.model.preferences(config);
+  },
+
   setFavicon: function(favicon) {
     var config = this.getConfig();
     config.favicon = favicon;
@@ -130,10 +140,11 @@ mpagespace.model.preferences.prototype = {
     str.push(this.colors.menu);
     str.push(this.colors.menuText);
     str.push(this.colors.menuSel);
-    str.push(this.colors.error);
+    str.push(this.colors.reserved);
     str.push(this.font.size);
     str.push(this.layout.numberOfPanels);
     str.push(this.lock);
+    str.push(this.toolbar);
     str.push(this.favicon);
 
     return str.join('|');
@@ -154,11 +165,12 @@ mpagespace.model.preferences.prototype = {
       config.colors.menu = str[7];
       config.colors.menuText = str[8];
       config.colors.menuSel = str[9];
-      config.colors.error = str[10];
+      config.colors.reserved = str[10];
       config.font.size = str[11];
       config.layout.numberOfPanels = str[12];
       config.lock = str[13];
-      config.favicon = str[14];
+      config.toolbar = str[14];
+      config.favicon = str[15];
     }
 
     return new mpagespace.model.preferences(config);

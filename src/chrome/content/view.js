@@ -193,11 +193,11 @@ mpagespace.view = {
   },
 
   draw: function(widget, refresh) {
-    var panelEl;
-    var panel;
     var doc = mpagespace.view.getDoc();
     var model = mpagespace.app.getModel();
     var page = model.getPage();
+    var panelEl;
+    var widgets;
 
     document.getElementById('main').setAttribute('title', 'mPage - ' + page.title);
 
@@ -206,7 +206,6 @@ mpagespace.view = {
       panelEl = doc.getElementById('panel-' + widget.panelId);   
       if (panelEl == null) 
         throw new Error('Invalid model - panel not found.');
-      panel = page.layout[widget.panelId];
       if (widgetEl && refresh) {
         widgetEl.parentNode.removeChild(widgetEl);
         widgetEl = null;
@@ -214,9 +213,13 @@ mpagespace.view = {
       if (!widgetEl) {
         widgetEl = mpagespace.view.createWidgetEl(widget);
       }
-      for (var i=0; i<panel.length; i++) {
-        if (panel[i] == widget.id) {
-          var refWidgetEl = doc.getElementById('widget-' + panel[i+1]);
+      widgets = page.getWidgetsInPanel(widget.panelId);
+      for (var i=0; i<widgets.length; i++) {
+        if (widgets[i].id === widget.id) {
+          var refWidgetEl = null;
+          if (widgets[i+1]) {
+            refWidgetEl = doc.getElementById('widget-' + widgets[i+1].id);
+          }
           if (refWidgetEl) {
             panelEl.insertBefore(widgetEl, refWidgetEl);
           } else {
@@ -226,7 +229,6 @@ mpagespace.view = {
         }
       }
     } else {
-      var layout = page.layout;
       var panelId, panelEl;
       var nPanels = model.getPreferences().layout.numberOfPanels;
 
@@ -235,14 +237,11 @@ mpagespace.view = {
       for (panelId=1; panelId<=nPanels; panelId++) {
         panelEl = doc.getElementById('panel-' + panelId);
         while (panelEl.hasChildNodes()) panelEl.removeChild(panelEl.firstChild);
-        
-        if (panelId in layout) {
-          var widgetIds = layout[panelId];
-          for (var i=0; i<widgetIds.length; i++) {
-            widget = page.getWidget(widgetIds[i]);
-            panelEl.appendChild(mpagespace.view.createWidgetEl(widget));
-          }
-        }
+
+        widgets = page.getWidgetsInPanel(panelId);
+        mpagespace.map(widgets, function(w) {
+          panelEl.appendChild(mpagespace.view.createWidgetEl(w));
+        });
       }
     }
   },
@@ -291,7 +290,13 @@ mpagespace.view = {
       titleEl.setAttribute('href', widget.siteUrl);
       titleEl.addEventListener('click', function(){this.blur();}, false); 
     }
-    titleEl.appendChild(doc.createTextNode(widget.title));
+    if (widget.title) {
+      titleEl.appendChild(doc.createTextNode(widget.title));
+    } else {
+      var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
+      mpagespace.urlParser.parseURL(widget.url, widget.url.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
+      titleEl.appendChild(doc.createTextNode(widget.url.substr(authPos.value, authLen.value)));
+    }
 
     headerEl.appendChild(titleEl);
 
@@ -571,6 +576,12 @@ mpagespace.view = {
       item.appendChild(link);
       menu.appendChild(item);
     }
+
+    if (model.getPreferences().toolbar) {
+      doc.getElementById('toolbar').style.display = 'none';  
+    } else {
+      doc.getElementById('toolbar').style.display = 'block';
+    }
   },
 
   setActivePageOnToolbar: function() {
@@ -617,77 +628,28 @@ mpagespace.view = {
       {label: 'toolbar.action.addfeed', 
         listener: function(event) {
           toggleMenu();
-          var check = {value: false};
-          var input = {value: ''};
-          var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addFeed.title'), 
-              mpagespace.translate('addFeed.message'), input, null, check);   
-          if (result) {
-            var data = input.value;
-            var page = mpagespace.app.getModel().getPage();
-            var parser = mpagespace.urlParser;
-            var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
-            parser.parseURL(data, data.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
-            if (authLen.value == -1 || authLen.value == 0) {
-              mpagespace.view.alert(mpagespace.translate('invalidUrl.message'));
-            } else {
-              if (schemeLen.value == -1) data = 'http://' + data;
-              if (pathLen.value == -1) data = data + '/'; 
-
-              widget = page.createAndAddWidget(data, null, page.getFirstWidget());
-              widget.load(true);
-            }
-          }
+          mpagespace.app.addFeed();
           event.stopPropagation();
         }
       },
       {label: 'toolbar.action.addpage', 
         listener: function(event) {
           toggleMenu();
-          var check = {value: false};
-          var input = {value: ''};
-          var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addPage.title'), 
-              mpagespace.translate('addPage.message'), input, null, check);   
-          if (result) {
-            var model = mpagespace.app.getModel();
-            try {
-              var page = model.addPage(input.value);
-              model.changeActivePage(page.id);
-            } catch (e) {
-              mpagespace.view.alert(e.message);
-            }
-          }
+          mpagespace.app.addPage();
           event.stopPropagation();
         }
       },
       {label: 'toolbar.action.deletepage', 
         listener: function(event) {
           toggleMenu();
-          if (mpagespace.promptsService.confirm(null, mpagespace.translate('deletePage.title'), 
-              mpagespace.translate('deletePage.message'))) {  
-            try {
-              mpagespace.app.getModel().deletePage(); 
-            } catch (e) {
-              mpagespace.view.alert(e.message);
-            }
-          } 
+          mpagespace.app.deletePage();
           event.stopPropagation();
         }
       },
       {label: 'toolbar.action.renamepage', 
         listener: function(event) {
           toggleMenu();
-          var page = mpagespace.app.getModel().getPage();
-          var check = {value: false};
-          var input = {value: page.title};
-          var result = mpagespace.promptsService.prompt(null, mpagespace.translate('renamePage.title'), 
-              mpagespace.translate('renamePage.message'), input, null, check);   
-          if (result) {
-            try {
-              mpagespace.app.getModel().renamePage(page.id, input.value); 
-            } catch (e) {
-              mpagespace.view.alert(e.message); 
-            }
-          }
+          mpagespace.app.renamePage();
           event.stopPropagation();
         }
       },

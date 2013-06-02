@@ -106,6 +106,17 @@ mpagespace.model.page.prototype = {
     return result;
   },
 
+  getWidgetsInPanel: function(panelId) {
+    var result = [];
+
+    if (panelId in this.layout) {
+      for (var i=0; i<this.layout[panelId].length; i++) {
+        result.push(this.getWidget(this.layout[panelId][i]));
+      }
+    }
+    return result;
+  },
+
   alignLayout: function() {
     var nPanelsReq = this.model.getPreferences().layout.numberOfPanels;
     var nPanels = 1;
@@ -194,17 +205,14 @@ mpagespace.model.page.prototype = {
   },
 
   createAndAddWidget: function(url, panelId, refWidget) {
-    var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
-    mpagespace.urlParser.parseURL(url, url.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
-
     var config = {
       widgetId: this.model.getNextWidgetId(),
-      title: url.substr(authPos.value, authLen.value),
       url: url
     };
     var widget = new mpagespace.model.feed(config, this);
     this.setDirty();
     this.addWidget(widget, panelId, refWidget);
+    mpagespace.dump('page.createAndAddWidget: Done');
 
     return widget;
   },

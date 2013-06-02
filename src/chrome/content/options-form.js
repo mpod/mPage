@@ -145,6 +145,7 @@ mpagespace.optionsForm = {
 
     // Init misc
     document.getElementById('lock').checked = pref.lock;
+    document.getElementById('toolbar').checked = pref.toolbar;
 
     // Init about
     document.getElementById('version').setAttribute('value', ' ' + mpagespace.version);
@@ -223,7 +224,7 @@ mpagespace.optionsForm = {
     el = document.getElementById('colorMenuSel');
     el.color = pref.colors.menuSel;
     el = document.getElementById('colorError');
-    el.color = pref.colors.error;
+    el.color = pref.colors.misc;
   },
 
   shuffleColors: function() {
@@ -325,7 +326,7 @@ mpagespace.optionsForm = {
         menu: document.getElementById('colorMenu').color,
         menuText: document.getElementById('colorMenuText').color,
         menuSel: document.getElementById('colorMenuSel').color,  
-        error: document.getElementById('colorError').color
+        misc: document.getElementById('colorError').color
       },
       font: {
         family: document.getElementById('fontFamily').value,
@@ -336,6 +337,7 @@ mpagespace.optionsForm = {
       },
       customCss: f,
       favicon: document.getElementById('favicon').checked,
+      toolbar: document.getElementById('toolbar').checked,
       lock: document.getElementById('lock').checked
     };
 

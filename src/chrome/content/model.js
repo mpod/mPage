@@ -253,12 +253,16 @@ mpagespace.model.prototype = {
     mpagespace.observerService.notifyObservers(null, 'mpage-model', 'page-deleted');  
   },
 
-  addPage: function(pageTitle) {
+  addPage: function(pageTitle, refPage) {
     var pageOrder = this.getPageOrder();
+    var refPageIdx = null;
     for (var i=0; i<pageOrder.length; i++) {
       if (this.getPage(pageOrder[i]).title == pageTitle) {
         mpagespace.dump('model.addPage: Page with the same name already exists.');
         throw new Error(mpagespace.translate('addPage.error.message'));
+      }
+      if (refPage && pageOrder[i] == refPage.id) {
+        refPageIdx = i;
       }
     }
 
@@ -270,7 +274,11 @@ mpagespace.model.prototype = {
     var page = new mpagespace.model.page(pageConfig, this);
     this.config.pages['page-' + page.id] = page.getConfig();
     this.pages[page.id] = page;
-    this.config.pageOrder.push(page.id);
+    if (refPageIdx == null) {
+      this.config.pageOrder.splice(refPageIdx + 1, 0, page.id);
+    } else {
+      this.config.pageOrder.push(page.id);
+    }
     this.dirty = true;
     mpagespace.dump('model.addPage: Done');
     mpagespace.observerService.notifyObservers(null, 'mpage-model', 'page-added');  
@@ -387,12 +395,16 @@ mpagespace.model.prototype = {
   },
 
   reset: function() {
+    var createWidget = function(url) {
+      var w = page.createAndAddWidget(url, null, null);
+      w.title = null;
+    }
+
     this.empty();
     var page = this.getPage();
+
     page.createAndAddWidget('http://blog.mozilla.com/feed/', null, null);
-    page.createAndAddWidget('http://www.reddit.com/r/worldnews/', null, null);
-    page.createAndAddWidget('http://rss.slashdot.org/Slashdot/slashdot', null, null);
-    page.createAndAddWidget('http://feeds.wired.com/wired/index', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/worldnews/.rss', null, null);
     page.createAndAddWidget('http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml', null, null);
     page.createAndAddWidget('http://feeds.guardian.co.uk/theguardian/rss', null, null);
     page.load();
@@ -401,8 +413,9 @@ mpagespace.model.prototype = {
     page.createAndAddWidget('http://feeds.arstechnica.com/arstechnica/everything', null, null);
     page.createAndAddWidget('http://rss.slashdot.org/Slashdot/slashdot', null, null);
     page.createAndAddWidget('http://feeds.wired.com/wired/index', null, null);
-    page.createAndAddWidget('http://www.reddit.com/r/technology/', null, null);
-    page.createAndAddWidget('http://www.reddit.com/r/programming/', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/technology/.rss', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/programming/.rss', null, null);
+    page.load();
 
     page = this.addPage('Music');
     page.createAndAddWidget('http://www.mtv.com/rss/news/news_full.jhtml', null, null);
@@ -410,14 +423,16 @@ mpagespace.model.prototype = {
     page.createAndAddWidget('http://www.rollingstone.com/siteServices/rss/allNews', null, null);
     page.createAndAddWidget('http://pitchfork.com/rss/news/', null, null);
     page.createAndAddWidget('http://feeds.feedburner.com/stereogum/cBYa?format=xml', null, null);
-    page.createAndAddWidget('http://www.reddit.com/r/Music/', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/Music/.rss', null, null);
+    page.load();
 
     page = this.addPage('Science');
     page.createAndAddWidget('http://www.sciencenews.org/view/feed/name/allrss', null, null);
     page.createAndAddWidget('http://feeds.sciencedaily.com/sciencedaily?format=xml', null, null);
     page.createAndAddWidget('http://feeds.guardian.co.uk/theguardian/science/rss', null, null);
     page.createAndAddWidget('http://www.nasa.gov/rss/breaking_news.rss', null, null);
-    page.createAndAddWidget('http://www.reddit.com/r/science/', null, null);
+    page.createAndAddWidget('http://www.reddit.com/r/science/.rss', null, null);
+    page.load();
 
     mpagespace.observerService.notifyObservers(null, 'mpage-model', 'model-reset');  
   }

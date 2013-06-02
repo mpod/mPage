@@ -231,8 +231,10 @@
       <tabpanel>
         <vbox flex="1">
           <groupbox>
-            <caption label="&options.lock.caption;"/>
+            <caption label="&options.general.caption;"/>
             <checkbox id="lock" label="&options.lock.label;" accesskey="&options.lock.accesskey;"
+              oncommand="mpagespace.optionsForm.apply();"/>
+            <checkbox id="toolbar" label="&options.toolbar.label;" accesskey="&options.toolbar.accesskey;"
               oncommand="mpagespace.optionsForm.apply();"/>
           </groupbox>
           <groupbox>
