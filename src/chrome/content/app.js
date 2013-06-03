@@ -1,4 +1,4 @@
-// Author: Matija Podravec, 2012.
+// Author: Matija Podravec, 2012-2013
 
 if (!mpagespace.app) mpagespace.app = {};
 else if (typeof mpagespace.app != 'object')
@@ -35,7 +35,11 @@ mpagespace.app = {
     var self = mpagespace.app;
     self.firstRun(); 
     mpagespace.observerService.addObserver(self.observer, 'mpage-model', false); 
-    mpagespace.fuelApplication.storage.set('mpage-model', new mpagespace.model()); 
+    var model = mpagespace.app.getModel();
+    if (!model) {
+      model = new mpagespace.model();
+    }
+    mpagespace.fuelApplication.storage.set('mpage-model', model); 
   },
 
   close: function() {
@@ -46,8 +50,9 @@ mpagespace.app = {
     }
   },
 
+  mpageUrl: 'chrome://mpagespace/content/main.xul',
+
   openPage: function(pageId) {
-    var url = 'chrome://mpagespace/content/main.xul';
     var wm = mpagespace.windowMediator;
     var browserEnumerator = wm.getEnumerator("navigator:browser");  
     var found = false;
@@ -58,7 +63,7 @@ mpagespace.app = {
       var numTabs = tabbrowser.browsers.length;  
       for (var index = 0; index < numTabs; index++) {  
         var currentBrowser = tabbrowser.getBrowserAtIndex(index);  
-        if (currentBrowser.currentURI.spec == url) {  
+        if (currentBrowser.currentURI.spec == mpagespace.app.mpageUrl) {  
           tabbrowser.selectedTab = tabbrowser.tabContainer.childNodes[index];  
           browserWin.focus();  
           found = true;
@@ -88,8 +93,8 @@ mpagespace.app = {
     var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addPage.title'), 
         mpagespace.translate('addPage.message'), input, null, check);   
     if (result) {
-      var model = mpagespace.app.getModel();
       try {
+        var model = mpagespace.app.getModel();
         var page = model.addPage(input.value, model.getPage());
         model.changeActivePage(page.id);
       } catch (e) {
@@ -130,19 +135,23 @@ mpagespace.app = {
     var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addFeed.title'), 
         mpagespace.translate('addFeed.message'), input, null, check);   
     if (result) {
-      var data = input.value;
-      var page = mpagespace.app.getModel().getPage();
-      var parser = mpagespace.urlParser;
-      var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
-      parser.parseURL(data, data.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
-      if (authLen.value == -1 || authLen.value == 0) {
-        mpagespace.view.alert(mpagespace.translate('invalidUrl.message'));
-      } else {
-        if (schemeLen.value == -1) data = 'http://' + data;
-        if (pathLen.value == -1) data = data + '/'; 
+      try {
+        var data = input.value;
+        var page = mpagespace.app.getModel().getPage();
+        var parser = mpagespace.urlParser;
+        var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
+        parser.parseURL(data, data.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
+        if (authLen.value == -1 || authLen.value == 0) {
+          mpagespace.view.alert(mpagespace.translate('invalidUrl.message'));
+        } else {
+          if (schemeLen.value == -1) data = 'http://' + data;
+          if (pathLen.value == -1) data = data + '/'; 
 
-        widget = page.createAndAddWidget(data, null, page.getFirstWidget());
-        widget.load(true);
+          widget = page.createAndAddWidget(data, null, page.getFirstWidget());
+          widget.load(true);
+        }
+      } catch (e) {
+        mpagespace.view.alert(e.message);
       }
     }
   },
@@ -150,6 +159,17 @@ mpagespace.app = {
   openOptions: function() {
     window.open('chrome://mpagespace/content/options-form.xul','','chrome,centerscreen');  
     return false;
+  },
+
+  checkValidItemsInTreeMenu: function(menupopup) {
+    var recentWindow = mpagespace.windowMediator.getMostRecentWindow('navigator:browser');
+    var url = recentWindow ? recentWindow.content.document.location.href : null;
+
+    var disabled = url !== mpagespace.app.mpageUrl;
+    menupopup.querySelector('menuitem[oncommand="mpagespace.app.addFeed();"]').disabled = disabled;
+    menupopup.querySelector('menuitem[oncommand="mpagespace.app.addPage();"]').disabled = disabled;
+    menupopup.querySelector('menuitem[oncommand="mpagespace.app.deletePage();"]').disabled = disabled;
+    menupopup.querySelector('menuitem[oncommand="mpagespace.app.renamePage();"]').disabled = disabled;
   },
 
   setActivePageInTreeMenu: function(pageId) {

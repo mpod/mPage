@@ -1,4 +1,4 @@
-// Author: Matija Podravec, 2012.
+// Author: Matija Podravec, 2012-2013
 
 if (!mpagespace.controller) mpagespace.controller = {};
 else if (typeof mpagespace.controller != 'object')

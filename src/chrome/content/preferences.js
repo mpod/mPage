@@ -1,4 +1,4 @@
-// Author: Matija Podravec, 2012.
+// Author: Matija Podravec, 2012-2013
 
 if (!mpagespace.model.preferences) mpagespace.model.preferences = {};
 else if (typeof mpagespace.model.preferences != 'object')
@@ -7,30 +7,30 @@ else if (typeof mpagespace.model.preferences != 'object')
 mpagespace.model.preferences = function(config) {
   config = config || {};
   var defaultConfig = {
-    schemeType: 'dark',
+    schemeType: 'light',
     schemeName: 'custom',
     colors: {
       light: {
-        background: '#ffffff',
-        border: '#D3D3D3',
-        link: '#d1c79e',
-        visited: '#e6ac32',
-        title: '#62acce',
-        menu: '#E5E5E5',
-        menuText: '#000000',
-        menuSel: '#BEBEBE',  
-        misc: '#e6ac32'
+        background: '#F5F5F5',
+        border: '#7D8C93',
+        link: '#585858',
+        visited: '#AB2525',
+        title: '#295F94',
+        menu: '#BDD8F2',
+        menuText: '#484848',
+        menuSel: '#AFBFCF',  
+        misc: '#AF0F91'
       },
       dark: {
-        background: '#2a2b2f',
-        border: '#67686b',
-        link: '#d1c79e',
-        visited: '#e6ac32',
-        title: '#62acce',
-        menu: '#9ab2c8',
-        menuText: '#2a2b2f',
-        menuSel: '#62acce',  
-        misc: '#e6ac32'
+        background: '#293134',
+        border: '#616161',
+        title: '#93C763',
+        link: '#E0E2E4',
+        visited: '#7D8C93',
+        menu: '#E0E2E4',
+        menuText: '#073642',
+        menuSel: '#93A1A1',  
+        misc: '#EC7600'
       }
     },
     font: {

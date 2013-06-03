@@ -1,4 +1,4 @@
-// Author: Matija Podravec, 2012.
+// Author: Matija Podravec, 2012-2013
 
 if (!mpagespace.model.colors) mpagespace.model.colors = {};
 else if (typeof mpagespace.model.colors != 'object')
@@ -32,6 +32,7 @@ mpagespace.model.colors.prototype = {
       result.unshift(name);
     }
     result.unshift('-');
+    result.unshift('default');
     result.unshift('custom');
 
     return result;
@@ -78,22 +79,19 @@ mpagespace.model.colors.prototype = {
       menu: colors[7],
       menuText: colors[1],
       menuSel: colors[6],
-      error: colors[12]
+      misc: colors[12]
     }
   },
 
   getScheme: function(type, name) {
-    var scheme = this.schemes[type][name];
+    if (name in this.schemes[type])
+      return this.schemes[type][name];
 
-    if (scheme == null)
-      scheme = this.config[type][name];
+    if (name in this.config[type])
+      return this.config[type][name];
 
-    for (var n in scheme) {
-      if (scheme[n] == 'none')
-        delete scheme[n];
-    }
-
-    return scheme;  
+    if (name == 'default')
+      return {}
   },
 
   addScheme: function(type, name, scheme) {
@@ -116,9 +114,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#005090", 
       "background": "#001535", 
       "title": "#87c6f0", 
-      "menuText": "#ffffff", 
+      "menuText": "#3f8fff", 
       "visited": "#9590d5", 
-      "misc": "none", 
       "border": "#305885"
     }, 
     "FU": {
@@ -129,7 +126,7 @@ mpagespace.model.colors.prototype = {
       "title": "#ffd700", 
       "menuText": "#eeeeee", 
       "visited": "#808080", 
-      "misc": "none", 
+      "misc": "#87af5f", 
       "border": "#3a3a3a"
     }, 
     "Midnight": {
@@ -140,29 +137,25 @@ mpagespace.model.colors.prototype = {
       "title": "#cd96cd", 
       "menuText": "bg", 
       "visited": "#66cd00", 
-      "misc": "none", 
-      "border": "none"
+      "misc": "#cd5555"
     }, 
-    "Desert256": {
-      "menuSel": "none", 
-      "link": "none", 
-      "menu": "none", 
-      "background": "none", 
-      "title": "none", 
-      "menuText": "none", 
-      "visited": "none", 
-      "misc": "none", 
-      "border": "none"
+    "Adrian": {
+      "menuSel": "#a9a9a9", 
+      "link": "#ffa500", 
+      "menu": "#b3b3b3", 
+      "background": "#000000", 
+      "title": "#ffa0a0", 
+      "menuText": "#ff4500", 
+      "visited": "#d1ddff"
     }, 
     "Camo": {
       "menuSel": "#caff70", 
       "link": "#cd5c5c", 
-      "menu": "none", 
       "background": "#262626", 
       "title": "#f0e68c", 
       "menuText": "#cdc673", 
       "visited": "#d2b48c", 
-      "misc": "none", 
+      "misc": "#ffe4b5", 
       "border": "#caff70"
     }, 
     "Tango": {
@@ -171,9 +164,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#4e9a06", 
       "background": "#000000", 
       "title": "#c4a000", 
-      "menuText": "#d3d7cf", 
+      "menuText": "#cc0000", 
       "visited": "#06989a", 
-      "misc": "none", 
       "border": "#eeeeec"
     }, 
     "Synic": {
@@ -182,31 +174,18 @@ mpagespace.model.colors.prototype = {
       "menu": "#ff00ff", 
       "background": "#000000", 
       "title": "#cdb7b5", 
-      "menuText": "none", 
       "visited": "#62c600", 
-      "misc": "none", 
+      "misc": "#9ac0cd", 
       "border": "#000000"
-    }, 
-    "Wombat256": {
-      "menuSel": "#cae682", 
-      "link": "#e7f6da", 
-      "menu": "#444444", 
-      "background": "#242424", 
-      "title": "#e5786d", 
-      "menuText": "#f6f3e8", 
-      "visited": "#99968b", 
-      "misc": "none", 
-      "border": "#444444"
     }, 
     "Dusk": {
       "menuSel": "#bebebe", 
       "link": "#daa520", 
-      "menu": "none", 
       "background": "#1f3048", 
       "title": "#cdb7b5", 
       "menuText": "#fffff0", 
       "visited": "#708090", 
-      "misc": "none", 
+      "misc": "#9ac0cd", 
       "border": "#bebebe"
     }, 
     "Zmrok": {
@@ -217,18 +196,17 @@ mpagespace.model.colors.prototype = {
       "title": "#cf593c", 
       "menuText": "#141414", 
       "visited": "#888888", 
-      "misc": "none", 
+      "misc": "#d9ff77", 
       "border": "#202020"
     }, 
     "DwOrange": {
       "menuSel": "#ff3200", 
       "link": "#ffa600", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#ffff00", 
       "menuText": "#ff4400", 
       "visited": "#696969", 
-      "misc": "none", 
+      "misc": "#d13800", 
       "border": "#000000"
     }, 
     "Midnight2": {
@@ -239,8 +217,7 @@ mpagespace.model.colors.prototype = {
       "title": "#cd96cd", 
       "menuText": "bg", 
       "visited": "#66cd00", 
-      "misc": "none", 
-      "border": "none"
+      "misc": "#cd5555"
     }, 
     "Gentooish": {
       "menuSel": "#000000", 
@@ -250,7 +227,7 @@ mpagespace.model.colors.prototype = {
       "title": "#b8bb00", 
       "menuText": "#cccccc", 
       "visited": "#666666", 
-      "misc": "none", 
+      "misc": "#5dff9e", 
       "border": "#333333"
     }, 
     "Wuye": {
@@ -261,7 +238,7 @@ mpagespace.model.colors.prototype = {
       "title": "#6495ed", 
       "menuText": "#7cfc00", 
       "visited": "#778899", 
-      "misc": "none", 
+      "misc": "#63b8ff", 
       "border": "#696969"
     }, 
     "Zendnb": {
@@ -272,18 +249,17 @@ mpagespace.model.colors.prototype = {
       "title": "#d08040", 
       "menuText": "#002000", 
       "visited": "#909040", 
-      "misc": "none", 
+      "misc": "#40c0c0", 
       "border": "#002000"
     }, 
     "DwBlue": {
       "menuSel": "#0000ff", 
       "link": "#ffffff", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#0000ff", 
       "menuText": "#0000ff", 
       "visited": "#696969", 
-      "misc": "none", 
+      "misc": "#0000bb", 
       "border": "#000000"
     }, 
     "Sorcerer": {
@@ -294,7 +270,7 @@ mpagespace.model.colors.prototype = {
       "title": "#ff9800", 
       "menuText": "#ffffff", 
       "visited": "#707670", 
-      "misc": "none", 
+      "misc": "#779b70", 
       "border": "#404c4c"
     }, 
     "Wombat": {
@@ -305,7 +281,7 @@ mpagespace.model.colors.prototype = {
       "title": "#e5786d", 
       "menuText": "#f6f3e8", 
       "visited": "#99968b", 
-      "misc": "none", 
+      "misc": "#95e454", 
       "border": "#444444"
     }, 
     "Maroloccio": {
@@ -316,40 +292,27 @@ mpagespace.model.colors.prototype = {
       "title": "#82ade0", 
       "menuText": "#8b9aaa", 
       "visited": "#006666", 
-      "misc": "none", 
+      "misc": "#4c4cad", 
       "border": "#333366"
     }, 
-    "Jellybeans": {
-      "menuSel": "none", 
-      "link": "none", 
-      "menu": "none", 
-      "background": "none", 
-      "title": "none", 
-      "menuText": "none", 
-      "visited": "none", 
-      "misc": "none", 
-      "border": "none"
-    }, 
-    "Calmar256-dark": {
-      "menuSel": "none", 
-      "link": "none", 
-      "menu": "none", 
-      "background": "none", 
-      "title": "none", 
-      "menuText": "none", 
-      "visited": "none", 
-      "misc": "none", 
-      "border": "none"
+    "Freya": {
+      "menuSel": "#c0aa94", 
+      "link": "#d4b064", 
+      "menu": "#a78869", 
+      "background": "#2a2a2a", 
+      "title": "#afe091", 
+      "menuText": "#c2aed0", 
+      "visited": "#c2b680", 
+      "border": "#564d43"
     }, 
     "DwGreen": {
       "menuSel": "#008800", 
       "link": "#ffffff", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#00ff00", 
       "menuText": "#00ff00", 
       "visited": "#696969", 
-      "misc": "none", 
+      "misc": "#00bb00", 
       "border": "#000000"
     }, 
     "Oceanblack": {
@@ -360,18 +323,17 @@ mpagespace.model.colors.prototype = {
       "title": "#00cdcd", 
       "menuText": "#90ee90", 
       "visited": "#7c7268", 
-      "misc": "none", 
+      "misc": "#80a0ff", 
       "border": "#999999"
     }, 
     "DwCyan": {
       "menuSel": "#00ffff", 
       "link": "#ffffff", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#00ffff", 
       "menuText": "#00ffff", 
       "visited": "#696969", 
-      "misc": "none", 
+      "misc": "#00bbbb", 
       "border": "#000000"
     }, 
     "DesertEx": {
@@ -380,9 +342,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#445599", 
       "background": "#2b2b2b", 
       "title": "#fa8072", 
-      "menuText": "#ffffff", 
+      "menuText": "#ee799f", 
       "visited": "#7ccd7c", 
-      "misc": "none", 
       "border": "#666666"
     }, 
     "Mizore": {
@@ -391,9 +352,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#a6a190", 
       "background": "#000000", 
       "title": "#e080ff", 
-      "menuText": "#000000", 
+      "menuText": "#8070ff", 
       "visited": "#b0b0b0", 
-      "misc": "none", 
       "border": "#c2bfa5"
     }, 
     "Leo": {
@@ -404,7 +364,7 @@ mpagespace.model.colors.prototype = {
       "title": "#ffff00", 
       "menuText": "#ffffff", 
       "visited": "#a8a8a8", 
-      "misc": "none", 
+      "misc": "#d7af87", 
       "border": "#eeeeee"
     }, 
     "Candycode": {
@@ -413,9 +373,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#a6a190", 
       "background": "#050505", 
       "title": "#ff6050", 
-      "menuText": "#000000", 
+      "menuText": "#bb88dd", 
       "visited": "#ff9922", 
-      "misc": "none", 
       "border": "#c2bfa5"
     }, 
     "TIRBlack": {
@@ -426,7 +385,7 @@ mpagespace.model.colors.prototype = {
       "title": "#99cc99", 
       "menuText": "#f6f3e8", 
       "visited": "#7c7c7c", 
-      "misc": "none", 
+      "misc": "#a8ff60", 
       "border": "#202020"
     }, 
     "Northland": {
@@ -437,18 +396,15 @@ mpagespace.model.colors.prototype = {
       "title": "#035587", 
       "menuText": "#000000", 
       "visited": "#a9a9a9", 
-      "misc": "none", 
       "border": "#a9a9a9"
     }, 
     "Fnaqevan": {
       "menuSel": "#1f1f1f", 
       "link": "#b899c8", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#00b8e0", 
-      "menuText": "#e8e8e8", 
+      "menuText": "#00b098", 
       "visited": "#006699", 
-      "misc": "none", 
       "border": "#1f1f1f"
     }, 
     "Railscasts2": {
@@ -459,19 +415,7 @@ mpagespace.model.colors.prototype = {
       "title": "#6d9cbe", 
       "menuText": "#f6f3e8", 
       "visited": "#bc9458", 
-      "misc": "none", 
-      "border": "none"
-    }, 
-    "Twilight": {
-      "menuSel": "#404040", 
-      "link": "none", 
-      "menu": "#303030", 
-      "background": "none", 
-      "title": "none", 
-      "menuText": "#605958", 
-      "visited": "none", 
-      "misc": "none", 
-      "border": "none"
+      "misc": "#a5c261"
     }, 
     "Earendel": {
       "menuSel": "#f3c201", 
@@ -479,9 +423,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#3d5078", 
       "background": "#303030", 
       "title": "#dc8511", 
-      "menuText": "#dadada", 
+      "menuText": "#e09ea8", 
       "visited": "#77be21", 
-      "misc": "none", 
       "border": "#35466a"
     }, 
     "Neverness": {
@@ -492,7 +435,7 @@ mpagespace.model.colors.prototype = {
       "title": "#87ceeb", 
       "menuText": "#000000", 
       "visited": "#848484", 
-      "misc": "none", 
+      "misc": "#87ceeb", 
       "border": "#000000"
     }, 
     "Rdark": {
@@ -501,9 +444,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#2e3436", 
       "background": "#1e2426", 
       "title": "#8ae234", 
-      "menuText": "#eeeeec", 
+      "menuText": "#fcaf3e", 
       "visited": "#656763", 
-      "misc": "none", 
       "border": "#888a85"
     }, 
     "Darkspectrum": {
@@ -514,7 +456,7 @@ mpagespace.model.colors.prototype = {
       "title": "#ef5939", 
       "menuText": "#c0c0c0", 
       "visited": "#8a8a8a", 
-      "misc": "none", 
+      "misc": "#fce94f", 
       "border": "#3c3c3c"
     }, 
     "Manxome": {
@@ -524,9 +466,7 @@ mpagespace.model.colors.prototype = {
       "background": "#000000", 
       "title": "#00ffff", 
       "menuText": "#ffffff", 
-      "visited": "#00ff00", 
-      "misc": "none", 
-      "border": "none"
+      "visited": "#00ff00"
     }, 
     "Vimhut": {
       "menuSel": "#999999", 
@@ -536,7 +476,7 @@ mpagespace.model.colors.prototype = {
       "title": "#eb78eb", 
       "menuText": "#b0b0b0", 
       "visited": "#58a9de", 
-      "misc": "none", 
+      "misc": "#eb78eb", 
       "border": "#000000"
     }, 
     "Xoria256": {
@@ -545,20 +485,18 @@ mpagespace.model.colors.prototype = {
       "menu": "#bcbcbc", 
       "background": "#1c1c1c", 
       "title": "#ffffaf", 
-      "menuText": "#000000", 
+      "menuText": "#afdf87", 
       "visited": "#808080", 
-      "misc": "none", 
       "border": "#3a3a3a"
     }, 
     "DwPurple": {
       "menuSel": "#ff00ff", 
       "link": "#ffffff", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#ff00ff", 
       "menuText": "#ff00ff", 
       "visited": "#696969", 
-      "misc": "none", 
+      "misc": "#bb00bb", 
       "border": "#000000"
     }, 
     "Asu1dark": {
@@ -567,9 +505,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#ffffff", 
       "background": "#110022", 
       "title": "#ff9900", 
-      "menuText": "#0000ff", 
+      "menuText": "#33ff66", 
       "visited": "#99cc99", 
-      "misc": "none", 
       "border": "#666666"
     }, 
     "Kellys": {
@@ -580,19 +517,17 @@ mpagespace.model.colors.prototype = {
       "title": "#d1c79e", 
       "menuText": "#2a2b2f", 
       "visited": "#67686b", 
-      "misc": "none", 
+      "misc": "#d1c79e", 
       "border": "#e1e0e5"
     }, 
-    "Freya": {
-      "menuSel": "#c0aa94", 
-      "link": "#d4b064", 
-      "menu": "#a78869", 
-      "background": "#2a2a2a", 
-      "title": "#afe091", 
-      "menuText": "#000000", 
-      "visited": "#c2b680", 
-      "misc": "none", 
-      "border": "#564d43"
+    "Candy": {
+      "menuSel": "#c8c8d8", 
+      "link": "#e0e080", 
+      "background": "#000000", 
+      "title": "#90d0ff", 
+      "menuText": "#40f0a0", 
+      "visited": "#c0c0d0", 
+      "border": "#c8c8d8"
     }, 
     "Herald": {
       "menuSel": "#f17a00", 
@@ -602,62 +537,49 @@ mpagespace.model.colors.prototype = {
       "title": "#6df584", 
       "menuText": "#660300", 
       "visited": "#696567", 
-      "misc": "none", 
+      "misc": "#ffb539", 
       "border": "#1f1f1f"
     }, 
     "Blackbeauty": {
-      "menuSel": "none", 
       "link": "#ffa500", 
       "menu": "#0000ff", 
       "background": "#000000", 
       "title": "#ffa0a0", 
       "menuText": "#ffffff", 
       "visited": "#80a0ff", 
-      "misc": "none", 
-      "border": "none"
+      "misc": "#a52a2a"
     }, 
     "Colorer": {
       "menuSel": "#bebebe", 
       "link": "#ff0000", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#ffffff", 
       "menuText": "#008b8b", 
       "visited": "#b46918", 
-      "misc": "none", 
-      "border": "none"
+      "misc": "#ffff00"
     }, 
     "Vibrantink": {
-      "menuSel": "none", 
       "link": "#ff6600", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#ffee98", 
-      "menuText": "none", 
       "visited": "#9933cc", 
-      "misc": "none", 
-      "border": "none"
+      "misc": "#66ff00"
     }, 
-    "Candy": {
-      "menuSel": "#c8c8d8", 
-      "link": "#e0e080", 
-      "menu": "none", 
-      "background": "#000000", 
-      "title": "#90d0ff", 
-      "menuText": "#40f0d0", 
-      "visited": "#c0c0d0", 
-      "misc": "none", 
-      "border": "#c8c8d8"
+    "Tango2": {
+      "link": "#5eafe5", 
+      "background": "#2e3436", 
+      "title": "#8ae234", 
+      "menuText": "#e9ba6e", 
+      "visited": "#6d7e8a"
     }, 
     "DwYellow": {
       "menuSel": "#ffff00", 
       "link": "#ffffff", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#ffff00", 
       "menuText": "#ffff00", 
       "visited": "#696969", 
-      "misc": "none", 
+      "misc": "#bbbb00", 
       "border": "#000000"
     }, 
     "Wombat256mod": {
@@ -668,7 +590,7 @@ mpagespace.model.colors.prototype = {
       "title": "#e5786d", 
       "menuText": "#ffffd7", 
       "visited": "#9c998e", 
-      "misc": "none", 
+      "misc": "#95e454", 
       "border": "#444444"
     }, 
     "Fruity": {
@@ -679,7 +601,7 @@ mpagespace.model.colors.prototype = {
       "title": "#0086d2", 
       "menuText": "#ffffff", 
       "visited": "#00d2ff", 
-      "misc": "none", 
+      "misc": "#0086d2", 
       "border": "#a0b0c0"
     }, 
     "Moria": {
@@ -688,20 +610,17 @@ mpagespace.model.colors.prototype = {
       "menu": "#708bc5", 
       "background": "#ffffff", 
       "title": "#077807", 
-      "menuText": "#000000", 
+      "menuText": "#800090", 
       "visited": "#786000", 
-      "misc": "none", 
       "border": "#a6b7db"
     }, 
     "Matrix": {
       "menuSel": "#339933", 
       "link": "#44cc44", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#55ff55", 
-      "menuText": "#44cc44", 
+      "menuText": "#339933", 
       "visited": "#226622", 
-      "misc": "none", 
       "border": "#339933"
     }, 
     "Manuscript": {
@@ -710,9 +629,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#494949", 
       "background": "#242424", 
       "title": "#cea3ce", 
-      "menuText": "#e0e0e0", 
+      "menuText": "#bf7f6f", 
       "visited": "#7f9f7f", 
-      "misc": "none", 
       "border": "#c2bfa5"
     }, 
     "Metacosm": {
@@ -723,7 +641,7 @@ mpagespace.model.colors.prototype = {
       "title": "#ffa0a0", 
       "menuText": "#ffffff", 
       "visited": "#80a0ff", 
-      "misc": "none", 
+      "misc": "#ffa0a0", 
       "border": "#000000"
     }, 
     "Zenburn": {
@@ -734,29 +652,25 @@ mpagespace.model.colors.prototype = {
       "title": "#dca3a3", 
       "menuText": "#9f9f9f", 
       "visited": "#7f9f7f", 
-      "misc": "none", 
+      "misc": "#cc9393", 
       "border": "#688060"
     }, 
     "Neon": {
       "menuSel": "#c4c4c4", 
       "link": "#ffc890", 
-      "menu": "none", 
       "background": "#303030", 
       "title": "#92d4ff", 
-      "menuText": "#a0d0ff", 
+      "menuText": "#ffa8ff", 
       "visited": "#c0c0c0", 
-      "misc": "none", 
       "border": "#c4c4c4"
     }, 
     "Golden": {
-      "menuSel": "none", 
       "link": "#ffa500", 
       "menu": "#ddbb00", 
       "background": "#000000", 
       "title": "#ff0000", 
-      "menuText": "#000000", 
+      "menuText": "#ffddaa", 
       "visited": "#978345", 
-      "misc": "none", 
       "border": "#978345"
     }, 
     "Inkpot": {
@@ -767,7 +681,7 @@ mpagespace.model.colors.prototype = {
       "title": "#ffcd8b", 
       "menuText": "#eeeeee", 
       "visited": "#cd8b00", 
-      "misc": "none", 
+      "misc": "#ffcd8b", 
       "border": "#3e3e5e"
     }, 
     "Lettuce": {
@@ -778,19 +692,19 @@ mpagespace.model.colors.prototype = {
       "title": "#ffaf5f", 
       "menuText": "#87ffaf", 
       "visited": "#af8787", 
-      "misc": "none", 
+      "misc": "#ffaf5f", 
       "border": "#303030"
     }, 
-    "Adrian": {
-      "menuSel": "#a9a9a9", 
-      "link": "#ffa500", 
-      "menu": "#b3b3b3", 
-      "background": "#000000", 
-      "title": "#ffa0a0", 
-      "menuText": "#000000", 
-      "visited": "#d1ddff", 
-      "misc": "none", 
-      "border": "none"
+    "Wombat256": {
+      "menuSel": "#cae682", 
+      "link": "#e7f6da", 
+      "menu": "#444444", 
+      "background": "#242424", 
+      "title": "#e5786d", 
+      "menuText": "#f6f3e8", 
+      "visited": "#99968b", 
+      "misc": "#95e454", 
+      "border": "#444444"
     }, 
     "LiquidCarbon": {
       "menuSel": "#0000ff", 
@@ -800,7 +714,7 @@ mpagespace.model.colors.prototype = {
       "title": "#cdad00", 
       "menuText": "#0000ff", 
       "visited": "#809090", 
-      "misc": "none", 
+      "misc": "#559b70", 
       "border": "#445566"
     }, 
     "Molokai": {
@@ -811,7 +725,7 @@ mpagespace.model.colors.prototype = {
       "title": "#ae81ff", 
       "menuText": "#66d9ef", 
       "visited": "#465457", 
-      "misc": "none", 
+      "misc": "#e6db74", 
       "border": "#080808"
     }, 
     "Luinnar": {
@@ -820,21 +734,9 @@ mpagespace.model.colors.prototype = {
       "menu": "#a6a190", 
       "background": "#000000", 
       "title": "#00ff20", 
-      "menuText": "#000000", 
+      "menuText": "#00b000", 
       "visited": "#b0b010", 
-      "misc": "none", 
       "border": "#c2bfa5"
-    }, 
-    "Two2Tango": {
-      "menuSel": "none", 
-      "link": "#d3d7cf", 
-      "menu": "none", 
-      "background": "#2e3436", 
-      "title": "none", 
-      "menuText": "none", 
-      "visited": "none", 
-      "misc": "none", 
-      "border": "none"
     }, 
     "Dejavu": {
       "menuSel": "#000025", 
@@ -844,44 +746,21 @@ mpagespace.model.colors.prototype = {
       "title": "#68b8fd", 
       "menuText": "bg", 
       "visited": "#13c1d5", 
-      "misc": "none", 
+      "misc": "#55eea4", 
       "border": "#101060"
     }, 
     "DwRed": {
       "menuSel": "#ff0000", 
       "link": "#ffffff", 
-      "menu": "none", 
       "background": "#000000", 
       "title": "#ff0000", 
       "menuText": "#ff0000", 
       "visited": "#696969", 
-      "misc": "none", 
+      "misc": "#bb0000", 
       "border": "#000000"
-    }, 
-    "Tango2": {
-      "menuSel": "none", 
-      "link": "#5eafe5", 
-      "menu": "none", 
-      "background": "#2e3436", 
-      "title": "#8ae234", 
-      "menuText": "none", 
-      "visited": "#6d7e8a", 
-      "misc": "none", 
-      "border": "none"
     }
   }, 
   "light": {
-    "Impact": {
-      "menuSel": "none", 
-      "link": "none", 
-      "menu": "none", 
-      "background": "none", 
-      "title": "none", 
-      "menuText": "none", 
-      "visited": "none", 
-      "misc": "none", 
-      "border": "none"
-    }, 
     "Silent": {
       "menuSel": "#f1ffc1", 
       "link": "#000000", 
@@ -890,41 +769,27 @@ mpagespace.model.colors.prototype = {
       "title": "#006e26", 
       "menuText": "#000000", 
       "visited": "#888786", 
-      "misc": "none", 
+      "misc": "#bf0303", 
       "border": "#f1ffc1"
     }, 
-    "Habilight": {
-      "menuSel": "#ffa500", 
-      "link": "#ee0000", 
-      "menu": "#bddfff", 
-      "background": "#f9f5f9", 
-      "title": "#b91f49", 
+    "Simpleandfriendly": {
+      "link": "#6a5acd", 
+      "menu": "#cccccc", 
+      "background": "#e3e3e3", 
+      "title": "#8080a0", 
       "menuText": "#000000", 
-      "visited": "#008b8b", 
-      "misc": "none", 
-      "border": "#56a0ee"
+      "visited": "#ffa500", 
+      "misc": "#80a0ff"
     }, 
     "Autumnleaf": {
       "menuSel": "#ffeebb", 
       "link": "#000000", 
-      "menu": "none", 
       "background": "#fffdfa", 
       "title": "#003399", 
       "menuText": "#003399", 
       "visited": "#002200", 
-      "misc": "none", 
+      "misc": "#003399", 
       "border": "#aa8866"
-    }, 
-    "Autumn2": {
-      "menuSel": "#ddd9b8", 
-      "link": "#008b8b", 
-      "menu": "#aaccaa", 
-      "background": "#f0f2f0", 
-      "title": "#bb6666", 
-      "menuText": "#007700", 
-      "visited": "#ccaaaa", 
-      "misc": "none", 
-      "border": "#a9a9a9"
     }, 
     "Greyhouse": {
       "menuSel": "#cccccc", 
@@ -934,7 +799,7 @@ mpagespace.model.colors.prototype = {
       "title": "#400080", 
       "menuText": "bg", 
       "visited": "#205e50", 
-      "misc": "none", 
+      "misc": "#0000a0", 
       "border": "#999999"
     }, 
     "Imperial": {
@@ -945,7 +810,7 @@ mpagespace.model.colors.prototype = {
       "title": "#007000", 
       "menuText": "#002060", 
       "visited": "#606000", 
-      "misc": "none", 
+      "misc": "#803000", 
       "border": "#333333"
     }, 
     "TAqua": {
@@ -954,31 +819,25 @@ mpagespace.model.colors.prototype = {
       "menu": "#1679f9", 
       "background": "#ffffff", 
       "title": "#0384f6", 
-      "menuText": "#ffffff", 
+      "menuText": "#0bbf20", 
       "visited": "#0e8ed3", 
-      "misc": "none", 
       "border": "#0e8ed3"
     }, 
     "Fog": {
-      "menuSel": "none", 
       "link": "#aa8822", 
       "menu": "fg", 
       "background": "#cccccc", 
       "title": "#7070a0", 
-      "menuText": "#a9a9a9", 
-      "visited": "#444499", 
-      "misc": "none", 
-      "border": "none"
+      "menuText": "#408040", 
+      "visited": "#444499"
     }, 
     "Nuvola": {
-      "menuSel": "none", 
       "link": "#ee0000", 
-      "menu": "none", 
       "background": "#f9f5f9", 
       "title": "#b91f49", 
       "menuText": "#0070ff", 
       "visited": "#3f6b5b", 
-      "misc": "none", 
+      "misc": "#b91f49", 
       "border": "#56a0ee"
     }, 
     "Tolerable": {
@@ -987,9 +846,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#00ff00", 
       "background": "#ffffff", 
       "title": "#8b0000", 
-      "menuText": "#000000", 
+      "menuText": "#008b8b", 
       "visited": "#555555", 
-      "misc": "none", 
       "border": "#333333"
     }, 
     "Winter": {
@@ -1000,18 +858,16 @@ mpagespace.model.colors.prototype = {
       "title": "#a000a0", 
       "menuText": "#ffffff", 
       "visited": "#008000", 
-      "misc": "none", 
+      "misc": "#008080", 
       "border": "#909090"
     }, 
     "Autumn": {
       "menuSel": "#904838", 
       "link": "#8040f0", 
-      "menu": "none", 
       "background": "#fff4e8", 
       "title": "#00884c", 
-      "menuText": "#d06000", 
+      "menuText": "#0090a0", 
       "visited": "#ff5050", 
-      "misc": "none", 
       "border": "#904838"
     }, 
     "Zenesque": {
@@ -1022,8 +878,19 @@ mpagespace.model.colors.prototype = {
       "title": "#8d5c57", 
       "menuText": "#656565", 
       "visited": "#777777", 
-      "misc": "none", 
+      "misc": "#5d7a64", 
       "border": "#222222"
+    }, 
+    "Habilight": {
+      "menuSel": "#ffa500", 
+      "link": "#ee0000", 
+      "menu": "#bddfff", 
+      "background": "#f9f5f9", 
+      "title": "#b91f49", 
+      "menuText": "#000000", 
+      "visited": "#008b8b", 
+      "misc": "#b91f49", 
+      "border": "#56a0ee"
     }, 
     "Pyte": {
       "menuSel": "#8090a0", 
@@ -1033,29 +900,25 @@ mpagespace.model.colors.prototype = {
       "title": "#a07040", 
       "menuText": "#ffffff", 
       "visited": "#a0b0c0", 
-      "misc": "none", 
+      "misc": "#4070a0", 
       "border": "#a0b0c0"
     }, 
     "Fruit": {
       "menuSel": "#404040", 
       "link": "#4a9400", 
-      "menu": "none", 
       "background": "#f8f8f8", 
       "title": "#8016ff", 
-      "menuText": "#ff4080", 
+      "menuText": "#e06800", 
       "visited": "#ff4080", 
-      "misc": "none", 
       "border": "#404040"
     }, 
     "Fine_blue": {
       "menuSel": "#404054", 
       "link": "#005858", 
-      "menu": "none", 
       "background": "#f8f8f8", 
       "title": "#2020ff", 
-      "menuText": "#0070ff", 
+      "menuText": "#0070e6", 
       "visited": "#ff00c0", 
-      "misc": "none", 
       "border": "#404054"
     }, 
     "MickeySoft": {
@@ -1066,7 +929,7 @@ mpagespace.model.colors.prototype = {
       "title": "#008080", 
       "menuText": "#000000", 
       "visited": "#007000", 
-      "misc": "none", 
+      "misc": "#900000", 
       "border": "#d4d0c8"
     }, 
     "Ironman": {
@@ -1074,10 +937,8 @@ mpagespace.model.colors.prototype = {
       "link": "#0000ff", 
       "menu": "#bddfff", 
       "background": "#f0f0f0", 
-      "title": "none", 
       "menuText": "#000000", 
       "visited": "#a0b0c0", 
-      "misc": "none", 
       "border": "#a0b0c0"
     }, 
     "MayanSmoke": {
@@ -1088,7 +949,7 @@ mpagespace.model.colors.prototype = {
       "title": "#ff8c00", 
       "menuText": "#8b5a00", 
       "visited": "#96aac2", 
-      "misc": "none", 
+      "misc": "#458b74", 
       "border": "#99aabb"
     }, 
     "Scame": {
@@ -1099,7 +960,7 @@ mpagespace.model.colors.prototype = {
       "title": "#5f9ea0", 
       "menuText": "#000000", 
       "visited": "#b22222", 
-      "misc": "none", 
+      "misc": "#bc8f8f", 
       "border": "#bfbfbf"
     }, 
     "Chela_light": {
@@ -1108,9 +969,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#cccccc", 
       "background": "#fafafa", 
       "title": "#cc2222", 
-      "menuText": "#222222", 
+      "menuText": "#2222ff", 
       "visited": "#339900", 
-      "misc": "none", 
       "border": "#2222ff"
     }, 
     "Github": {
@@ -1121,7 +981,7 @@ mpagespace.model.colors.prototype = {
       "title": "#177f80", 
       "menuText": "#ffffff", 
       "visited": "#999988", 
-      "misc": "none", 
+      "misc": "#d81745", 
       "border": "#bbbbbb"
     }, 
     "IntelliJ": {
@@ -1132,29 +992,17 @@ mpagespace.model.colors.prototype = {
       "title": "#0000ff", 
       "menuText": "#000000", 
       "visited": "#808080", 
-      "misc": "none", 
+      "misc": "#008000", 
       "border": "#bbbbbb"
-    }, 
-    "Simpleandfriendly": {
-      "menuSel": "none", 
-      "link": "#6a5acd", 
-      "menu": "#cccccc", 
-      "background": "#e3e3e3", 
-      "title": "#8080a0", 
-      "menuText": "#000000", 
-      "visited": "#ffa500", 
-      "misc": "none", 
-      "border": "none"
     }, 
     "Eclipse": {
       "menuSel": "#4570aa", 
       "link": "#8040f0", 
-      "menu": "none", 
       "background": "#ffffff", 
       "title": "#00884c", 
       "menuText": "#d06000", 
       "visited": "#236e25", 
-      "misc": "none", 
+      "misc": "#8010a0", 
       "border": "#904838"
     }, 
     "Oceanlight": {
@@ -1165,7 +1013,7 @@ mpagespace.model.colors.prototype = {
       "title": "#483d8b", 
       "menuText": "#d3d3d3", 
       "visited": "#b0c4de", 
-      "misc": "none", 
+      "misc": "#66cdaa", 
       "border": "#999999"
     }, 
     "BClear": {
@@ -1174,9 +1022,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#323232", 
       "background": "#ffffff", 
       "title": "#1094a0", 
-      "menuText": "#ffffff", 
+      "menuText": "#294a8c", 
       "visited": "#969696", 
-      "misc": "none", 
       "border": "#646464"
     }, 
     "VYLight": {
@@ -1185,21 +1032,16 @@ mpagespace.model.colors.prototype = {
       "menu": "#f0f5ff", 
       "background": "#ffffff", 
       "title": "#204070", 
-      "menuText": "#60656f", 
+      "menuText": "#006633", 
       "visited": "#777777", 
-      "misc": "none", 
       "border": "#eeeeee"
     }, 
     "Print_bw": {
-      "menuSel": "none", 
       "link": "#000000", 
-      "menu": "none", 
       "background": "#ffffff", 
       "title": "#000000", 
-      "menuText": "none", 
       "visited": "#000000", 
-      "misc": "none", 
-      "border": "none"
+      "misc": "#000000"
     }, 
     "Calmbreeze": {
       "menuSel": "#006699", 
@@ -1207,9 +1049,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#ececec", 
       "background": "#fffce5", 
       "title": "#1094a0", 
-      "menuText": "#000000", 
+      "menuText": "#294a8c", 
       "visited": "#969696", 
-      "misc": "none", 
       "border": "#646464"
     }, 
     "Gaea": {
@@ -1220,19 +1061,18 @@ mpagespace.model.colors.prototype = {
       "title": "#ee7600", 
       "menuText": "#000000", 
       "visited": "#a0522d", 
-      "misc": "none", 
+      "misc": "#cd853f", 
       "border": "#8b7355"
     }, 
-    "Calmar256-light": {
-      "menuSel": "none", 
-      "link": "none", 
-      "menu": "none", 
-      "background": "none", 
-      "title": "none", 
-      "menuText": "none", 
-      "visited": "none", 
-      "misc": "none", 
-      "border": "none"
+    "Autumn2": {
+      "menuSel": "#ddd9b8", 
+      "link": "#008b8b", 
+      "menu": "#aaccaa", 
+      "background": "#f0f2f0", 
+      "title": "#bb6666", 
+      "menuText": "#a9a9a9", 
+      "visited": "#ccaaaa", 
+      "border": "#a9a9a9"
     }, 
     "Newspaper": {
       "menuSel": "#716d51", 
@@ -1242,19 +1082,14 @@ mpagespace.model.colors.prototype = {
       "title": "#881a1a", 
       "menuText": "#866a45", 
       "visited": "#4e5968", 
-      "misc": "none", 
+      "misc": "#1e5432", 
       "border": "#99aabb"
     }, 
     "Vc": {
-      "menuSel": "none", 
       "link": "#4682b4", 
-      "menu": "none", 
-      "background": "none", 
       "title": "#004488", 
-      "menuText": "none", 
-      "visited": "#2e8b57", 
-      "misc": "none", 
-      "border": "none"
+      "menuText": "#0000ff", 
+      "visited": "#2e8b57"
     }, 
     "Baycomb": {
       "menuSel": "#4a85ba", 
@@ -1262,9 +1097,8 @@ mpagespace.model.colors.prototype = {
       "menu": "#3a6595", 
       "background": "#e8ebf0", 
       "title": "#3a40aa", 
-      "menuText": "#9aadd5", 
+      "menuText": "#9570b5", 
       "visited": "darkyellow", 
-      "misc": "none", 
       "border": "#525f95"
     }, 
     "Biogoo": {
@@ -1275,7 +1109,7 @@ mpagespace.model.colors.prototype = {
       "title": "#0000ff", 
       "menuText": "#000000", 
       "visited": "#0000c3", 
-      "misc": "none", 
+      "misc": "#d10000", 
       "border": "#ffffff"
     }, 
     "Sienna": {
@@ -1286,41 +1120,25 @@ mpagespace.model.colors.prototype = {
       "title": "#228b22", 
       "menuText": "#000000", 
       "visited": "#3a5fcd", 
-      "misc": "none", 
+      "misc": "#228b22", 
       "border": "#696969"
     }, 
     "Dawn": {
       "menuSel": "#b3b3b3", 
       "link": "#008b8b", 
-      "menu": "none", 
       "background": "#e5e5e5", 
       "title": "#838b8b", 
       "menuText": "#000000", 
       "visited": "#4169e1", 
-      "misc": "none", 
+      "misc": "#6e8b3d", 
       "border": "#b3b3b3"
     }, 
-    "SummerFruit256": {
-      "menuSel": "none", 
-      "link": "none", 
-      "menu": "none", 
-      "background": "none", 
-      "title": "none", 
-      "menuText": "none", 
-      "visited": "none", 
-      "misc": "none", 
-      "border": "none"
-    }, 
     "Montz": {
-      "menuSel": "none", 
       "link": "#ff0000", 
-      "menu": "none", 
       "background": "#ffffff", 
       "title": "#ff0000", 
-      "menuText": "none", 
       "visited": "#00008b", 
-      "misc": "none", 
-      "border": "none"
+      "misc": "#ff00ff"
     }
   }
 }

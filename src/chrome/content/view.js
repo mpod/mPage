@@ -1,4 +1,4 @@
-// Author: Matija Podravec, 2012.
+// Author: Matija Podravec, 2012-2013
 
 if (!mpagespace.view) mpagespace.view = {};
 else if (typeof mpagespace.view != 'object')
@@ -166,6 +166,7 @@ mpagespace.view = {
 
   alert: function(message) {
     var doc = mpagespace.view.getDoc();
+
     var msgEl = doc.getElementById('message');
     var pEl = msgEl.querySelector('p');
     
@@ -498,8 +499,8 @@ mpagespace.view = {
     styles.push('body { background-color: ' + colors.background + '; border-color: ' + colors.border + '; }');
     styles.push('#nav-list li a { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
     styles.push('#nav-list li.first a { border-color: ' + colors.border + '; }');
-    styles.push('#nav-list li.active a { color: ' + colors.visited + '; }');
-    styles.push('#nav-action-left, #nav-action-right, #mpage-menu { color: ' + colors.visited + '; }');
+    styles.push('#nav-list li.active a { color: ' + colors.misc + '; }');
+    styles.push('#nav-action-left, #nav-action-right, #mpage-menu { color: ' + colors.misc + '; }');
     styles.push('#panel-container td.column { border-color: ' + colors.border + '; }');
     styles.push('div.widget { border-color: ' + colors.border + '; }');
     styles.push('div.header a, div.header .action { color: ' + colors.title + '; }');
@@ -513,6 +514,8 @@ mpagespace.view = {
     styles.push('  box-shadow: 1px 1px ' + colors.border + '; }'); 
     styles.push('ul.menu-list a { color: ' + colors.menuText + '; }'); 
     styles.push('ul.menu-list a:hover { background-color: ' + colors.menuSel + '; }');
+    styles.push('#dd-placeholder { background-color: ' + colors.misc + '; }');
+    styles.push('#nav-drop-indicator-bar { background-color: ' + colors.misc + '; }');
 
     styles.push('body { font-size: ' + font.size + '; }');
     styles.push('body { font-family: ' + font.family + '; }');

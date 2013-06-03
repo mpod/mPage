@@ -1,4 +1,4 @@
-// Author: Matija Podravec, 2012.
+// Author: Matija Podravec, 2012-2013
 
 if (!mpagespace.options) mpagespace.optionsForm = {};
 else if (typeof mpagespace.optionsForm != 'object')
@@ -181,6 +181,8 @@ mpagespace.optionsForm = {
         el.setAttribute('value', schemes[i]);
         if (schemes[i] == 'custom') {
           el.setAttribute('label', mpagespace.translate('options.schemes.custom'));
+        } else if (schemes[i] == 'default') {
+          el.setAttribute('label', mpagespace.translate('options.schemes.default'));
         } else {
           el.setAttribute('label', schemes[i]);
         }

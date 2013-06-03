@@ -1,4 +1,4 @@
-// Author: Matija Podravec, 2012.
+// Author: Matija Podravec, 2012-2013
 
 if (!mpagespace.model.sync) mpagespace.model.sync = {};
 else if (typeof mpagespace.model.sync != 'object')

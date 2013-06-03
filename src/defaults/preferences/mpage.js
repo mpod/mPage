@@ -1,4 +1,3 @@
-pref("extensions.mpagespace.theme", "kellys");
 pref("extensions.mpagespace.debug", true);
 pref("browser.dom.window.dump.enabled", true);
 pref("javascript.options.showInConsole", true);

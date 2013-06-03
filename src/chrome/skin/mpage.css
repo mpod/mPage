@@ -10,7 +10,7 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,
 }
 
 body {
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.5em;
   font-family: "Proxima Nova Regular","Helvetica Neue",Arial,Helvetica,sans-serif;
 }
@@ -29,14 +29,12 @@ body {
 
 #panel-container td.column {
   height: 100%;
-  padding: 0 0 0 0;
+  padding: 0;
   vertical-align: top;
   border-right: 1px dashed;
 }
 
 #dd-placeholder {
-  border-style: dashed; 
-  border-width: 2px; 
   display: none;
 }
 
@@ -256,11 +254,6 @@ ul.menu-list a {
 }
 
 ul.menu-list a:hover {
-}
-
-#dd-placeholder {
-  background-color: #d1c79e;
-  border-color: #d1c79e;
 }
 
 #message {

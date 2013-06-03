@@ -39,7 +39,7 @@
 <!ENTITY options.favicons.accesskey               "F">
 
 <!ENTITY options.tab.sync                         "Sync">
-<!ENTITY options.sync.description                 "This is description of sync operation.">
+<!ENTITY options.sync.description                 "Links added to selected bookmark folders are automatically registered to related page.">
 <!ENTITY options.sync.pages.label                 "Choose a page: ">
 <!ENTITY options.sync.bookmarks.label             "Choose bookmark folder: ">
 <!ENTITY options.sync.add.label                   "Add sync relation">
@@ -49,11 +49,11 @@
 
 <!ENTITY options.tab.importexport                 "Import / Export">
 <!ENTITY options.import.caption                   "Import from...">
-<!ENTITY options.import.description               "This is a description of import operation.">
+<!ENTITY options.import.description               "Import feed collection from OPML file.">
 <!ENTITY options.importbtn.label                  "Import">
 <!ENTITY options.importbtn.accesskey              "I">
 <!ENTITY options.export.caption                   "Export to...">
-<!ENTITY options.export.description               "This is a description of export operation.">
+<!ENTITY options.export.description               "Exported OPML file preserves feed order and display styles.">
 <!ENTITY options.exportbtn.label                  "Export">
 <!ENTITY options.exportbtn.accesskey              "E">
 

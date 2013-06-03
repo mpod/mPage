@@ -1,4 +1,4 @@
-// Author: Matija Podravec, 2012.
+// Author: Matija Podravec, 2012-2013
 
 window.addEventListener("load", mpagespace.app.init, false);
 
