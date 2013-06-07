@@ -32,18 +32,18 @@ mpagespace.model.colors.prototype = {
       result.unshift(name);
     }
     result.unshift('-');
-    result.unshift('default');
     result.unshift('custom');
+    result.unshift('default');
 
     return result;
   },
 
-  getShuffledScheme: function() {
-    var h, H, backS, darkL, rangeL, i, minS, maxS, minL, maxL, s, l;
+  getShuffledScheme: function(type) {
+    var h, H, backS, darkL, backL, i, minS, maxS, minL, maxL, s, l;
     var colors = [];
 
     var random = function(start, end) {
-      return Math.floor(Math.random() * (end - start)) + start;
+      return Math.floor(Math.random() * (end + 1 - start)) + start;
     }
 
     h = random(0, 360);
@@ -52,17 +52,31 @@ mpagespace.model.colors.prototype = {
       H.push((h + i * 60) % 360);
     }
 
-    backS = random(5, 40);
-    darkL = random(0, 10);
-    rangeL = 90 - darkL;
+    if (type == 'light') {
+      backS = random(40, 70);
+      backL = random(95, 100);
+      rangeL = -random(70, 80);
+    } else {
+      backS = random(5, 40);
+      backL = random(0, 10);
+      rangeL = 90 - backL;
+    }
     for (i=0; i<8; i++) {
-      colors.push(mpagespace.husl.toHex(H[0], backS, darkL + rangeL * Math.pow(i/7, 1.5)));
+      colors.push(mpagespace.husl.toHex(H[0], backS, backL + rangeL * Math.pow(i/7, 1.5)));
     }
 
-    minS = random(30, 70);
-    maxS = minS + 30;
-    minL = random(50, 70);
-    maxL = minL + 20;
+    if (type == 'light') {
+      minS = 80;
+      maxS = 100;
+      minL = 35;
+      maxL = 55;
+    } else {
+      minS = random(30, 70);
+      maxS = minS + 30;
+      minL = random(50, 70);
+      maxL = minL + 20;
+    }
+
     for (i=0; i<8; i++) {
       h = H[random(0, 5)];
       s = random(minS, maxS);
@@ -70,16 +84,30 @@ mpagespace.model.colors.prototype = {
       colors.push(mpagespace.husl.toHex(h, s, l));
     }
     
-    return {
-      background: colors[1],
-      border: colors[4],
-      link: colors[8],
-      visited: colors[11],
-      title: colors[9],
-      menu: colors[7],
-      menuText: colors[1],
-      menuSel: colors[6],
-      misc: colors[12]
+    if (type == 'light') {
+      return {
+        background: colors[0],
+        border: colors[3],
+        link: colors[8],
+        visited: colors[11],
+        title: colors[9],
+        menu: colors[3],
+        menuText: colors[7],
+        menuSel: colors[5],
+        misc: colors[12]
+      }
+    } else {
+      return {
+        background: colors[1],
+        border: colors[4],
+        link: colors[8],
+        visited: colors[11],
+        title: colors[9],
+        menu: colors[7],
+        menuText: colors[1],
+        menuSel: colors[6],
+        misc: colors[12]
+      }
     }
   },
 

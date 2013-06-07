@@ -205,6 +205,16 @@ mpagespace.model.page.prototype = {
   },
 
   createAndAddWidget: function(url, panelId, refWidget) {
+    var parser = mpagespace.urlParser;
+    var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
+    parser.parseURL(url, url.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
+    if (authLen.value == -1 || authLen.value == 0) {
+      mpagespace.observerService.notifyObservers(null, 'mpage-model', 'alert:' + mpagespace.translate('invalidUrl.message'));  
+      throw new Error(mpagespace.translate('invalidUrl.message'));
+    } 
+    if (schemeLen.value == -1) url = 'http://' + url;
+    if (pathLen.value == -1) url = url + '/';
+
     var config = {
       widgetId: this.model.getNextWidgetId(),
       url: url

@@ -60,6 +60,9 @@ mpagespace.view = {
           case 'page-reordered':
             self.createToolbar();
             break;
+          case 'alert':
+            self.alert(data[1]);
+            break;
           default:
             mpagespace.dump('view.observe: Event ignored!');
             break;
@@ -80,7 +83,7 @@ mpagespace.view = {
       '    <div id="message">',
       '      <div class="dialog">',
       '        <p></p>',
-      '        <div class="button">Close</div>',
+      '        <div class="button">[' + mpagespace.translate('close.label') + ']</div>',
       '      </div>',
       '    </div>',
       '    <div id="toolbar">',     
@@ -516,6 +519,8 @@ mpagespace.view = {
     styles.push('ul.menu-list a:hover { background-color: ' + colors.menuSel + '; }');
     styles.push('#dd-placeholder { background-color: ' + colors.misc + '; }');
     styles.push('#nav-drop-indicator-bar { background-color: ' + colors.misc + '; }');
+    styles.push('#message .dialog { background-color: ' + colors.menu + ';');
+    styles.push('  color: ' + colors.menuText + '; }');
 
     styles.push('body { font-size: ' + font.size + '; }');
     styles.push('body { font-family: ' + font.family + '; }');

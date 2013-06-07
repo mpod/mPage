@@ -234,6 +234,7 @@ mpagespace.model.prototype = {
   deletePage: function(pageId) {
     if (this.config.pageOrder.length == 1) {
       mpagespace.dump('model.deletePage: The last page.');
+      mpagespace.observerService.notifyObservers(null, 'mpage-model', 'alert:' + mpagespace.translate('deletePage.error.message'));  
       throw new Error(mpagespace.translate('deletePage.error.message'));
     }
 
@@ -254,11 +255,17 @@ mpagespace.model.prototype = {
   },
 
   addPage: function(pageTitle, refPage) {
+    if (pageTitle == '') {
+      mpagespace.dump('model.addPage: Page title cannot be an empty string.');
+      mpagespace.observerService.notifyObservers(null, 'mpage-model', 'alert:' + mpagespace.translate('error.emptyName.message'));  
+      throw new Error(mpagespace.translate('error.emptyName.message'));
+    }
     var pageOrder = this.getPageOrder();
     var refPageIdx = null;
     for (var i=0; i<pageOrder.length; i++) {
       if (this.getPage(pageOrder[i]).title == pageTitle) {
         mpagespace.dump('model.addPage: Page with the same name already exists.');
+        mpagespace.observerService.notifyObservers(null, 'mpage-model', 'alert:' + mpagespace.translate('addPage.error.message'));  
         throw new Error(mpagespace.translate('addPage.error.message'));
       }
       if (refPage && pageOrder[i] == refPage.id) {
@@ -274,7 +281,7 @@ mpagespace.model.prototype = {
     var page = new mpagespace.model.page(pageConfig, this);
     this.config.pages['page-' + page.id] = page.getConfig();
     this.pages[page.id] = page;
-    if (refPageIdx == null) {
+    if (refPageIdx != null) {
       this.config.pageOrder.splice(refPageIdx + 1, 0, page.id);
     } else {
       this.config.pageOrder.push(page.id);
@@ -291,6 +298,7 @@ mpagespace.model.prototype = {
     for (var i=0; i<pageOrder.length; i++) {
       if (pageOrder[i] != pageId && this.getPage(pageOrder[i]).title == newTitle) {
         mpagespace.dump('model.renamePage: Page with the same name already exists.');
+        mpagespace.observerService.notifyObservers(null, 'mpage-model', 'alert:' + mpagespace.translate('renamePage.error.message'));  
         throw new Error(mpagespace.translate('renamePage.error.message'));
       }
     }
@@ -395,11 +403,6 @@ mpagespace.model.prototype = {
   },
 
   reset: function() {
-    var createWidget = function(url) {
-      var w = page.createAndAddWidget(url, null, null);
-      w.title = null;
-    }
-
     this.empty();
     var page = this.getPage();
 

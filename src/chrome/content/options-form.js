@@ -12,7 +12,7 @@ mpagespace.optionsForm = {
     var addOnChangeListener = function(id) {
       var el = document.getElementById(id);
       el.addEventListener('change', function() {
-        document.getElementById('colorScheme').selectedIndex = 0;
+        document.getElementById('colorScheme').selectedIndex = 1;
         mpagespace.optionsForm.setColorScheme();
         mpagespace.optionsForm.apply();
       }, false);
@@ -230,11 +230,12 @@ mpagespace.optionsForm = {
   },
 
   shuffleColors: function() {
+    var type = document.getElementById('schemeType').value;
     var schemes = mpagespace.app.getModel().getColorSchemes();
 
-    var pref = new mpagespace.model.preferences({colors: schemes.getShuffledScheme()});
+    var pref = new mpagespace.model.preferences({colors: schemes.getShuffledScheme(type)});
     mpagespace.optionsForm.setColors(pref);
-    document.getElementById('colorScheme').selectedIndex = 0;
+    document.getElementById('colorScheme').selectedIndex = 1;
     mpagespace.optionsForm.toggleCustomSchemeSave();
     mpagespace.optionsForm.apply();
   },
@@ -246,6 +247,12 @@ mpagespace.optionsForm = {
     var schemes = model.getColorSchemes();
     var pref = model.getPreferences();
     var schemeType = document.getElementById('schemeType').value;
+
+    if (name == '') {
+      mpagespace.promptsService.alert(null, mpagespace.translate('error.emptyName.title'),
+          mpagespace.translate('error.emptyName.message'));
+      return;
+    }
 
     textboxEl.value = '';
     schemes.addScheme(schemeType, name, pref.colors);
@@ -472,7 +479,10 @@ mpagespace.optionsForm = {
 
     switch (what) {
       case 'complete':
-        model.reset();
+        if (mpagespace.promptsService.confirm(null, mpagespace.translate('resetConfirmation.title'), 
+              mpagespace.translate('resetConfirmation.message'))) {
+          model.reset();
+        }
         break;
       case 'sync':
         model.getSync().clearSyncHistory();

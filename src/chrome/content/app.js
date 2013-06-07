@@ -93,24 +93,16 @@ mpagespace.app = {
     var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addPage.title'), 
         mpagespace.translate('addPage.message'), input, null, check);   
     if (result) {
-      try {
-        var model = mpagespace.app.getModel();
-        var page = model.addPage(input.value, model.getPage());
-        model.changeActivePage(page.id);
-      } catch (e) {
-        mpagespace.view.alert(e.message);
-      }
+      var model = mpagespace.app.getModel();
+      var page = model.addPage(input.value, model.getPage());
+      model.changeActivePage(page.id);
     }
   },
 
   deletePage: function() {
     if (mpagespace.promptsService.confirm(null, mpagespace.translate('deletePage.title'), 
         mpagespace.translate('deletePage.message'))) {  
-      try {
-        mpagespace.app.getModel().deletePage(); 
-      } catch (e) {
-        mpagespace.view.alert(e.message);
-      }
+      mpagespace.app.getModel().deletePage(); 
     } 
   },
 
@@ -121,11 +113,7 @@ mpagespace.app = {
     var result = mpagespace.promptsService.prompt(null, mpagespace.translate('renamePage.title'), 
         mpagespace.translate('renamePage.message'), input, null, check);   
     if (result) {
-      try {
-        mpagespace.app.getModel().renamePage(page.id, input.value); 
-      } catch (e) {
-        mpagespace.view.alert(e.message); 
-      }
+      mpagespace.app.getModel().renamePage(page.id, input.value); 
     }
   },
 
@@ -135,24 +123,9 @@ mpagespace.app = {
     var result = mpagespace.promptsService.prompt(null, mpagespace.translate('addFeed.title'), 
         mpagespace.translate('addFeed.message'), input, null, check);   
     if (result) {
-      try {
-        var data = input.value;
-        var page = mpagespace.app.getModel().getPage();
-        var parser = mpagespace.urlParser;
-        var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
-        parser.parseURL(data, data.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
-        if (authLen.value == -1 || authLen.value == 0) {
-          mpagespace.view.alert(mpagespace.translate('invalidUrl.message'));
-        } else {
-          if (schemeLen.value == -1) data = 'http://' + data;
-          if (pathLen.value == -1) data = data + '/'; 
-
-          widget = page.createAndAddWidget(data, null, page.getFirstWidget());
-          widget.load(true);
-        }
-      } catch (e) {
-        mpagespace.view.alert(e.message);
-      }
+      var page = mpagespace.app.getModel().getPage();
+      widget = page.createAndAddWidget(input.value, null, page.getFirstWidget());
+      widget.load(true);
     }
   },
 

@@ -40,7 +40,7 @@
             <caption label="&options.colors.caption;"/>
             <hbox align="center">
               <label value="&options.colors.type;" control="schemeType"/>
-              <menulist id="schemeType" oncommand="mpagespace.optionsForm.setSchemeType();">
+              <menulist id="schemeType" oncommand="mpagespace.optionsForm.setSchemeType(); mpagespace.optionsForm.setColorScheme();">
                 <menupopup>
                   <menuitem label="&options.colors.type.light;" value="light"/>
                   <menuitem label="&options.colors.type.dark;" value="dark"/>

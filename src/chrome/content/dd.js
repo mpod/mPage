@@ -308,7 +308,6 @@ mpagespace.dd = {
         }
 
         if (this.className.indexOf('column') != -1) { 
-          event.stopPropagation();
           var refEl = null;
           for (var n=this.lastChild; n; n=n.previousSibling) {
             if (n.nodeName.toLowerCase() == 'div' && n.className.indexOf('widget') != -1 
@@ -374,18 +373,8 @@ mpagespace.dd = {
             }
           } else {
             data = event.dataTransfer.getData('text/plain');
-            var parser = mpagespace.urlParser;
-            var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
-            parser.parseURL(data, data.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
-            if (authLen.value == -1 || authLen.value == 0) {
-              mpagespace.view.alert(mpagespace.translate('invalidUrl.message'));
-            } else {
-              if (schemeLen.value == -1) data = 'http://' + data;
-              if (pathLen.value == -1) data = data + '/'; 
-
-              widget = mpagespace.app.getModel().getPage().createAndAddWidget(data, panelId, refWidget);
-              widget.load(true);
-            }
+            widget = mpagespace.app.getModel().getPage().createAndAddWidget(data, panelId, refWidget);
+            widget.load(true);
           }
           placeholderEl.parentNode.removeChild(placeholderEl);
           el = doc.getElementById(prefix + data);
@@ -398,33 +387,35 @@ mpagespace.dd = {
     }, 
 
     dragEnter: function(event) {
-      if (!event.dataTransfer.types.contains('application/mpage-widget'))
-        return;
+      if (event.dataTransfer.types.contains('application/mpage-widget') ||
+          event.dataTransfer.types.contains('text/plain')) { 
 
-      event.preventDefault();
-      event.stopPropagation();
+        event.preventDefault();
+        event.stopPropagation();
+      }
     },
 
     dragLeave: function(event) {
-      if (!event.dataTransfer.types.contains('application/mpage-widget'))
-        return;
+      if (event.dataTransfer.types.contains('application/mpage-widget') ||
+          event.dataTransfer.types.contains('text/plain')) { 
 
-      var doc = mpagespace.view.getDoc();
-      var placeholderEl = doc.getElementById('dd-placeholder'); 
-      var isDescendant = function(parentEl, childEl) {
-        if (childEl == null)
-          return false;
-        else if (childEl.parentNode == parentEl)
-          return true;
-        else
-          return isDescendant(parentEl, childEl.parentNode);
-        
-      };
-      if (!isDescendant(this, event.relatedTarget))
-        placeholderEl.parentNode.removeChild(placeholderEl);
-      
-      event.preventDefault();
-      event.stopPropagation();
+        var doc = mpagespace.view.getDoc();
+        var placeholderEl = doc.getElementById('dd-placeholder'); 
+        var isDescendant = function(parentEl, childEl) {
+          if (childEl == null)
+            return false;
+          else if (childEl.parentNode == parentEl)
+            return true;
+          else
+            return isDescendant(parentEl, childEl.parentNode);
+
+        };
+        if (!isDescendant(this, event.relatedTarget))
+          placeholderEl.parentNode.removeChild(placeholderEl);
+
+        event.preventDefault();
+        event.stopPropagation();
+      }
     },
 
     dragEnd: function(event) {

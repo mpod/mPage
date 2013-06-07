@@ -39,7 +39,7 @@
 <!ENTITY options.favicons.accesskey               "F">
 
 <!ENTITY options.tab.sync                         "Sync">
-<!ENTITY options.sync.description                 "Links added to selected bookmark folders are automatically registered to related page.">
+<!ENTITY options.sync.description                 "Links from bookmark folders will be automatically added to related page.">
 <!ENTITY options.sync.pages.label                 "Choose a page: ">
 <!ENTITY options.sync.bookmarks.label             "Choose bookmark folder: ">
 <!ENTITY options.sync.add.label                   "Add sync relation">
