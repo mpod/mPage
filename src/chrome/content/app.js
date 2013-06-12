@@ -14,6 +14,11 @@ mpagespace.app = {
         switch (data[0]) {
           case 'model-reset':
           case 'model-loaded':
+            if (self.isFirstRun()) {
+              window.setTimeout(function(){
+                self.openPage();
+              }, 300);
+            }
           case 'page-deleted':
           case 'page-added':
           case 'page-renamed':
@@ -33,12 +38,12 @@ mpagespace.app = {
 
   init: function() {
     var self = mpagespace.app;
-    self.firstRun(); 
     mpagespace.observerService.addObserver(self.observer, 'mpage-model', false); 
     var model = mpagespace.app.getModel();
     if (!model) {
       model = new mpagespace.model();
     }
+    mpagespace.app.firstRun();
     mpagespace.fuelApplication.storage.set('mpage-model', model); 
   },
 
@@ -72,7 +77,7 @@ mpagespace.app = {
       }  
     }  
     if (!found) {
-      openUILinkIn(url, 'tab');
+      openUILinkIn(mpagespace.app.mpageUrl, 'tab');
     }
 
     mpagespace.app.getModel().changeActivePage(pageId);
@@ -173,6 +178,7 @@ mpagespace.app = {
         mpagespace.app.openPage(pageId);
       };
     }
+    var i, j, menu, item, items, suffix, el, ids, p;
 
     var model = mpagespace.app.getModel();
     if (model == null) {
@@ -180,24 +186,30 @@ mpagespace.app = {
     }
     var indicatorBarEl = document.getElementById('mpagespace-drop-indicator-bar'); 
     var menuIds = ['mpagespace-toolbar-button', 'mpagespace-button-1', 'mpagespace-button-2'];
-    for (var i=0; i<menuIds.length; i++) {
-      var menu = document.getElementById(menuIds[i]);
+    for (i=0; i<menuIds.length; i++) {
+      menu = document.getElementById(menuIds[i]);
       
       if (!menu) 
         continue;
 
+      ids = [];
+      items = menu.querySelectorAll('menuitem[checked="true"]');
+      for (j=0; j<items.length; j++) {
+        ids.push(items[j].getAttribute('id'));
+      }
+
       menu = menu.firstChild;
       menu.removeChild(menu.lastChild);
-      for (let el=menu.lastChild; 
+      for (el=menu.lastChild; 
           el && el.nodeName.toLowerCase() != 'menuseparator';
           el = el.previousSibling, el.parentNode.removeChild(el.nextSibling));
       menu.appendChild(indicatorBarEl);
 
-      for (var j=0, pageOrder=model.getPageOrder(); j<pageOrder.length; j++) {
-        let p = model.getPage(pageOrder[j]); 
-        let item = document.createElement('menuitem');
+      for (j=0, pageOrder=model.getPageOrder(); j<pageOrder.length; j++) {
+        p = model.getPage(pageOrder[j]); 
+        item = document.createElement('menuitem');
         item.setAttribute('label', p.title);
-        var suffix = menuIds[i].substr(menuIds[i].lastIndexOf('-'));
+        suffix = menuIds[i].substr(menuIds[i].lastIndexOf('-'));
         item.setAttribute('id', 'mpagespace-page-menuitem-' + p.id + suffix);
         item.addEventListener('command', prepareOpenPageFunc(p.id), false);
         item.addEventListener('dragstart', mpagespace.dd.menuHandler.dragStart, false);
@@ -205,6 +217,12 @@ mpagespace.app = {
         menu.appendChild(item);
       }
       menu.appendChild(document.createElement('menuseparator'));
+
+      for (j=0; j<ids.length; j++) {
+        item = document.getElementById(ids[j]);
+        if (item)
+          item.setAttribute('checked', 'true');
+      }
     }
   },
 
@@ -232,9 +250,21 @@ mpagespace.app = {
 
   firstRun: function() {
     if (mpagespace.fuelApplication.prefs.getValue('extensions.mpagespace.version', '0') != mpagespace.version) {
+
       mpagespace.fuelApplication.prefs.setValue('extensions.mpagespace.version', mpagespace.version);
+      mpagespace.fuelApplication.storage.set('mpage-first-run', true); 
 
       mpagespace.dump('app.firstRun: Addon is set up.');
     }
+  },
+
+  isFirstRun: function(reset) {
+    var result = mpagespace.fuelApplication.storage.get('mpage-first-run', false);
+
+    if (result && reset) {
+      mpagespace.fuelApplication.storage.set('mpage-first-run', false); 
+    }
+
+    return result;
   }
 }

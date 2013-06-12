@@ -120,9 +120,6 @@ mpagespace = {
   urlParser: Components.classes["@mozilla.org/network/url-parser;1?auth=maybe"]
     .createInstance(Components.interfaces.nsIURLParser),
 
-  htmlService: Components.classes["@mozilla.org/feed-unescapehtml;1"]
-    .getService(Components.interfaces.nsIScriptableUnescapeHTML),
-
   windowMediator: Components.classes["@mozilla.org/appshell/window-mediator;1"]
     .getService(Components.interfaces.nsIWindowMediator),
 

@@ -272,9 +272,25 @@
           <separator/>
           <text value="&options.createdby.label;" class="about-sub-title"/>
           <text value="Matija Podravec" class="about-author"/>
-          <text value="matija.podravec@gmail.com" class="about-email"/>
-          <label value="https://github.com/mpod/mPage"
-            class="about-email" href="https://github.com/mpod/mPage"/>
+          <text value="matija.podravec@gmail.com" class="text-link"
+            onclick="mpagespace.optionsForm.openLink('mailto:matija.podravec@gmail.com');"/>
+          <text value="https://github.com/mpod/mPage"
+            class="text-link" href="https://github.com/mpod/mPage"
+            onclick="mpagespace.optionsForm.openLink('https://github.com/mpod/mPage')"/>
+          <separator/>
+          <text value="&options.references.label;" class="about-sub-title"/>
+          <hbox align="center"> 
+            <text value="&options.colorschemesref1.label;"/>
+            <text class="text-link" value="&options.colorschemesref2.label;"
+              onclick="mpagespace.optionsForm.openLink('http://www.vim.org/scripts/script.php?script_id=625');"/>
+            <text value="&options.colorschemesref3.label;"/>
+          </hbox>
+          <hbox align="center">
+            <text value="&options.colorshuffleref1.label;"/>
+            <text class="text-link" value="&options.colorshuffleref2.label;"
+              onclick="mpagespace.optionsForm.openLink('http://boronine.com/husl/');"/>
+            <text value="&options.colorshuffleref3.label;"/>
+          </hbox>
         </vbox>
       </tabpanel>
     </tabpanels>

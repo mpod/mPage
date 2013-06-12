@@ -25,7 +25,7 @@ mpagespace.model.preferences = function(config) {
         background: '#293134',
         border: '#616161',
         title: '#93C763',
-        link: '#E0E2E4',
+        link: '#CFCFCF',
         visited: '#7D8C93',
         menu: '#E0E2E4',
         menuText: '#073642',

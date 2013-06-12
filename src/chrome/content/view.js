@@ -174,7 +174,7 @@ mpagespace.view = {
     var pEl = msgEl.querySelector('p');
     
     while (pEl.hasChildNodes()) pEl.removeChild(pEl.firstChild)
-    pEl.appendChild(doc.createTextNode(message));
+    pEl.innerHTML = message;
     msgEl.style.display = 'block';
   },
 
@@ -247,6 +247,10 @@ mpagespace.view = {
           panelEl.appendChild(mpagespace.view.createWidgetEl(w));
         });
       }
+    }
+
+    if (mpagespace.app.isFirstRun(true)) {
+      mpagespace.view.alert(mpagespace.translate('welcome.message'));
     }
   },
 
@@ -520,6 +524,7 @@ mpagespace.view = {
     styles.push('#dd-placeholder { background-color: ' + colors.misc + '; }');
     styles.push('#nav-drop-indicator-bar { background-color: ' + colors.misc + '; }');
     styles.push('#message .dialog { background-color: ' + colors.menu + ';');
+    styles.push('  box-shadow: 1px 1px 1px ' + colors.border + ';'); 
     styles.push('  color: ' + colors.menuText + '; }');
 
     styles.push('body { font-size: ' + font.size + '; }');
@@ -636,29 +641,29 @@ mpagespace.view = {
       {label: 'toolbar.action.addfeed', 
         listener: function(event) {
           toggleMenu();
-          mpagespace.app.addFeed();
           event.stopPropagation();
+          mpagespace.app.addFeed();
         }
       },
       {label: 'toolbar.action.addpage', 
         listener: function(event) {
           toggleMenu();
-          mpagespace.app.addPage();
           event.stopPropagation();
+          mpagespace.app.addPage();
         }
       },
       {label: 'toolbar.action.deletepage', 
         listener: function(event) {
           toggleMenu();
-          mpagespace.app.deletePage();
           event.stopPropagation();
+          mpagespace.app.deletePage();
         }
       },
       {label: 'toolbar.action.renamepage', 
         listener: function(event) {
           toggleMenu();
-          mpagespace.app.renamePage();
           event.stopPropagation();
+          mpagespace.app.renamePage();
         }
       },
       {label: 'toolbar.action.options', listener: mpagespace.app.openOptions}

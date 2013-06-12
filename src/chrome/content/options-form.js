@@ -56,7 +56,8 @@ mpagespace.optionsForm = {
       'Consolas, Monaco, "Andale Mono", monospace', 
       '"Lucida Sans", Helvetica, sans-serif',
       '"Proxima Nova Regular", "Helvetica Neue", Arial, Helvetica, sans-serif',
-      'Helvetica, Arial, Verdana, sans-serif'
+      'Helvetica, Arial, Verdana, sans-serif',
+      'Verdana,sans-serif'
     ];
     popup = menu.querySelector('menupopup');
     el = document.createElement('menuseparator');
@@ -81,7 +82,7 @@ mpagespace.optionsForm = {
     if (pref.customCss) {
       document.getElementById('customCssFileChk').checked = true;
       var file = Components.classes["@mozilla.org/file/local;1"]
-                .createInstance(Components.interfaces.nsILocalFile);
+                .createInstance(Components.interfaces.nsIFile);
       file.initWithPath(pref.customCss);
       mpagespace.optionsForm.setCssFileControl(file);
       document.getElementById('customCssFileBtn').disabled = false;
@@ -497,6 +498,11 @@ mpagespace.optionsForm = {
     mpagespace.optionsForm.init();
   },
 
+  openLink: function(url) {
+    var recentWindow = mpagespace.windowMediator.getMostRecentWindow('navigator:browser');
+    recentWindow.gBrowser.selectedTab = recentWindow.gBrowser.addTab(url);
+  },
+
   acceptDialog: function() {
     var model = mpagespace.app.getModel();
     // colors
@@ -513,6 +519,9 @@ mpagespace.optionsForm = {
       });
     }
     model.getSync().setRelations(syncRelations);
+    if (model.getPage()) {
+      model.getSync().synchronize(model.getPage().id); 
+    }
 
     return true;
   },

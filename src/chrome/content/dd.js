@@ -123,12 +123,25 @@ mpagespace.dd = {
         }
         event.preventDefault();
         event.stopPropagation();
+      } else if (event.dataTransfer.types.contains('application/mpage-page')) {
+        var doc = mpagespace.view.getDoc();
+        var indicatorBarEl = doc.getElementById('nav-drop-indicator-bar'); 
+        indicatorBarEl.style.display = 'none';
+
+        event.preventDefault();
+        event.stopPropagation();
       }
     },
 
     dragEnd: function(event) {
-      event.preventDefault();
-      event.stopPropagation();
+      if (event.dataTransfer.types.contains('application/mpage-page')) {
+        var doc = mpagespace.view.getDoc();
+        var indicatorBarEl = doc.getElementById('nav-drop-indicator-bar'); 
+        indicatorBarEl.style.display = 'none';
+
+        event.preventDefault();
+        event.stopPropagation();
+      }
     }
   }, 
 

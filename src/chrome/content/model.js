@@ -48,9 +48,7 @@ mpagespace.model = function(){
     }
   };
 
-  if (!mpagespace.fuelApplication.prefs.getValue('extensions.mpagespace.debug', false)) {
-    self.timer.initWithCallback(timerCallback, 5*60*1000, self.timer.TYPE_REPEATING_SLACK);
-  }
+  self.timer.initWithCallback(timerCallback, 5*60*1000, self.timer.TYPE_REPEATING_SLACK);
 
   try {
     this.storage.load();

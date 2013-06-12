@@ -19,7 +19,7 @@ mpagespace.model.feed = function(data, page) {
   this.errorMessage = null;
   this.page = page;
   this.model = page.model;
-  this.state = 'BLANK';  // possible values: BLANK, LOADED, LOADING, ERROR, SUBSCRIBING
+  this.state = 'BLANK';  // possible values: BLANK, LOADED, LOADING, ERROR
   this.dirty = false;
 }
 
@@ -198,27 +198,17 @@ mpagespace.model.feed.prototype = {
       } catch (e) {
         mpagespace.dump('feed.load: First level error on widget ' + self.id + ' - ' + e.message);
         try {
-          if (self.state == 'SUBSCRIBING') {
-            self.extractFeeds(request.responseText);
-            self.state = 'LOADED';
-            mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-loaded:' + self.id);  
-          } else {
-            self.processNative(request.responseText);
-          }
+          self.extractFeeds(request.responseText);
+          self.state = 'LOADED';
+          mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-loaded:' + self.id);  
         } catch (e) {
           mpagespace.dump('feed.load: Second level error on widget ' + self.id + ' - ' + e.message);
-          self.state = 'ERROR';
-          mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-loaded:' + self.id);  
+          self.processNative(request.responseText);
         }
       }
     }
 
-    if (subscribing) {
-      mpagespace.dump('feed.load: Subscribing of widget ' + this.id + ' has been started.');
-      this.state = 'SUBSCRIBING';
-    } else 
-      this.state = 'LOADING';
-
+    this.state = 'LOADING';
     this.errorMessage = null;
     mpagespace.ajax.load(this.url, processHandler, {errorHandler: errorHandler});  
   },
@@ -227,6 +217,7 @@ mpagespace.model.feed.prototype = {
     var index = 0;
 
     mpagespace.dump('feed.extractFeeds: Started');
+    this.availableFeeds = [];
 
     while ((index = htmlText.indexOf('<link', index)) != -1) {
       var endIndex = htmlText.indexOf('/>', index);
@@ -243,7 +234,7 @@ mpagespace.model.feed.prototype = {
           if (attribute[0].trim() == 'title') title = attribute[1];
         }
         var feedTypes = ['text/xml', 'application/rss+xml', 'application/atom+xml', 'application/xml', 'application/rdf+xml']; 
-        if (feedTypes.indexOf(type) != -1) {
+        if (feedTypes.indexOf(type) != -1 && href.trim() != this.url.trim()) {
           this.availableFeeds.push({
             title: title,
             href: href
@@ -252,6 +243,7 @@ mpagespace.model.feed.prototype = {
       }
       index++;
     }
+
     if (this.availableFeeds.length == 0) {
       this.errorMessage = mpagespace.translate('subscribe.noAvailableFeeds');
 			throw new Error('No feeds found in HTML.');
@@ -323,7 +315,7 @@ mpagespace.model.feed.prototype = {
 
     var channelEl = xmlDoc.getElementsByTagName('channel')[0];
     if (!channelEl) channelEl = xmlDoc;
-    if (this.title == null || this.state == 'SUBSCRIBING') {
+    if (this.title == null) {
       this.title = getNodeValue(channelEl.getElementsByTagName('title')[0]);
     }
     for (n = channelEl.firstChild; n; n = n.nextSibling){

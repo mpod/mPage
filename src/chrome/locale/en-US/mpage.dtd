@@ -77,6 +77,13 @@
 <!ENTITY options.tab.about                        "About">
 <!ENTITY options.createdby.label                  "Created by:">
 <!ENTITY options.version.label                    "Version">
+<!ENTITY options.references.label                 "References:">
+<!ENTITY options.colorschemesref1.label           "Color schemes are extracted from ">
+<!ENTITY options.colorschemesref2.label           "color pack ">
+<!ENTITY options.colorschemesref3.label           "for vim text editor.">
+<!ENTITY options.colorshuffleref1.label           "Color shuffle function uses ">
+<!ENTITY options.colorshuffleref2.label           "HUSL library ">
+<!ENTITY options.colorshuffleref3.label           "developed by Alexei Boronine.">
 
 <!ENTITY feedsetup.title                          "Feed setup">
 <!ENTITY feedsetup.feedtitle                      "Title">
