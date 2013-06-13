@@ -258,7 +258,9 @@ mpagespace.dd = {
 
       if (event.dataTransfer.types.contains('application/mpage-page')) {
         data = event.dataTransfer.getData('application/mpage-page');
-        var el = document.getElementById(prefix + data);
+        var targetId = event.target.getAttribute('id');
+        var suffix = targetId.substr(targetId.lastIndexOf('-'));
+        var el = document.getElementById(prefix + data + suffix);
         var indicatorBarEl = document.getElementById('mpagespace-drop-indicator-bar'); 
         indicatorBarEl.hidden = true;
         el.parentNode.insertBefore(el, indicatorBarEl);

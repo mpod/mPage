@@ -43,21 +43,15 @@ mpagespace.optionsForm = {
     menu = document.getElementById('fontFamily');
     FontBuilder.buildFontList(languageGroup, null, menu);
     var fontFamilies = [
-      '"Lucida Sans Unicode", "Lucida Grande", sans-serif',
       '"Courier New", Courier, monospace',
-      '"Arial Narrow", sans-serif',
-      'Verdana, Geneva, sans-serif',
       'Georgia, serif',
-      'Arial, Helvetica, sans-serif',
       '"Lucida Console", Monaco, monospace',
       '"Trebuchet MS", Helvetica, sans-serif',
-      '"Copperplate / Copperplate", "Gothic Light", sans-serif', 
       'Impact, Charcoal, sans-serif',
       'Consolas, Monaco, "Andale Mono", monospace', 
       '"Lucida Sans", Helvetica, sans-serif',
-      '"Proxima Nova Regular", "Helvetica Neue", Arial, Helvetica, sans-serif',
       'Helvetica, Arial, Verdana, sans-serif',
-      'Verdana,sans-serif'
+      'Verdana, sans-serif'
     ];
     popup = menu.querySelector('menupopup');
     el = document.createElement('menuseparator');

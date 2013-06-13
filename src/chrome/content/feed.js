@@ -317,6 +317,9 @@ mpagespace.model.feed.prototype = {
     if (!channelEl) channelEl = xmlDoc;
     if (this.title == null) {
       this.title = getNodeValue(channelEl.getElementsByTagName('title')[0]);
+      if (this.url.indexOf('reddit.com') != -1) {
+        this.title += ' [reddit]';
+      }
     }
     for (n = channelEl.firstChild; n; n = n.nextSibling){
       if (n.tagName && n.tagName.toLowerCase() == 'link') {
