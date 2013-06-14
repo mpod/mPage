@@ -455,12 +455,12 @@ mpagespace.optionsForm = {
     if (file) { 
       mpagespace.converter.importFromOpml(file, true, function(message){
         resultEl.setAttribute('value', message);
+        mpagespace.optionsForm.init();
       });
       resultEl.setAttribute('value', mpagespace.translate('options.import.processing'));
     } else {
       resultEl.setAttribute('value', mpagespace.translate('options.import.error.nofile'));
     }
-    mpagespace.optionsForm.init();
   },
 
   exportToOpml: function() {
