@@ -165,7 +165,7 @@ mpagespace.app = {
           items[i].setAttribute('checked', 'false');
         }
         var suffix = menuid.substr(menuid.lastIndexOf('-'));
-        item = menu.querySelector('#mpagespace-page-menuitem-' + pageId + suffix);
+        var item = menu.querySelector('#mpagespace-page-menuitem-' + pageId + suffix);
         if (item)
           item.setAttribute('checked', 'true');
       }

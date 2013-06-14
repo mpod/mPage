@@ -34,7 +34,9 @@ mpagespace.optionsForm = {
     mpagespace.optionsForm.setSchemeType();
 
     menu = document.getElementById('colorScheme');
-    selectItem(menu, pref.schemeName);
+    if (selectItem(menu, pref.schemeName) == -1) {
+      selectItem(menu, 'custom');
+    }
     mpagespace.optionsForm.setColors(pref);
     mpagespace.optionsForm.toggleCustomSchemeSave();
 
@@ -94,6 +96,10 @@ mpagespace.optionsForm = {
     // Init favicons
     document.getElementById('favicon').checked = pref.favicon;
 
+    // Init spacing
+    menu = document.getElementById('entrySpacing');
+    selectItem(menu, pref.spacing);
+
     // Init sync
     var bkmkserv = Components.classes["@mozilla.org/browser/nav-bookmarks-service;1"]
                              .getService(Components.interfaces.nsINavBookmarksService);
@@ -101,7 +107,7 @@ mpagespace.optionsForm = {
     menu = document.getElementById('pagesList');
     popup = menu.querySelector('menupopup'); 
     while (popup.hasChildNodes()) popup.removeChild(popup.firstChild);
-    while (el = document.getElementById('syncList').querySelector('listitem')) el.parentNode.removeChild(el);
+    while ((el = document.getElementById('syncList').querySelector('listitem'))) el.parentNode.removeChild(el);
     for (i=0; i<list.length; i++) {
       var syncBookmarkFolder = model.getSync().getSyncBookmarkFolderForPage(list[i].id);
       if (syncBookmarkFolder) {
@@ -342,7 +348,8 @@ mpagespace.optionsForm = {
       customCss: f,
       favicon: document.getElementById('favicon').checked,
       toolbar: document.getElementById('toolbar').checked,
-      lock: document.getElementById('lock').checked
+      lock: document.getElementById('lock').checked,
+      spacing: document.getElementById('entrySpacing').value
     };
 
     if (config.font.family.indexOf(' ') != -1 && config.font.family.indexOf(',') == -1)

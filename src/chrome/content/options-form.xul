@@ -137,23 +137,18 @@
             </hbox>
           </groupbox>
           <groupbox>
-            <caption label="&options.layout.caption;"/>
+            <caption label="&options.general.caption;"/>
             <hbox align="center">
-              <label value="&options.layout.label;" control="numberOfPanels"/>
-              <menulist id="numberOfPanels" oncommand="mpagespace.optionsForm.apply();">
+              <label value="&options.spacing.label;" control="entrySpacing"/>
+              <menulist id="entrySpacing" oncommand="mpagespace.optionsForm.apply();">
                 <menupopup>
-                  <menuitem label="2" value="2"/>
-                  <menuitem label="3" value="3"/>
-                  <menuitem label="4" value="4"/>
-                  <menuitem label="5" value="5"/>
-                  <menuitem label="6" value="6"/>
-                  <menuitem label="7" value="7"/>
+                  <menuitem label="&options.spacing.none;" value="0"/>
+                  <menuitem label="&options.spacing.small;" value="0.375em"/>
+                  <menuitem label="&options.spacing.medium;" value="0.75em"/>
+                  <menuitem label="&options.spacing.large;" value="1.125em"/>
                 </menupopup>
               </menulist>
             </hbox>
-          </groupbox>
-          <groupbox>
-            <caption label="&options.favicons.caption;"/>
             <checkbox id="favicon" label="&options.favicons.label;" accesskey="&options.favicons.accesskey;"
               oncommand="mpagespace.optionsForm.apply();"/>
           </groupbox>
@@ -238,6 +233,22 @@
               oncommand="mpagespace.optionsForm.apply();"/>
             <checkbox id="toolbar" label="&options.toolbar.label;" accesskey="&options.toolbar.accesskey;"
               oncommand="mpagespace.optionsForm.apply();"/>
+          </groupbox>
+          <groupbox>
+            <caption label="&options.layout.caption;"/>
+            <hbox align="center">
+              <label value="&options.layout.label;" control="numberOfPanels"/>
+              <menulist id="numberOfPanels" oncommand="mpagespace.optionsForm.apply();">
+                <menupopup>
+                  <menuitem label="2" value="2"/>
+                  <menuitem label="3" value="3"/>
+                  <menuitem label="4" value="4"/>
+                  <menuitem label="5" value="5"/>
+                  <menuitem label="6" value="6"/>
+                  <menuitem label="7" value="7"/>
+                </menupopup>
+              </menulist>
+            </hbox>
           </groupbox>
           <groupbox>
             <caption label="&options.reset.caption;"/>

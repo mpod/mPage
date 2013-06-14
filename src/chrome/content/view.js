@@ -530,6 +530,8 @@ mpagespace.view = {
     styles.push('body { font-size: ' + font.size + '; }');
     styles.push('body { font-family: ' + font.family + '; }');
 
+    styles.push('div.body li {margin-top: ' + pref.spacing + '; margin-bottom: ' + pref.spacing + ';}');
+
     el = doc.getElementById('styles');
 
     while (el.hasChildNodes()) el.removeChild(el.firstChild);

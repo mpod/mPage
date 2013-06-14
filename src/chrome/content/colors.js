@@ -118,8 +118,7 @@ mpagespace.model.colors.prototype = {
     if (name in this.config[type])
       return this.config[type][name];
 
-    if (name == 'default')
-      return {}
+    return {}
   },
 
   addScheme: function(type, name, scheme) {

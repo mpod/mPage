@@ -34,9 +34,13 @@
 <!ENTITY options.browse.accesskey                 "B">
 <!ENTITY options.layout.caption                   "Layout">
 <!ENTITY options.layout.label                     "Choose number of panels:">
-<!ENTITY options.favicons.caption                 "Favicons">
 <!ENTITY options.favicons.label                   "Show site favicon in feed title">
 <!ENTITY options.favicons.accesskey               "F">
+<!ENTITY options.spacing.label                    "Spacing between feed entries:">
+<!ENTITY options.spacing.none                     "None">
+<!ENTITY options.spacing.small                    "Small">
+<!ENTITY options.spacing.medium                   "Medium">
+<!ENTITY options.spacing.large                    "Large">
 
 <!ENTITY options.tab.sync                         "Sync">
 <!ENTITY options.sync.description                 "Links from bookmark folders will be automatically added to related page.">
@@ -82,8 +86,8 @@
 <!ENTITY options.colorschemesref2.label           "color pack ">
 <!ENTITY options.colorschemesref3.label           "for vim text editor.">
 <!ENTITY options.colorshuffleref1.label           "Color shuffle function uses ">
-<!ENTITY options.colorshuffleref2.label           "HUSL library ">
-<!ENTITY options.colorshuffleref3.label           "developed by Alexei Boronine.">
+<!ENTITY options.colorshuffleref2.label           "HUSL library">
+<!ENTITY options.colorshuffleref3.label           ".">
 
 <!ENTITY feedsetup.title                          "Feed setup">
 <!ENTITY feedsetup.feedtitle                      "Title">

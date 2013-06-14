@@ -17,6 +17,7 @@ mpagespace.model.feed = function(data, page) {
   this.entries = [];
   this.availableFeeds = data.availableFeeds ? data.availableFeeds : [];
   this.errorMessage = null;
+  this.feedsExtracted = false;
   this.page = page;
   this.model = page.model;
   this.state = 'BLANK';  // possible values: BLANK, LOADED, LOADING, ERROR
@@ -214,9 +215,16 @@ mpagespace.model.feed.prototype = {
   },
 
   extractFeeds: function(htmlText) {
+    var ios = Components.classes["@mozilla.org/network/io-service;1"]
+      .getService(Components.interfaces.nsIIOService);
     var index = 0;
 
     mpagespace.dump('feed.extractFeeds: Started');
+    if (this.feedsExtracted) {
+			throw new Error('Feeds already extracted (recursion).');
+    }
+
+    this.feedsExtracted = true;
     this.availableFeeds = [];
 
     while ((index = htmlText.indexOf('<link', index)) != -1) {
@@ -226,18 +234,34 @@ mpagespace.model.feed.prototype = {
         var attributes = htmlText.substr(index, endIndex - index).match(/\w+\s*=\s*("[^"]*")|('[^']*')/ig);
         var title = mpagespace.translate('subscribe.noFeedTitle'), href = '', type = '';
         for (var i=0; i<attributes.length; i++) {
-          var attribute = attributes[i].split('=');
-          if (attribute.length != 2) continue;
-          attribute[1] = attribute[1].substr(1, attribute[1].length - 2).trim();
+          var splitIdx = attributes[i].indexOf('=');
+          if (splitIdx == -1) continue;
+          var attribute = [attributes[i].substr(0, splitIdx), attributes[i].substr(splitIdx + 1)];
+          attribute[1] = attribute[1].trim().substr(1, attribute[1].length - 2);
           if (attribute[0].trim() == 'type') type = attribute[1];
-          if (attribute[0].trim() == 'href') href = attribute[1];
+          if (attribute[0].trim() == 'href') {
+            try {
+              href = ios.newURI(attribute[1], null, null);
+            } catch (e) {
+              try {
+                while (attribute[1].indexOf('/') == 0) 
+                  attribute[1] = attribute[1].substr(1);
+                var baseUrl = this.url;
+                while (baseUrl.lastIndexOf('/') == (baseUrl.length - 1))
+                  baseUrl = baseUrl.substr(0, baseUrl.length - 1);
+                href = ios.newURI(baseUrl + '/' + attribute[1], null, null);
+              } catch (e) {
+                continue;
+              }
+            }
+          }
           if (attribute[0].trim() == 'title') title = attribute[1];
         }
         var feedTypes = ['text/xml', 'application/rss+xml', 'application/atom+xml', 'application/xml', 'application/rdf+xml']; 
-        if (feedTypes.indexOf(type) != -1 && href.trim() != this.url.trim()) {
+        if (feedTypes.indexOf(type) != -1) {
           this.availableFeeds.push({
             title: title,
-            href: href
+            href: href.spec
           });
         }
       }

@@ -49,6 +49,8 @@ mpagespace.converter = {
                 widget.entriesToShow = options[1];
                 widget.hoursFilter = options[2];
                 widget.minimized = options[3] == 'true';
+                widget.visitedFilter = options[4] == 'true';
+                widget.useGuid = options[5] == 'true';
               }
             }
           } else {
@@ -120,7 +122,7 @@ mpagespace.converter = {
     });  
   },
 
-  exportToOpml: function(opmlFile, errorHandler) {
+  exportToOpml: function(opmlFile, statusCallback) {
     var xmlDoc = (new DOMParser()).parseFromString(
         '<opml version="1.0"><head>mPage export</head><body></body></opml>', 
         'application/xml'
@@ -130,7 +132,7 @@ mpagespace.converter = {
     var body = xmlDoc.getElementsByTagName('body')[0];
     var model = mpagespace.app.getModel();
 
-    body.setAttribute('mpage', model.preferences.serialize());
+    body.setAttribute('mpage', model.getPreferences().serialize());
 
     var createOutlineElements = function(model, parentEl) {
       var pageOrder = model.getPageOrder();
@@ -147,7 +149,8 @@ mpagespace.converter = {
           subitem.setAttribute('text', w.title);
           subitem.setAttribute('type', 'rss');
           subitem.setAttribute('xmlUrl', w.url);
-          var options = [w.panelId, w.entriesToShow, w.hoursFilter, w.minimized].join('|');
+          var options = [w.panelId, w.entriesToShow, w.hoursFilter, w.minimized,
+              w.visitedFilter, w.useGuid].join('|');
           subitem.setAttribute('mpage', options);
           item.appendChild(subitem);
         }
@@ -165,11 +168,14 @@ mpagespace.converter = {
     );  
     NetUtil.asyncCopy(istream, ostream, function(status) {  
       if (!Components.isSuccessCode(status)) {  
+        if (statusCallback) 
+          statusCallback(mpagespace.translate('converter.export.error'));
         mpagespace.dump('converter.exportToOpml: Error while saving opml file.');
-        if (errorHandler) errorHandler();
         return;  
       }  
       FileUtils.closeSafeFileOutputStream(ostream); 
+      if (statusCallback)
+        statusCallback(mpagespace.translate('converter.import.success'));
       mpagespace.dump('converter.exportToOpml: Done');
     });    
   }

@@ -43,7 +43,8 @@ mpagespace.model.preferences = function(config) {
     customCss: null,
     lock: false,
     toolbar: false,
-    favicon: true 
+    favicon: true,
+    spacing: '0.375em' 
   };
   this.schemeType = ['dark', 'light'].indexOf(config.schemeType) == -1 ? defaultConfig.schemeType : config.schemeType;
   this.schemeName = config.schemeName == null ? defaultConfig.schemeName : config.schemeName; 
@@ -53,6 +54,7 @@ mpagespace.model.preferences = function(config) {
   this.lock = config.lock == null ? defaultConfig.lock : config.lock === true;
   this.toolbar = config.toolbar == null ? defaultConfig.toolbar : config.toolbar === true;
   this.favicon = config.favicon == null ? defaultConfig.favicon : config.favicon === true;
+  this.spacing = config.spacing || defaultConfig.spacing; 
 
   this.layout = {
     numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ? 
@@ -71,7 +73,8 @@ mpagespace.model.preferences.prototype = {
       customCss: this.customCss,
       lock: this.lock,
       toolbar: this.toolbar,
-      favicon: this.favicon
+      favicon: this.favicon,
+      spacing: this.spacing
     }
   },
 
@@ -127,6 +130,13 @@ mpagespace.model.preferences.prototype = {
     return new mpagespace.model.preferences(config);
   },
 
+  setSpacing: function(spacing) {
+    var config = this.getConfig();
+    config.spacing = spacing;
+
+    return new mpagespace.model.preferences(config);
+  },
+
   serialize: function() {
     var str = [];
 
@@ -140,12 +150,13 @@ mpagespace.model.preferences.prototype = {
     str.push(this.colors.menu);
     str.push(this.colors.menuText);
     str.push(this.colors.menuSel);
-    str.push(this.colors.reserved);
+    str.push(this.colors.misc);
     str.push(this.font.size);
     str.push(this.layout.numberOfPanels);
     str.push(this.lock);
     str.push(this.toolbar);
     str.push(this.favicon);
+    str.push(this.spacing);
 
     return str.join('|');
   },
@@ -154,7 +165,7 @@ mpagespace.model.preferences.prototype = {
     var config = this.getConfig();
     str = str.split('|');
 
-    if (str.length == 15) {
+    if (str.length == 17) {
       config.schemeType = str[0];
       config.schemeName = str[1];
       config.colors.background = str[2];
@@ -165,12 +176,13 @@ mpagespace.model.preferences.prototype = {
       config.colors.menu = str[7];
       config.colors.menuText = str[8];
       config.colors.menuSel = str[9];
-      config.colors.reserved = str[10];
+      config.colors.misc = str[10];
       config.font.size = str[11];
       config.layout.numberOfPanels = str[12];
-      config.lock = str[13];
-      config.toolbar = str[14];
-      config.favicon = str[15];
+      config.lock = str[13] == 'true';
+      config.toolbar = str[14] == 'true';
+      config.favicon = str[15] == 'true';
+      config.spacing = str[16];
     }
 
     return new mpagespace.model.preferences(config);
