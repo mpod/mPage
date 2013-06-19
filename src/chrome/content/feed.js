@@ -134,7 +134,7 @@ mpagespace.model.feed.prototype = {
     for (var i=0; i<this.entries.length; i++) {
       entry = this.entries[i];
 
-      if (hoursFilter && e.date < hoursFilter) 
+      if (hoursFilter && entry.date < hoursFilter) 
         continue;
 
       if (this.visitedFilter) {
@@ -244,12 +244,8 @@ mpagespace.model.feed.prototype = {
               href = ios.newURI(attribute[1], null, null);
             } catch (e) {
               try {
-                while (attribute[1].indexOf('/') == 0) 
-                  attribute[1] = attribute[1].substr(1);
-                var baseUrl = this.url;
-                while (baseUrl.lastIndexOf('/') == (baseUrl.length - 1))
-                  baseUrl = baseUrl.substr(0, baseUrl.length - 1);
-                href = ios.newURI(baseUrl + '/' + attribute[1], null, null);
+                href = ios.newURI(this.url, null, null).resolve(attribute[1]);
+                href = ios.newURI(href, null, null);
               } catch (e) {
                 continue;
               }

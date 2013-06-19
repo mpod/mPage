@@ -163,6 +163,8 @@ mpagespace.model.page.prototype = {
 
     if (refWidget && refWidget.id == widget.id) return;
 
+    if (!parseInt(panelId)) panelId = 1;
+
     if ((panelId in this.layout) == false) {
       this.layout[panelId] = [];
     }

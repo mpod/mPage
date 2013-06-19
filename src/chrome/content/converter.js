@@ -43,15 +43,13 @@ mpagespace.converter = {
             widget.title = n.getAttribute('title');
             if (n.hasAttribute('mpage')) {
               var options = n.getAttribute('mpage').split('|');
-              if (options.length == 4) {
-                page.removeFromPanel(widget);
-                page.insertToPanel(widget, options[0], null);
-                widget.entriesToShow = options[1];
-                widget.hoursFilter = options[2];
-                widget.minimized = options[3] == 'true';
-                widget.visitedFilter = options[4] == 'true';
-                widget.useGuid = options[5] == 'true';
-              }
+              page.removeFromPanel(widget);
+              page.insertToPanel(widget, options[0], null);
+              widget.entriesToShow = parseInt(options[1]);
+              widget.hoursFilter = parseInt(options[2]);
+              widget.minimized = options[3] == 'true';
+              widget.visitedFilter = options[4] == 'true';
+              widget.useGuid = options[5] == 'true';
             }
           } else {
             var newPage = null;
@@ -83,8 +81,10 @@ mpagespace.converter = {
         pages = model.getPages(model.GET_PAGES_TITLE);
         if (pages['Home'])
           page = pages['Home'];
-        else
+        else {
           page = model.addPage('Home');
+          pages = model.getPages(model.GET_PAGES_TITLE);
+        }
       }
       homePageId = page.id;
 
