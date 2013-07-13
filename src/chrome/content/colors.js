@@ -118,7 +118,7 @@ mpagespace.model.colors.prototype = {
     if (name in this.config[type])
       return this.config[type][name];
 
-    return {}
+    return null;
   },
 
   addScheme: function(type, name, scheme) {
@@ -135,6 +135,13 @@ mpagespace.model.colors.prototype = {
 
   schemes: {
   "dark": {
+    "Classic": {
+      "link": "#d1c79e", 
+      "background": "#2a2b2f", 
+      "title": "#62acce", 
+      "visited": "#e6ac32", 
+      "border": "#67686b"
+    },
     "Ekvoli": {
       "menuSel": "#3070c0", 
       "link": "#50a0e0", 
@@ -788,6 +795,13 @@ mpagespace.model.colors.prototype = {
     }
   }, 
   "light": {
+    "Classic": {
+      "title": "#3E8780", 
+      "visited": "#7C17BF", 
+      "border": "#C6C6C6",
+      "background": "#ffffff", 
+      "link": "#1155CC"
+    },
     "Silent": {
       "menuSel": "#f1ffc1", 
       "link": "#000000", 

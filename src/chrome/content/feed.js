@@ -291,12 +291,16 @@ mpagespace.model.feed.prototype = {
           feed.QueryInterface(Components.interfaces.nsIFeed);
 
           for (var i=0; i<feed.items.length; i++){
-            var entry = feed.items.queryElementAt(i, Components.interfaces.nsIFeedEntry);
-            self.entries.push({
-              title: entry.title.text,
-              link: entry.link.resolve(''),
-              date: Date.parse(entry.published)
-            });
+            try {
+              var entry = feed.items.queryElementAt(i, Components.interfaces.nsIFeedEntry);
+              self.entries.push({
+                title: entry.title.text,
+                link: entry.link.resolve(''),
+                date: Date.parse(entry.published)
+              });
+            } catch (e) {
+              // continue
+            }
           }
           self.state = 'LOADED';
         }
@@ -363,6 +367,17 @@ mpagespace.model.feed.prototype = {
       nodes = channelEl.getElementsByTagName('entry');
     }
 
+    var prepareUri = function(uri) {
+      var parser = mpagespace.urlParser;
+      var schemePos = {}, schemeLen = {}, authPos = {}, authLen = {}, pathPos = {}, pathLen = {};
+      parser.parseURL(uri, uri.length, schemePos, schemeLen, authPos, authLen, pathPos, pathLen);
+
+      if (schemeLen.value == -1) 
+        uri = 'http://' + uri; 
+
+      return ios.newURI(uri, null, null);
+    };
+
     for (var i=0, count = nodes.length; i<count; i++){
       node = nodes[i];
       entry = {};
@@ -399,9 +414,9 @@ mpagespace.model.feed.prototype = {
               entry.image = n.getAttribute('href');
             } else {
               if (isAtom) {
-                entry.link = ios.newURI(n.getAttribute('href'), null, null);
+                entry.link = prepareUri(n.getAttribute('href'));
               } else {
-                entry.link = n.firstChild ? ios.newURI(getNodeValue(n), null, null) : null;
+                entry.link = n.firstChild ? prepareUri(getNodeValue(n)) : null;
               }
             }
             break;

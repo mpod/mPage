@@ -347,7 +347,7 @@ mpagespace.view = {
         listEl.style.display = 'none';
       else if (this == el) {
         var left = Math.min(0, this.parentNode.offsetWidth - (
-              this.offsetLeft - this.parentNode.getBoundingClientRect().left + 125));
+              this.offsetLeft - this.parentNode.getBoundingClientRect().left + 150));
         listEl.style.left = left;
         listEl.style.display = 'block';
         preventHiding = true;

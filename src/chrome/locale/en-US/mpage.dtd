@@ -46,6 +46,8 @@
 <!ENTITY options.sync.description                 "Links from bookmark folders will be automatically added to related page.">
 <!ENTITY options.sync.pages.label                 "Choose a page: ">
 <!ENTITY options.sync.bookmarks.label             "Choose bookmark folder: ">
+<!ENTITY options.sync.page.label                  "Page: ">
+<!ENTITY options.sync.bookmark.label              "Bookmark folder: ">
 <!ENTITY options.sync.add.label                   "Add sync relation">
 <!ENTITY options.sync.add.accesskey               "A">
 <!ENTITY options.sync.remove.label                "Remove sync relation">

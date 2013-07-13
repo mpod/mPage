@@ -188,8 +188,8 @@
           <separator class="thin"/>
           <listbox id="syncList" flex="1" onselect="document.getElementById('removeSyncRelationBtn').disabled = false;">
             <listhead>
-              <listheader label="Page"/>
-              <listheader label="Bookmark folder"/>
+              <listheader label="&options.sync.page.label;"/>
+              <listheader label="&options.sync.bookmark.label;"/>
             </listhead>
             <listcols>
               <listcol flex="1"/>
