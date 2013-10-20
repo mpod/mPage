@@ -204,6 +204,10 @@ mpagespace.optionsForm = {
       var pref = new mpagespace.model.preferences({schemeType: type, colors: colors});
       mpagespace.optionsForm.setColors(pref);
       mpagespace.optionsForm.apply();
+    } else if (name == 'default') {
+      var pref = new mpagespace.model.preferences({schemeType: type});
+      mpagespace.optionsForm.setColors(pref);
+      mpagespace.optionsForm.apply();
     }
   },
 

@@ -178,7 +178,7 @@ mpagespace.app = {
         mpagespace.app.openPage(pageId);
       };
     }
-    var i, j, menu, item, items, suffix, el, ids, p;
+    var i, j, menu, item, items, suffix, el, ids, p, pageOrder;
 
     var model = mpagespace.app.getModel();
     if (model == null) {
