@@ -11,7 +11,7 @@ profile_dir := mpage
 ZIP := zip
 
 # The target location of the build and build files.
-bin_dir := ../bin
+bin_dir := bin
 
 # The target XPI file.
 xpi_file := $(bin_dir)/$(extension_name).xpi
@@ -51,19 +51,19 @@ clean:
 	@echo "Cleanup is done."
 
 # The sources for the XPI file.
-xpi_built := install.rdf \
-             chrome.manifest \
-             $(wildcard chrome/content/*.js) \
-             $(wildcard chrome/content/*.xul) \
-             $(wildcard chrome/content/*.xml) \
-             $(wildcard chrome/content/*.css) \
-             $(wildcard chrome/content/*.html) \
-             $(wildcard chrome/content/lib/*.js) \
-             $(wildcard chrome/skin/*.css) \
-             $(wildcard chrome/skin/*.png) \
-             $(wildcard chrome/skin/*.gif) \
-             $(wildcard chrome/locale/*/*.dtd) \
-             $(wildcard chrome/locale/*/*.properties) 
+xpi_built := src/install.rdf \
+             src/chrome.manifest \
+             $(wildcard src/chrome/content/*.js) \
+             $(wildcard src/chrome/content/*.xul) \
+             $(wildcard src/chrome/content/*.xml) \
+             $(wildcard src/chrome/content/*.css) \
+             $(wildcard src/chrome/content/*.html) \
+             $(wildcard src/chrome/content/lib/*.js) \
+             $(wildcard src/chrome/skin/*.css) \
+             $(wildcard src/chrome/skin/*.png) \
+             $(wildcard src/chrome/skin/*.gif) \
+             $(wildcard src/chrome/locale/*/*.dtd) \
+             $(wildcard src/chrome/locale/*/*.properties) 
 
 # This builds everything except for the actual XPI, and then it copies it to the
 # specified profile directory, allowing a quick update that requires no install.
@@ -76,6 +76,7 @@ install: $(build_dir) $(xpi_built)
 
 
 $(xpi_file): $(xpi_built)
+	@mkdir -p $(bin_dir) 
 	@echo "Creating XPI file."
 	@$(ZIP) $(xpi_file) $(xpi_built)
 	@echo "Creating XPI file. Done!"

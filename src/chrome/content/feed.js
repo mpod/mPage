@@ -414,7 +414,10 @@ mpagespace.model.feed.prototype = {
               entry.image = n.getAttribute('href');
             } else {
               if (isAtom) {
-                entry.link = prepareUri(n.getAttribute('href'));
+                if (entry.link === void 0 || 
+                    (n.getAttribute('rel') && n.getAttribute('rel') === 'alternate') ||
+                    !n.getAttribute('rel'))
+                  entry.link = prepareUri(n.getAttribute('href'));
               } else {
                 entry.link = n.firstChild ? prepareUri(getNodeValue(n)) : null;
               }
