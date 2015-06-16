@@ -12,6 +12,8 @@
 <!ENTITY mpagespace.deletepage.label              "Delete page">
 <!ENTITY mpagespace.deletepage.accesskey          "D">
 
+<!ENTITY options.openmpage                        "Open mPage">
+
 <!ENTITY options.title                            "Options">
 <!ENTITY options.tab.display                      "Display">
 <!ENTITY options.colors.caption                   "Colors">
@@ -69,6 +71,8 @@
 <!ENTITY options.lock.accesskey                   "D">
 <!ENTITY options.toolbar.label                    "Hide top page navigation menu">
 <!ENTITY options.toolbar.accesskey                "H">
+<!ENTITY options.hideVisited.label                "Hide visited links.">
+<!ENTITY options.hideVisited.accesskey            "V">
 <!ENTITY options.reset.caption                    "Reset">
 <!ENTITY options.reset.complete.label             "Restore plugin to default configuration">
 <!ENTITY options.reset.completebtn.label          "Restore">

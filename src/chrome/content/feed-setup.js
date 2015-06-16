@@ -29,7 +29,14 @@ mpagespace.feedSetup = {
     }
     mpagespace.feedSetup.toggleDateFilter();
 
-    document.getElementById('visited-filter').checked = widget.visitedFilter;
+    var visitedFilterEl = document.getElementById('visited-filter');
+    if (mpagespace.app.getModel().getPreferences().globalVisitedFilter) {
+      visitedFilterEl.checked = true;
+      visitedFilterEl.disabled = true;
+      visitedFilterEl.label = mpagespace.translate('feedSetup.visitedFilterOverriden');
+    } else {
+      visitedFilterEl.checked = widget.visitedFilter;
+    }
     document.getElementById('use-guid').checked = widget.useGuid;
   },  
 
@@ -37,7 +44,7 @@ mpagespace.feedSetup = {
     var filterCheckbox = document.getElementById('date-filter');
     var disabled = filterCheckbox.checked == false;
 
-    for (el = filterCheckbox.nextSibling.firstChild; el; el = el.nextSibling) {
+    for (var el = filterCheckbox.nextSibling.firstChild; el; el = el.nextSibling) {
       el.disabled = disabled;
     }
   },

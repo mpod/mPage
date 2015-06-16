@@ -12,6 +12,8 @@
 <!ENTITY mpagespace.deletepage.label "Seite löschen">
 <!ENTITY mpagespace.deletepage.accesskey "l">
 
+<!ENTITY options.openmpage "Anzeigen mPage">
+
 <!ENTITY options.title "Optionen">
 <!ENTITY options.tab.display "Bildschirm">
 <!ENTITY options.colors.caption "Farben">
@@ -69,6 +71,8 @@
 <!ENTITY options.lock.accesskey "D">
 <!ENTITY options.toolbar.label "Obere Navigationsleiste verbergen">
 <!ENTITY options.toolbar.accesskey "O">
+<!ENTITY options.hideVisited.label "Besuchte links verbergen">
+<!ENTITY options.hideVisited.accesskey "B">
 <!ENTITY options.reset.caption "Zurücksetzen des ">
 <!ENTITY options.reset.complete.label "Wiederherstellung der Grundeinstellungen">
 <!ENTITY options.reset.completebtn.label "Wiederherstellen">

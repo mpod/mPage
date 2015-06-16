@@ -82,6 +82,10 @@ mpagespace.model.prototype = {
       confAdapted = true;
     }
 
+    this.preferences = new mpagespace.model.preferences(this.config.preferences);
+    this.colorSchemes = new mpagespace.model.colors(this.config.colorSchemes, this);
+    this.sync = new mpagespace.model.sync(this.config.sync, this);
+
     this.maxPageId = 0;
     this.maxWidgetId = 0;
 
@@ -95,10 +99,6 @@ mpagespace.model.prototype = {
         if (widgets[i].id > this.maxWidgetId)
           this.maxWidgetId = widgets[i].id;
     }
-
-    this.preferences = new mpagespace.model.preferences(this.config.preferences);
-    this.colorSchemes = new mpagespace.model.colors(this.config.colorSchemes, this);
-    this.sync = new mpagespace.model.sync(this.config.sync, this);
 
     if (confAdapted && this.maxWidgetId == 0 && !this.restoreInProgress) {
       mpagespace.dump('model.init: Possible configuration error, trying to restore.');

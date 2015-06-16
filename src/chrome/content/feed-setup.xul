@@ -14,6 +14,10 @@
   <script type="application/javascript" src="chrome://mpagespace/content/app.js"/> 
   <script type="application/javascript" src="chrome://mpagespace/content/feed-setup.js"/> 
 
+  <stringbundleset>
+    <stringbundle id="mpagespace-labels" src="chrome://mpagespace/locale/mpage.properties"/>
+  </stringbundleset>
+
   <groupbox>
     <caption label="&feedsetup.feedtitle;"/>
     <textbox id="title" flex="1"/>

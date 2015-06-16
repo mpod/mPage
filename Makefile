@@ -78,5 +78,5 @@ install: $(build_dir) $(xpi_built)
 $(xpi_file): $(xpi_built)
 	@mkdir -p $(bin_dir) 
 	@echo "Creating XPI file."
-	@$(ZIP) $(xpi_file) $(xpi_built)
+	@cd src; $(ZIP) ../$(xpi_file) $(subst src/,, $(xpi_built))
 	@echo "Creating XPI file. Done!"

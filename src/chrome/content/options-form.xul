@@ -6,8 +6,10 @@
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
   title="&options.title;" 
-  buttons="accept,cancel"
+  buttons="accept,cancel,extra1"
   onload="mpagespace.optionsForm.init()"
+  buttonlabelextra1="&options.openmpage;"
+  ondialogextra1="mpagespace.app.openPage();"
   ondialogaccept="return mpagespace.optionsForm.acceptDialog();"
   ondialogcancel="return mpagespace.optionsForm.cancelDialog();">
 
@@ -232,6 +234,8 @@
             <checkbox id="lock" label="&options.lock.label;" accesskey="&options.lock.accesskey;"
               oncommand="mpagespace.optionsForm.apply();"/>
             <checkbox id="toolbar" label="&options.toolbar.label;" accesskey="&options.toolbar.accesskey;"
+              oncommand="mpagespace.optionsForm.apply();"/>
+            <checkbox id="hideVisited" label="&options.hideVisited.label;" accesskey="&options.hideVisited.accesskey;"
               oncommand="mpagespace.optionsForm.apply();"/>
           </groupbox>
           <groupbox>

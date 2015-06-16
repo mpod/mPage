@@ -1,5 +1,7 @@
 // Author: Matija Podravec, 2012-2013
 
+/* This code is not used. It is leaved here for archiving reasons. */
+
 if (!mpagespace.storage) mpagespace.storage = {};
 else if (typeof mpagespace.storage != 'object')
   throw new Error('mpagespace.storage already exists and is not an object');

@@ -76,8 +76,12 @@ mpagespace.app = {
         }  
       }  
     }  
-    if (!found) {
+    if (!found && typeof openUILinkIn !== 'undefined') {
       openUILinkIn(mpagespace.app.mpageUrl, 'tab');
+    } else if (!found) {
+      var mainWindow = wm.getMostRecentWindow("navigator:browser");
+      var gBrowser = mainWindow.gBrowser;
+      gBrowser.selectedTab = gBrowser.addTab(mpagespace.app.mpageUrl);
     }
 
     mpagespace.app.getModel().changeActivePage(pageId);

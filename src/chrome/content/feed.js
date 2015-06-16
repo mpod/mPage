@@ -131,15 +131,17 @@ mpagespace.model.feed.prototype = {
     query = historyService.getNewQuery();
     options.includeHidden = true;
 
+    var globalVisitedFilter = mpagespace.app.getModel().getPreferences().globalVisitedFilter;
+
     for (var i=0; i<this.entries.length; i++) {
       entry = this.entries[i];
 
       if (hoursFilter && entry.date < hoursFilter) 
         continue;
 
-      if (this.visitedFilter) {
+      if (globalVisitedFilter || this.visitedFilter) {
         query.uri = entry.link;
-        rootNode = historyService.executeQuery(query, options).root;
+        var rootNode = historyService.executeQuery(query, options).root;
         rootNode.containerOpen = true;
         if (rootNode.childCount > 0) {
           rootNode.containerOpen = false;

@@ -43,6 +43,7 @@ mpagespace.model.preferences = function(config) {
     customCss: null,
     lock: false,
     toolbar: false,
+    globalVisitedFilter: false,
     favicon: true,
     spacing: '0.375em' 
   };
@@ -55,6 +56,7 @@ mpagespace.model.preferences = function(config) {
   this.toolbar = config.toolbar == null ? defaultConfig.toolbar : config.toolbar === true;
   this.favicon = config.favicon == null ? defaultConfig.favicon : config.favicon === true;
   this.spacing = config.spacing || defaultConfig.spacing; 
+  this.globalVisitedFilter = config.globalVisitedFilter || defaultConfig.globalVisitedFilter;
 
   this.layout = {
     numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ? 
@@ -74,7 +76,8 @@ mpagespace.model.preferences.prototype = {
       lock: this.lock,
       toolbar: this.toolbar,
       favicon: this.favicon,
-      spacing: this.spacing
+      spacing: this.spacing,
+      globalVisitedFilter: this.globalVisitedFilter
     }
   },
 
@@ -137,6 +140,13 @@ mpagespace.model.preferences.prototype = {
     return new mpagespace.model.preferences(config);
   },
 
+  setGlobalVisitedFilter: function(globalVisitedFilter) {
+    var config = this.getConfig();
+    config.globalVisitedFilter = globalVisitedFilter;
+
+    return new mpagespace.model.preferences(config);
+  },
+
   serialize: function() {
     var str = [];
 
@@ -157,6 +167,7 @@ mpagespace.model.preferences.prototype = {
     str.push(this.toolbar);
     str.push(this.favicon);
     str.push(this.spacing);
+    str.push(this.globalVisitedFilter);
 
     return str.join('|');
   },
@@ -179,10 +190,11 @@ mpagespace.model.preferences.prototype = {
       config.colors.misc = str[10];
       config.font.size = str[11];
       config.layout.numberOfPanels = str[12];
-      config.lock = str[13] == 'true';
-      config.toolbar = str[14] == 'true';
-      config.favicon = str[15] == 'true';
+      config.lock = str[13] === 'true';
+      config.toolbar = str[14] === 'true';
+      config.favicon = str[15] === 'true';
       config.spacing = str[16];
+      config.globalVisitedFilter = str[17] === 'true';
     }
 
     return new mpagespace.model.preferences(config);

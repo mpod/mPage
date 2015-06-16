@@ -147,6 +147,7 @@ mpagespace.optionsForm = {
     // Init misc
     document.getElementById('lock').checked = pref.lock;
     document.getElementById('toolbar').checked = pref.toolbar;
+    document.getElementById('hideVisited').checked = pref.globalVisitedFilter;
 
     // Init about
     document.getElementById('version').setAttribute('value', ' ' + mpagespace.version);
@@ -353,6 +354,7 @@ mpagespace.optionsForm = {
       favicon: document.getElementById('favicon').checked,
       toolbar: document.getElementById('toolbar').checked,
       lock: document.getElementById('lock').checked,
+      globalVisitedFilter: document.getElementById('hideVisited').checked,
       spacing: document.getElementById('entrySpacing').value
     };
 
