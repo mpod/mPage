@@ -159,7 +159,8 @@ mpagespace.model.feed.prototype = {
   },
 
   startVisitedFilterTimer: function() {
-    if (!this.visitedFilter)
+    var globalVisitedFilter = mpagespace.app.getModel().getPreferences().globalVisitedFilter;
+    if (!globalVisitedFilter && !this.visitedFilter)
       return;
 
     var self = this;

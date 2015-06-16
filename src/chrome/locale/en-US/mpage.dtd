@@ -71,7 +71,7 @@
 <!ENTITY options.lock.accesskey                   "D">
 <!ENTITY options.toolbar.label                    "Hide top page navigation menu">
 <!ENTITY options.toolbar.accesskey                "H">
-<!ENTITY options.hideVisited.label                "Hide visited links.">
+<!ENTITY options.hideVisited.label                "Hide visited links">
 <!ENTITY options.hideVisited.accesskey            "V">
 <!ENTITY options.reset.caption                    "Reset">
 <!ENTITY options.reset.complete.label             "Restore plugin to default configuration">
