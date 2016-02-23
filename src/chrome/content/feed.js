@@ -207,6 +207,7 @@ mpagespace.model.feed.prototype = {
           mpagespace.observerService.notifyObservers(null, 'mpage-model', 'widget-loaded:' + self.id);  
         } catch (e) {
           mpagespace.dump('feed.load: Second level error on widget ' + self.id + ' - ' + e.message);
+          self.entries = [];
           self.processNative(request.responseText);
         }
       }
@@ -298,7 +299,7 @@ mpagespace.model.feed.prototype = {
               var entry = feed.items.queryElementAt(i, Components.interfaces.nsIFeedEntry);
               self.entries.push({
                 title: entry.title.text,
-                link: entry.link.resolve(''),
+                link: entry.link,
                 date: Date.parse(entry.published)
               });
             } catch (e) {
