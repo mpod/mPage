@@ -28,7 +28,13 @@ mpagespace = {
   },
 
   dump: function() {
-    if (mpagespace.fuelApplication.prefs.getValue('extensions.mpagespace.debug', false)) {
+    var debug;
+    try {
+      debug = mpagespace.prefService.getBoolPref('debug');
+    } catch (e) {
+      debug = false;
+    }
+    if (debug) {
       var v = [];
       var objToString = function(obj) {
         var str = [];
@@ -114,8 +120,10 @@ mpagespace = {
   promptsService: Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
     .getService(Components.interfaces.nsIPromptService),  
 
-  fuelApplication: Components.classes["@mozilla.org/fuel/application;1"]
-    .getService(Components.interfaces.fuelIApplication), 
+  prefService: Components.classes["@mozilla.org/preferences-service;1"]
+    .getService(Components.interfaces.nsIPrefService).getBranch("extensions.mpagespace."),
+
+  singletonService: Components.utils.import("chrome://mpagespace/content/singleton.jsm"),
 
   urlParser: Components.classes["@mozilla.org/network/url-parser;1?auth=maybe"]
     .createInstance(Components.interfaces.nsIURLParser),

@@ -44,7 +44,7 @@ mpagespace.app = {
       model = new mpagespace.model();
     }
     mpagespace.app.firstRun();
-    mpagespace.fuelApplication.storage.set('mpage-model', model); 
+    mpagespace.singletonService.storage.mpageModel = model;
   },
 
   close: function() {
@@ -88,7 +88,7 @@ mpagespace.app = {
   },
 
   getModel: function() {
-    return mpagespace.fuelApplication.storage.get('mpage-model', null);
+    return mpagespace.singletonService.storage.mpageModel;
   },
 
   openAbout: function() {
@@ -253,20 +253,24 @@ mpagespace.app = {
   },
 
   firstRun: function() {
-    if (mpagespace.fuelApplication.prefs.getValue('extensions.mpagespace.version', '0') != mpagespace.version) {
-
-      mpagespace.fuelApplication.prefs.setValue('extensions.mpagespace.version', mpagespace.version);
-      mpagespace.fuelApplication.storage.set('mpage-first-run', true); 
-
+    var version;
+    try {
+      version = mpagespace.prefService.getCharPref('version');
+    } catch (e) {
+      version = '0';
+    }
+    if (version != mpagespace.version) {
+      mpagespace.prefService.setCharPref('version', mpagespace.version);
+      mpagespace.singletonService.storage.firstRun = true;
       mpagespace.dump('app.firstRun: Addon is set up.');
     }
   },
 
   isFirstRun: function(reset) {
-    var result = mpagespace.fuelApplication.storage.get('mpage-first-run', false);
+    var result = mpagespace.singletonService.storage.firstRun;
 
     if (result && reset) {
-      mpagespace.fuelApplication.storage.set('mpage-first-run', false); 
+      mpagespace.singletonService.storage.firstRun = false;
     }
 
     return result;
