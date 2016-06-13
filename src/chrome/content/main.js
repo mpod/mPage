@@ -123,6 +123,9 @@ mpagespace = {
   prefService: Components.classes["@mozilla.org/preferences-service;1"]
     .getService(Components.interfaces.nsIPrefService).getBranch("extensions.mpagespace."),
 
+  fontPrefService: Components.classes["@mozilla.org/preferences-service;1"]
+    .getService(Components.interfaces.nsIPrefService).getBranch("font.language."),
+
   singletonService: Components.utils.import("chrome://mpagespace/content/singleton.jsm"),
 
   urlParser: Components.classes["@mozilla.org/network/url-parser;1?auth=maybe"]

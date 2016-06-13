@@ -174,7 +174,13 @@ mpagespace.view = {
     var pEl = msgEl.querySelector('p');
     
     while (pEl.hasChildNodes()) pEl.removeChild(pEl.firstChild)
-    pEl.innerHTML = message;
+    var messageParts = message.split('<br/>');
+    for (var i=0; i<messageParts.length; i++) {
+      pEl.appendChild(doc.createTextNode(messageParts[i]));
+      if (i < messageParts.length) {
+        pEl.appendChild(doc.createElement('br'));
+      }
+    }
     msgEl.style.display = 'block';
   },
 
@@ -447,21 +453,28 @@ mpagespace.view = {
     var self = mpagespace.view;
     var doc = self.getDoc();
     var wrapperEl = doc.createElement('div');
-    var html = [];
   
     wrapperEl.className = 'available-feeds';
-    html.push('<p>' + mpagespace.translate('subscribe.availableFeeds') + '</p>');
-    html.push('<select class="feeds">');
+
+    var pEl = doc.createElement('p');
+    pEl.appendChild(doc.createTextNode(mpagespace.translate('subscribe.availableFeeds')));
+    wrapperEl.appendChild(pEl);
+
+    var selectEl = doc.createElement('select');
+    selectEl.className = 'feeds';
     for (var i=0; i<widget.availableFeeds.length; i++) {
       var f = widget.availableFeeds[i];
-      html.push('<option value="' + f.href + '">' + f.title + '</option>');
+      var optionEl = doc.createElement('option');
+      optionEl.setAttribute('value', f.href);
+      optionEl.appendChild(doc.createTextNode(f.title));
+      selectEl.appendChild(optionEl);
     }
-    html.push('</select>');
-    html.push('<a class="button" href="javascript:void(0)">');
-    html.push(mpagespace.translate('subscribe.availableFeeds.continue'));
-    html.push('</a>');
-
-    wrapperEl.innerHTML = html.join('\n');
+    wrapperEl.appendChild(selectEl);
+    var aEl = doc.createElement('a');
+    aEl.className = 'button';
+    aEl.setAttribute('href', 'javascript:void(0)');
+    aEl.appendChild(doc.createTextNode(mpagespace.translate('subscribe.availableFeeds.continue')));
+    wrapperEl.appendChild(aEl);
 
     wrapperEl.querySelector('a.button').addEventListener('click', function() {
       var selEl = this.parentNode.querySelector('select');

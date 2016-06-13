@@ -41,7 +41,12 @@ mpagespace.optionsForm = {
     mpagespace.optionsForm.toggleCustomSchemeSave();
 
     // Init fonts
-    var languageGroup = mpagespace.fuelApplication.prefs.getValue('font.language.group', '');
+    var languageGroup;
+    try {
+      languageGroup = mpagespace.fontPrefService.getCharPref('group');
+    } catch (e) {
+      languageGroup = '';
+    }
     menu = document.getElementById('fontFamily');
     FontBuilder.buildFontList(languageGroup, null, menu);
     var fontFamilies = [

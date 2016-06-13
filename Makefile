@@ -58,6 +58,7 @@ xpi_built := src/install.rdf \
              $(wildcard src/chrome/content/*.xml) \
              $(wildcard src/chrome/content/*.css) \
              $(wildcard src/chrome/content/*.html) \
+             $(wildcard src/chrome/content/*.jsm) \
              $(wildcard src/chrome/content/lib/*.js) \
              $(wildcard src/chrome/skin/*.css) \
              $(wildcard src/chrome/skin/*.png) \
