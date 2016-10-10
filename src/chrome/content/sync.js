@@ -72,9 +72,9 @@ mpagespace.model.sync.prototype = {
     var timerCallback = {
       notify: function() {
         var page = self.model.getPage();
+        var i = 0;
         var bkmkId = bkmkserv.getIdForItemAt(bkmkFolderId, i);  
         var refWidget;
-        var i = 0;
         var widget;
 
         if (page.id != pageId) return;

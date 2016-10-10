@@ -6,7 +6,7 @@ else if (typeof mpagespace != 'object')
   throw new Error('mpagespace already exists and is not an object');
 
 mpagespace = {
-  version: '0.7',
+  version: '0.7.13',
 
   initPage: function() {
     var model = mpagespace.app.getModel();
