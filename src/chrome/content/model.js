@@ -407,7 +407,7 @@ mpagespace.model.prototype = {
     page.createAndAddWidget('http://blog.mozilla.com/feed/', null, null);
     page.createAndAddWidget('http://www.reddit.com/r/worldnews/.rss', null, null);
     page.createAndAddWidget('http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml', null, null);
-    page.createAndAddWidget('http://feeds.guardian.co.uk/theguardian/rss', null, null);
+    page.createAndAddWidget('https://www.theguardian.com/international/rss', null, null);
     page.load();
 
     page = this.addPage('Technology');
@@ -428,9 +428,9 @@ mpagespace.model.prototype = {
     page.load();
 
     page = this.addPage('Science');
-    page.createAndAddWidget('http://www.sciencenews.org/view/feed/name/allrss', null, null);
+    page.createAndAddWidget('http://www.livescience.com/home/feed/site.xml', null, null);
     page.createAndAddWidget('http://feeds.sciencedaily.com/sciencedaily?format=xml', null, null);
-    page.createAndAddWidget('http://feeds.guardian.co.uk/theguardian/science/rss', null, null);
+    page.createAndAddWidget('https://www.theguardian.com/science/rss', null, null);
     page.createAndAddWidget('http://www.nasa.gov/rss/breaking_news.rss', null, null);
     page.createAndAddWidget('http://www.reddit.com/r/science/.rss', null, null);
     page.load();
