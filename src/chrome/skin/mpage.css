@@ -145,6 +145,8 @@ div.header {
 div.header img.favicon {
   margin-bottom: -3px;
   margin-right: 0.5em;
+  width: 16px;
+  height: 16px;
 }
 
 div.header a {
