@@ -416,6 +416,7 @@ mpagespace.model.prototype = {
     page.createAndAddWidget('http://feeds.wired.com/wired/index', null, null);
     page.createAndAddWidget('http://www.reddit.com/r/technology/.rss', null, null);
     page.createAndAddWidget('http://www.reddit.com/r/programming/.rss', null, null);
+    page.createAndAddWidget('https://news.ycombinator.com/rss', null, null);
     page.load();
 
     page = this.addPage('Music');
