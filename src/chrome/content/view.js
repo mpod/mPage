@@ -366,6 +366,7 @@ mpagespace.view = {
     var actions = [
       {label: 'widget.action.configure', 
         listener: function(event) {
+          preventHiding = false;
           toggleMenu();
           mpagespace.controller.configure.call(this);
           event.stopPropagation();
