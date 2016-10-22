@@ -14,6 +14,7 @@ mpagespace.model.feed = function(data, page) {
   this.minimized = data.minimized ? true : false;
   this.visitedFilter = data.visitedFilter ? true : false;
   this.useGuid = data.useGuid ? true : false;
+  this.groupByDate = data.groupByDate ? true : false;
   this.entries = [];
   this.availableFeeds = data.availableFeeds ? data.availableFeeds : [];
   this.errorMessage = null;
@@ -35,6 +36,7 @@ mpagespace.model.feed.prototype = {
       hoursFilter: this.hoursFilter,
       visitedFilter: this.visitedFilter,
       useGuid: this.useGuid,
+      groupByDate: this.groupByDate,
       entriesToShow: this.entriesToShow,
       minimized: this.minimized
     };      
@@ -120,11 +122,20 @@ mpagespace.model.feed.prototype = {
       .getService(Components.interfaces.nsINavHistoryService);
     var result = []
     var entry;
-    var hoursFilter = null;
+    var timeFilter = null;
     var options, query, rooNode;
 
     if (this.hoursFilter > 0) {
-      hoursFilter = (new Date()).getTime() - this.hoursFilter * 60 * 60 * 1000;
+      if (this.hoursFilter % 24 == 0) {
+        var now = new Date();
+        var today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+        timeFilter = today.setDate(today.getDate() - this.hoursFilter / 24 + 1);
+      } else  
+        timeFilter = (new Date()).getTime() - this.timeFilter * 60 * 60 * 1000;
     }
 
     options = historyService.getNewQueryOptions();
@@ -136,7 +147,7 @@ mpagespace.model.feed.prototype = {
     for (var i=0; i<this.entries.length; i++) {
       entry = this.entries[i];
 
-      if (hoursFilter && entry.date < hoursFilter) 
+      if (timeFilter && entry.date < timeFilter) 
         continue;
 
       if (globalVisitedFilter || this.visitedFilter) {

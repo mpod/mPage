@@ -38,6 +38,7 @@ mpagespace.feedSetup = {
       visitedFilterEl.checked = widget.visitedFilter;
     }
     document.getElementById('use-guid').checked = widget.useGuid;
+    document.getElementById('group-by-date').checked = widget.groupByDate;
   },  
 
   toggleDateFilter: function() {
@@ -65,6 +66,7 @@ mpagespace.feedSetup = {
     }
     config.visitedFilter = document.getElementById('visited-filter').checked;
     config.useGuid = document.getElementById('use-guid').checked;
+    config.groupByDate = document.getElementById('group-by-date').checked;
 
     result.config = config;
     result.accepted = true;

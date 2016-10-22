@@ -401,15 +401,12 @@ mpagespace.view = {
     return divEl;
   }, 
 
-  createFeedBody: function(widget) {
+  createListOfFeeds: function(entries) {
     var self = mpagespace.view;
     var doc = self.getDoc();
     var listEl = doc.createElement('ul');
 
-    if (widget.isInError()) return self.createErrorBody(widget);
-    if (widget.isInFeedSelectingState()) return self.createFeedSelectingBody(widget);
-
-    var entries = widget.getEntriesToShow();
+    listEl.className = 'feeds';
     for (var i=0; i<entries.length; i++) {
       var entry = entries[i];
       var entryEl = doc.createElement('li');
@@ -437,6 +434,88 @@ mpagespace.view = {
     }
 
     return listEl;
+  },
+
+  createListOfDateGroups: function(groups) {
+    var self = mpagespace.view;
+    var doc = self.getDoc();
+    var listEl = doc.createElement('ul');
+
+    listEl.className = 'date-groups';
+    for (var i=0; i<groups.length; i++) {
+      var group = groups[i];
+      var groupEl = doc.createElement('li');
+      groupEl.appendChild(doc.createTextNode(group.dateLabel));
+      groupEl.appendChild(self.createListOfFeeds(group.entries));
+      listEl.appendChild(groupEl);
+    }
+    return listEl;
+  },
+
+  groupEntriesByDate: function(entries) {
+    var now = new Date();
+    var today = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+    var groupsDict = {};
+    for (var i=0; i<entries.length; i++) {
+      var entry = entries[i];
+      if (entry.date) { 
+        if (entry.date === parseInt(entry.date, 10))
+          entry.date = new Date(entry.date);
+        entry.date = new Date(
+          entry.date.getFullYear(),
+          entry.date.getMonth(),
+          entry.date.getDate()
+        );
+      } else
+        entry.date = today;
+      var key = entry.date.getTime();
+      if (groupsDict[key] === undefined) groupsDict[key] = [];
+      groupsDict[key].push(entry);
+    }
+    var groupsList = [];
+    for (var key in groupsDict) {
+      var groupDate = new Date(parseInt(key));
+      var daysAgo = Math.round((today.getTime() - groupDate.getTime()) / (1000 * 60 * 60 * 24));
+      var suffix = 'today';
+      if (daysAgo == 0)
+        suffix = 'today';
+      else if (daysAgo == 1)
+        suffix = '1 day ago';
+      else if (daysAgo == -1)
+        suffix = '1 day ahead';
+      else if (daysAgo < -1)
+        suffix = Math.abs(daysAgo) + ' days ahead';
+      else
+        suffix = daysAgo + ' days ago';
+      groupsList.push({
+        date: groupDate,
+        dateLabel: groupDate.toDateString() + ' (' + suffix + ')',
+        entries: groupsDict[key]
+      });
+    }
+    groupsList.sort(function(a, b) { return b.date - a.date });
+    return groupsList;
+  },
+
+  createFeedBody: function(widget) {
+    var self = mpagespace.view;
+    var doc = self.getDoc();
+    var listEl = doc.createElement('ul');
+
+    if (widget.isInError()) return self.createErrorBody(widget);
+    if (widget.isInFeedSelectingState()) return self.createFeedSelectingBody(widget);
+
+    var entries = widget.getEntriesToShow();
+    
+    if (widget.groupByDate) {
+      return self.createListOfDateGroups(self.groupEntriesByDate(entries));
+    } else {
+      return self.createListOfFeeds(entries);
+    }
   },
 
   createErrorBody: function(widget) {

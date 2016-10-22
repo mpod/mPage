@@ -177,6 +177,10 @@ div.body ul li:before {
   margin-right: 0.75em;
 }
 
+div.body ul.date-groups > li:before {
+  content: '\2605';
+}
+
 div.body li {
   list-style-type: none;
   line-height: 1.5em;

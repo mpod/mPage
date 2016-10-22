@@ -110,3 +110,6 @@
 <!ENTITY feedsetup.tweaking                       "Tweaking">
 <!ENTITY feedsetup.useguid.label                  "Use guid value for the URL of the entry">
 <!ENTITY feedsetup.useguid.accesskey              "G">
+<!ENTITY feedsetup.presentation                   "Presentation">
+<!ENTITY feedsetup.groupbydate.label              "Group by date">
+<!ENTITY feedsetup.groupbydate.accesskey          "B">

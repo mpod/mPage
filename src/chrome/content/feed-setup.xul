@@ -47,6 +47,10 @@
     <checkbox id="use-guid" label="&feedsetup.useguid.label;" accesskey="&feedsetup.useguid.accesskey;"/>
   </groupbox>
   <groupbox>
+    <caption label="&feedsetup.presentation;"/>
+    <checkbox id="group-by-date" label="&feedsetup.groupbydate.label;" accesskey="&feedsetup.groupbydate.accesskey;"/>
+  </groupbox>
+  <groupbox>
     <caption label="&feedsetup.feedurl;"/>
     <textbox id="url" flex="1" readonly="true"/>
   </groupbox>

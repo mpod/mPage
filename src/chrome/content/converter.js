@@ -50,6 +50,7 @@ mpagespace.converter = {
               widget.minimized = options[3] == 'true';
               widget.visitedFilter = options[4] == 'true';
               widget.useGuid = options[5] == 'true';
+              widget.groupByDate = options[6] == 'true';
             }
           } else {
             var newPage = null;
@@ -150,7 +151,7 @@ mpagespace.converter = {
           subitem.setAttribute('type', 'rss');
           subitem.setAttribute('xmlUrl', w.url);
           var options = [w.panelId, w.entriesToShow, w.hoursFilter, w.minimized,
-              w.visitedFilter, w.useGuid].join('|');
+              w.visitedFilter, w.useGuid, w.groupByDate].join('|');
           subitem.setAttribute('mpage', options);
           item.appendChild(subitem);
         }
