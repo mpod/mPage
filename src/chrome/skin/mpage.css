@@ -181,12 +181,22 @@ div.body ul li:before {
 
 div.body ul.date-groups > li:before {
   content: '\2605';
+  margin-left: -1em;
+  width: 0.5em;
+  margin-right: 0.75em;
+}
+
+div.body ul.date-groups ul {
+  margin-left: 1em;
 }
 
 div.body li {
   list-style-type: none;
   line-height: 1.5em;
   margin-left: 1em;
+}
+
+div.body ul.date-groups > li {
 }
 
 div.body a {
