@@ -5,7 +5,7 @@
 
   <Description about="urn:mozilla:install-manifest">  
     <em:id>{b9ca4756-a187-4a50-b350-7c860e9a863d}</em:id>  
-    <em:version>0.7.13</em:version>  
+    <em:version>0.7.14</em:version>  
     <em:type>2</em:type>  
     <em:optionsURL>chrome://mpagespace/content/options-form.xul</em:optionsURL>
 
