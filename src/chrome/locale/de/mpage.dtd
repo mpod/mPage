@@ -108,5 +108,8 @@
 <!ENTITY feedsetup.filtervisited.label "Besuchte links verbergen">
 <!ENTITY feedsetup.filtervisited.accesskey "B">
 <!ENTITY feedsetup.tweaking "Optimierung">
-<!ENTITY feedsetup.useguid.label "Use guid value for the URL of the entry">
+<!ENTITY feedsetup.useguid.label "Verwenden Sie den GUID-Wert für die URL des Eintrags">
 <!ENTITY feedsetup.useguid.accesskey "G">
+<!ENTITY feedsetup.presentation "Präsentation">
+<!ENTITY feedsetup.groupbydate.label "Gruppe nach Datum">
+<!ENTITY feedsetup.groupbydate.accesskey "D">
