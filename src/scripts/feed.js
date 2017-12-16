@@ -195,6 +195,7 @@ Feed.prototype = {
           console.log('feed.load: Second level error on widget ' + self.id + ' - ' + e.message);
           self.entries = [];
           self.state = 'ERROR';
+          window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'widget-loaded:' + self.id}));
         }
       }
     }
@@ -216,8 +217,7 @@ Feed.prototype = {
     this.availableFeeds = [];
 
     while ((index = htmlText.indexOf('<link', index)) != -1) {
-      var endIndex = htmlText.indexOf('/>', index);
-      if (endIndex == -1) endIndex = htmlText.indexOf('</link>', index);
+      var endIndex = htmlText.indexOf('>', index);
       if (endIndex != -1) {
         var attributes = htmlText.substr(index, endIndex - index).match(/\w+\s*=\s*("[^"]*")|('[^']*')/ig);
         var title = Utils.translate('subscribe.noFeedTitle'), href = '', type = '';
