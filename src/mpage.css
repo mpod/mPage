@@ -1,0 +1,350 @@
+html {
+  min-height: 100vh;
+}
+
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+	margin:0;
+	padding:0;
+}
+
+body {
+  font-size: 13px;
+  line-height: 1.5em;
+  font-family: "Proxima Nova Regular","Helvetica Neue",Arial,Helvetica,sans-serif;
+  min-height: 100vh;
+}
+
+.clear {
+  clear: both;
+}
+
+#page-container {
+  border-collapse: collapse;
+  padding: 0;
+  width: 100%;
+  height: 100vh
+  font-size: inherit;
+}
+
+#panel-container td.column {
+  height: 100%;
+  padding: 0;
+  vertical-align: top;
+  border-right: 1px dashed;
+}
+
+#dd-placeholder {
+  display: none;
+}
+
+#toolbar {
+  border-bottom: 1px dashed;
+  border-color: inherit;
+  position: relative;
+}
+
+#nav-container {
+  line-height: 1.5em;
+  padding: 0.25em 0;
+}
+
+#nav-container .nav-width-clip {
+  overflow: hidden;
+  margin: 0 2em 0 0em;
+  position: relative;
+}
+
+#nav-list {
+  display: inline;
+  list-style-type: none;
+  line-height: 1.5em;
+  transition-property: margin;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-out;
+}
+
+#nav-list li {
+  white-space: nowrap;
+  display: inline; 
+}
+
+#nav-list li a, #nav-list li a:link {
+  padding: 0 0.75em;
+  display: inline;
+  text-decoration: none;
+  border-right: 1px dashed;
+  line-height: 1.5em;
+}
+
+#nav-list li a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+#nav-list li.active a {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+#nav-list li a.active:hover {
+}
+
+#nav-drop-indicator-bar {
+  background-color: #e6ac32; 
+  width: 3px;
+  height: 1.5em;
+  position: absolute;
+  display: none;
+}
+
+#nav-action-left {
+  width: 2em;
+  height: 1.5em;
+  position: absolute;
+  top: 0.25em;
+  left: 0;
+  text-align: center;
+  cursor: pointer;
+}
+
+#nav-action-right {
+  width: 1.5em;
+  height: 1.5em;
+  position: absolute;
+  top: 0.25em;
+  right: 2em;
+  text-align: center;
+  cursor: pointer;
+}
+
+#mpage-menu {
+  width: 1.5em;
+  height: 1.5em;
+  position: absolute;
+  display: block;
+  top: 0.25em;
+  right: 0.5em;
+  text-align: center;
+  cursor: pointer;
+}
+
+#options-container {
+  width: 300px;
+  padding-top: 0.75em;
+  vertical-align: top;
+}
+
+#options-container div.color-box {
+  background-color: red;
+  width: 1.5em;
+  height: 1.5em;
+  float: left;
+  margin: 0 0.5em 0 0;
+} 
+
+#options-container div.group {
+  border-bottom: 1px dashed;
+  margin-bottom: 0.75em;
+}
+
+#options-container table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+#options-container table td {
+  padding: 0 0.75em 0.75em 0.75em;
+}
+
+
+#options-container .close-button {
+  text-align: center;
+}
+
+#options-container .close-button a {
+  text-decoration: none;
+}
+
+#options-container .close-button a:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+div.widget {
+  border-bottom: 1px dashed; 
+  padding: 0.75em;
+}
+
+div.header {
+  line-height: 1.5em;
+}
+
+div.header img.favicon {
+  margin-bottom: -3px;
+  margin-right: 0.5em;
+  width: 16px;
+  height: 16px;
+}
+
+div.header a {
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+div.header div.action {
+  margin-left: 0.25em;
+  cursor: pointer;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+div.body {
+  margin-top: 0.75em;
+}
+
+div.body ul {
+}
+
+div.body ul li:before {
+  content: '\2022';
+  display: inline-block;
+  margin-left: -1em;
+  width: 0.25em;
+  margin-right: 0.75em;
+}
+
+div.body ul.date-groups > li:before {
+  content: '\2605';
+  margin-left: -1em;
+  width: 0.5em;
+  margin-right: 0.75em;
+}
+
+div.body ul.date-groups ul {
+  margin-left: 1.25em;
+}
+
+div.body li {
+  list-style-type: none;
+  line-height: 1.5em;
+  margin-left: 1em;
+}
+
+div.body ul.date-groups > li {
+}
+
+div.body a {
+  color: inherit;
+  text-decoration: none;
+}
+
+div.body a:hover {
+  text-decoration: underline;
+}
+
+div.body a:visited {
+}
+
+div.body div.error {
+  color: #9d0e15;
+}
+
+div.body div.loading {
+  background-image: url('loading_16.png');
+  padding-left: 20px;
+  background-repeat: no-repeat;
+}
+
+div.body .available-feeds {
+  text-align: center;
+}
+
+div.body .available-feeds select.feeds {
+  line-height: 1.5em;
+  margin-bottom: 1.5em;
+  margin-top: 1.5em;
+  max-width: 300px;
+  width: 100%;
+}
+
+div.body .available-feeds .button {
+  line-height: 1.5em;
+  display: block;
+  text-align: right;
+  width: 100%;
+}
+
+div.body .available-feeds p {
+  line-height: 1.5em;
+  text-align: left;
+}
+
+ul.menu-list {
+  list-style-type: none;
+  position: absolute;
+  top: 16px;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+  width: 150px;
+  text-align: center;
+  display: none;
+  font-weight: normal;
+  text-align: left;
+  box-shadow: 2px 2px 1px #888888;
+}
+
+ul.menu-list a {
+  display: block;
+  text-decoration: none;
+  padding: 0 0 0 1.5em;
+  white-space: nowrap;
+  font-weight: normal;
+  line-height: 1.5em;
+}
+
+ul.menu-list a:hover {
+}
+
+div.feedConfig {
+  padding-bottom: 0.375em;
+  border-bottom: 1px dashed;
+}
+
+div.feedConfig div {
+  padding-top: 0.375em;
+}
+
+div.feedConfig input {
+  margin: 0 0.375em 0 0.375em;
+}
+
+#message {
+  position: absolute; 
+  text-align: center; 
+  width: 100%;
+  display: none;
+}
+
+#message .dialog {
+  position: relative;
+  display: inline-block;
+  background-color: #9ab2c8;
+  margin: 0 auto;
+  padding: 0.75em 1.5em;
+  z-index: 1000;
+  max-width: 400px;
+}
+
+#message .dialog p {
+  margin-bottom: 0.75em;
+}
+
+#message .dialog .button:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

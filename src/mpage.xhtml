@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" type="text/css" href="/mpage.css"/>
+    <style id="styles"></style>
+  </head>
+  <body>
+    <img id="dd-feedback" src="chrome://mpagespace/skin/feedback.png" style="display:none;"/>
+    <div id="message">
+      <div class="dialog">
+        <p></p>
+        <div class="button">[ Close ]</div>
+      </div>
+    </div>
+    <div id="toolbar">     
+      <div id="nav-container">
+        <div class="nav-width-clip">
+          <div id="nav-drop-indicator-bar"></div>
+          <ul id="nav-list"></ul>
+        </div>
+      </div>
+      <div id="mpage-menu">&#x273F;
+        <ul id="mpage-menu-list" class="menu-list"></ul>
+      </div>
+    </div> 
+    <table id="page-container">
+      <tr>
+        <td style="vertical-align: top;">
+          <table style="height: 100vh;">
+            <tr id="panel-container"></tr>
+          </table>
+        </td>
+        <td id="options-container" style="display: none;">
+          <div class="group">
+            <table>
+              <tr>
+                <td style="width: 160px;">Scheme type:</td>
+                <td>
+                  <select id="schemeType">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <div class="color-box" id="colorBorder"></div>
+                  <div class="color-box" id="colorLink"></div>
+                  <div class="color-box" id="colorVisited"></div>
+                  <div class="color-box" id="colorTitle"></div>
+                  <div class="color-box" id="colorMenu"></div>
+                  <div class="color-box" id="colorMenuText"></div>
+                  <div class="color-box" id="colorMenuSel"></div>
+                  <div class="color-box" id="colorError"></div>
+                  <div class="color-box" id="colorBackground"></div>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><button id="shuffleColors">Random</button></td>
+              </tr>
+              <tr>
+                <td>Font size:</td>
+                <td>
+                  <select id="fontSize">
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
+                    <option value="14">14</option>
+                    <option value="15">15</option>
+                    <option value="16">16</option>
+                    <option value="17">17</option>
+                    <option value="18">18</option>
+                    <option value="20">20</option>
+                    <option value="22">22</option>
+                    <option value="24">24</option>
+                    <option value="26">26</option>
+                    <option value="28">28</option>
+                    <option value="30">30</option>
+                    <option value="32">32</option>
+                    <option value="34">34</option>
+                    <option value="36">36</option>
+                    <option value="40">40</option>
+                    <option value="44">44</option>
+                    <option value="48">48</option>
+                    <option value="56">56</option>
+                    <option value="64">64</option>
+                    <option value="72">72</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Spacing:</td>
+                <td>
+                  <select id="entrySpacing">
+                    <option value="0">None</option>
+                    <option value="0.375em">Small</option>
+                    <option value="0.75em">Medium</option>
+                    <option value="1.125em">Large</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Lock elements on page:</td>
+                <td><input id="lock" type="checkbox"/></td>
+              </tr>
+              <tr>
+                <td>Number of panels:</td>
+                <td>
+                  <select id="numberOfPanels">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                  </select>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="group">
+            <table>
+              <tr>
+                <td style="width: 160px;">Import from OPML file:</td>
+                <td>
+                  <input type="file" id="import-file" accept="application/xml" style="display:none"/>
+                  <button id="import-button">Import</button>
+                </td>
+              </tr>
+              <tr>
+                <td>Export to OPML file:</td>
+                <td><button id="export-button">Export</button></td>
+              </tr>
+            </table>
+          </div>
+          <div class="group">
+            <table>
+              <tr>
+                <td colspan="2">
+                  If you have used previous version of mPage extension then you probably want to reuse existing configuration.
+                  Search for <b>mpage.extension.json</b> file somewhere hidden in your home directory and import it with button below.
+                </td>
+              </tr>
+              <tr>
+                <td style="width: 160px;"></td>
+                <td>
+                  <input type="file" id="import-old-file" accept="application/json" style="display:none"/>
+                  <button id="import-old-button">Import</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="group">
+            <table>
+              <tr>
+                <td style="width: 160px;">Reset to default values:</td>
+                <td><button id="reset-button">Reset</button></td>
+              </tr>
+            </table>
+          </div>
+          <div class="close-button"><a href="#">[ Close ]</a></div>
+        </td>
+      </tr>
+    </table>
+    <script src="scripts/ajax.js"></script>
+    <script src="scripts/converter.js"></script>
+    <script src="scripts/options-form.js"></script>
+    <script src="scripts/view.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/sync.js"></script>
+    <script src="scripts/lib/husl.js"></script>
+    <script src="scripts/colors.js"></script>
+    <script src="scripts/preferences.js"></script>
+    <script src="scripts/page.js"></script>
+    <script src="scripts/feed.js"></script>
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/model.js"></script>
+    <script src="scripts/about.js"></script>
+    <script src="scripts/dd.js"></script>
+    <script src="scripts/controller.js"></script>
+    <script src="scripts/mpage.js"></script>
+  </body>
+</html>

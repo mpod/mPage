@@ -1,0 +1,22 @@
+{
+  "description": "Simple dashboard-like feed reader",
+  "manifest_version": 2,
+  "name": "mPage",
+  "version": "1.0",
+  "author": "Matija Podravec",
+  "homepage_url": "https://github.com/mpod/mpage",
+  "permissions": [
+    "<all_urls>", "storage", "webRequest", "webRequestBlocking", "downloads"
+  ],
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": {
+      "32": "icons/icon.png"
+    }
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ] 
+  }
+}
