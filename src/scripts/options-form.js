@@ -119,57 +119,11 @@ let OptionsForm = {
     mPage.getModel().setPreferences(pref, false);
   },
 
-  getBookmarksList: function() {
-    var bkmkserv = Components.classes["@mozilla.org/browser/nav-bookmarks-service;1"]
-                             .getService(Components.interfaces.nsINavBookmarksService);
-    var result = [];
-
-    var traverseBookmarks = function(folderId, space) {
-      var i = 0;
-      var bkmkId;
-      
-      bkmkId = bkmkserv.getIdForItemAt(folderId, i);  
-      while (bkmkId != -1) {
-        if (bkmkserv.getItemType(bkmkId) == bkmkserv.TYPE_FOLDER) {
-          result.push({
-            id: bkmkId,
-            title: space + bkmkserv.getItemTitle(bkmkId)
-          });
-          traverseBookmarks(bkmkId, space + '  ');
-        }
-        i++;
-        bkmkId = bkmkserv.getIdForItemAt(folderId, i);  
-      }
-    } 
-
-    traverseBookmarks(bkmkserv.bookmarksMenuFolder, '');
-    return result;
-  },
-
-  pickFile: function(mode) {
-    var nsIFilePicker = Components.interfaces.nsIFilePicker;
-    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-    if (mode == 'save') {
-      fp.init(window, mpagespace.translate('filePicker.export.title'), nsIFilePicker.modeSave);
-    } else {
-      fp.init(window, mpagespace.translate('filePicker.import.title'), nsIFilePicker.modeOpen);
-    }
-
-    fp.defaultString = 'mpage-subscription.xml';
-    fp.defaultExtension = '.xml';
-    fp.appendFilter('XML files', '*.xml');
-    fp.appendFilters(nsIFilePicker.filterAll);
-    var rv = fp.show();
-    if (rv != nsIFilePicker.returnOK && rv != nsIFilePicker.returnReplace)
-      return null;
-
-    return fp.file;
-  },
-
   importFromOpml: function(evt) {
     var reader = new FileReader();
     reader.onloadend = function(e) {
       Converter.importFromOpml(reader.result, true);
+      Storage.save(mPage.getModel().getConfig());
     };
     reader.readAsText(evt.target.files[0]);
   },
@@ -183,7 +137,6 @@ let OptionsForm = {
     var reader = new FileReader();
     reader.onloadend = function(e) {
       Storage.save(JSON.parse(reader.result)).then(function() { Storage.load(); }, null);  
-      //Storage.load();
     };
     reader.readAsText(evt.target.files[0]);
   },

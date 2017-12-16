@@ -110,8 +110,6 @@ Feed.prototype = {
   },
 
   getEntriesToShow: function() {
-    //var historyService = Components.classes["@mozilla.org/browser/nav-history-service;1"]
-    //  .getService(Components.interfaces.nsINavHistoryService);
     var result = []
     var entry;
     var timeFilter = null;
@@ -130,10 +128,6 @@ Feed.prototype = {
         timeFilter = (new Date()).getTime() - this.timeFilter * 60 * 60 * 1000;
     }
 
-    //options = historyService.getNewQueryOptions();
-    //query = historyService.getNewQuery();
-    //options.includeHidden = true;
-
     var globalVisitedFilter = mPage.getModel().getPreferences().globalVisitedFilter;
 
     for (var i=0; i<this.entries.length; i++) {
@@ -141,17 +135,6 @@ Feed.prototype = {
 
       if (timeFilter && entry.date < timeFilter) 
         continue;
-
-      /*if (globalVisitedFilter || this.visitedFilter) {
-        query.uri = entry.link;
-        var rootNode = historyService.executeQuery(query, options).root;
-        rootNode.containerOpen = true;
-        if (rootNode.childCount > 0) {
-          rootNode.containerOpen = false;
-          continue;
-        }
-        rootNode.containerOpen = false;
-      }*/
 
       result.push(entry);
       if (result.length >= this.entriesToShow)
@@ -211,7 +194,7 @@ Feed.prototype = {
         } catch (e) {
           console.log('feed.load: Second level error on widget ' + self.id + ' - ' + e.message);
           self.entries = [];
-          self.processNative(request.responseText);
+          self.state = 'ERROR';
         }
       }
     }
@@ -222,8 +205,6 @@ Feed.prototype = {
   },
 
   extractFeeds: function(htmlText) {
-    var ios = Components.classes["@mozilla.org/network/io-service;1"]
-      .getService(Components.interfaces.nsIIOService);
     var index = 0;
 
     console.log('feed.extractFeeds: Started');
@@ -248,14 +229,9 @@ Feed.prototype = {
           if (attribute[0].trim() == 'type') type = attribute[1];
           if (attribute[0].trim() == 'href') {
             try {
-              href = ios.newURI(attribute[1], null, null);
+              href = new URL(attribute[1]).href;
             } catch (e) {
-              try {
-                href = ios.newURI(this.url, null, null).resolve(attribute[1]);
-                href = ios.newURI(href, null, null);
-              } catch (e) {
-                continue;
-              }
+              continue;
             }
           }
           if (attribute[0].trim() == 'title') title = attribute[1];
@@ -264,7 +240,7 @@ Feed.prototype = {
         if (feedTypes.indexOf(type) != -1) {
           this.availableFeeds.push({
             title: title,
-            href: href.spec
+            href: href
           });
         }
       }
@@ -336,7 +312,7 @@ Feed.prototype = {
 
       node = node.firstChild;
       while (node && res == '') {
-        res = node.nodeValue.trim();
+        res = (node.nodeValue || '').trim();
         node = node.nextSibling;
       }
       return res;

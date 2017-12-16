@@ -14,6 +14,7 @@ let mPage = {
         case 'model-loaded':
           View.init();
           View.registerObserver();
+          Storage.registerObserver();
           mPage.model.changeActivePage();
           OptionsForm.init();
           break;
