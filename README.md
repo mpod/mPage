@@ -13,5 +13,6 @@ Themes are completely customizable. Here are screenshots of two default themes:
 
 ###Instructions
 
-1. Run `make`.
-2. Drag and drop `bin/mpage.xpi` file on Firefox window.
+Open Firefox and load about:debugging in the URL bar. Click the Load Temporary 
+Add-on button and select the src/manifest.json file within the directory of the 
+mPage extension.
