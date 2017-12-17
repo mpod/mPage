@@ -125,7 +125,7 @@ Feed.prototype = {
         );
         timeFilter = today.setDate(today.getDate() - this.hoursFilter / 24 + 1);
       } else  
-        timeFilter = (new Date()).getTime() - this.timeFilter * 60 * 60 * 1000;
+        timeFilter = (new Date()).getTime() - this.hoursFilter * 60 * 60 * 1000;
     }
 
     var globalVisitedFilter = mPage.getModel().getPreferences().globalVisitedFilter;

@@ -144,6 +144,12 @@ let DragAndDrop = {
       var doc = View.getDoc();
       var prefix = DragAndDrop.widgetHandler.prefixEl;
       var widgetId = parseInt(this.getAttribute('id').substr(prefix.length));
+      var el = doc.getElementById(prefix + widgetId);
+      var feedConfigEl = el.querySelector('div.feedConfig');
+      if (feedConfigEl && feedConfigEl.style.display == 'block') {
+        event.preventDefault();
+        return false;
+      }
 
       event.dataTransfer.setData('application/mpage-widget', widgetId); 
       event.dataTransfer.setDragImage(doc.getElementById('dd-feedback'), 19, 19);

@@ -114,6 +114,7 @@ let OptionsForm = {
     config.font.size = OptionsForm.getSelectElValue('fontSize');
     config.spacing = OptionsForm.getSelectElValue('entrySpacing');
     config.lock = document.getElementById('lock').checked;
+    config.layout.numberOfPanels = OptionsForm.getSelectElValue('numberOfPanels');
 
     var pref = new Preferences(config);
     mPage.getModel().setPreferences(pref, false);

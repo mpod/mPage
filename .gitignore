@@ -1,3 +1,4 @@
 bin/*.xpi
 *.xpi
 *.swp
+web-ext-artifacts/
