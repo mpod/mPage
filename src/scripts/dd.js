@@ -6,7 +6,7 @@ let DragAndDrop = {
 
     dragStart: function(event) {
       var prefix = DragAndDrop.pageHandler.prefixEl;
-      var pageId = parseInt(this.getAttribute('id').substr(prefix.length));
+      var pageId = parseInt(event.currentTarget.getAttribute('id').substr(prefix.length));
       event.dataTransfer.setData('application/mpage-page', pageId); 
       event.stopPropagation();
     },
@@ -19,7 +19,7 @@ let DragAndDrop = {
       if (event.dataTransfer.types.indexOf('application/mpage-page') != -1) {
         var indicatorBarEl = doc.getElementById('nav-drop-indicator-bar'); 
         indicatorBarEl.style.display = 'block';
-        for (var n=this.lastChild; n; n=n.previousSibling) {
+        for (var n=event.currentTarget.lastChild; n; n=n.previousSibling) {
           if (n.nodeName.toLowerCase() == 'li' && 
             n.getAttribute('id').indexOf(prefix) != -1) {
               if ((event.layerX + 1 - n.offsetLeft) / n.offsetWidth < 0.5) {
@@ -30,7 +30,7 @@ let DragAndDrop = {
         }
         if (refEl != indicatorBarEl.nextSibling) {
           if (refEl == null)
-            indicatorBarEl.style.left = (this.lastChild.offsetLeft + this.lastChild.offsetWidth - 1) + 'px';
+            indicatorBarEl.style.left = (event.currentTarget.lastChild.offsetLeft + event.currentTarget.lastChild.offsetWidth - 1) + 'px';
           else
             indicatorBarEl.style.left = (refEl.offsetLeft - 1) + 'px';
           indicatorBarEl._mpagespace = {refEl: refEl};
@@ -40,7 +40,7 @@ let DragAndDrop = {
         event.stopPropagation();
       } else if (event.dataTransfer.types.indexOf('application/mpage-widget') != -1 ||
                  event.dataTransfer.types.indexOf('text/plain') != -1) {
-        for (var n=this.lastChild; n; n=n.previousSibling) {
+        for (var n=event.currentTarget.lastChild; n; n=n.previousSibling) {
           if (n.nodeName.toLowerCase() == 'li' && 
             n.getAttribute('id').indexOf(prefix) != -1 &&
             event.layerX >= n.offsetLeft &&
@@ -54,15 +54,15 @@ let DragAndDrop = {
         var timerCallback = function() {
           mPage.getModel().changeActivePage(pageId);
         };
-        if (this._mpagespace == null) {
-          this._mpagespace = {};
+        if (event.currentTarget._mpagespace == null) {
+          event.currentTarget._mpagespace = {}; 
         } 
-        if (this._mpagespace.pageToOpen != pageId) {
-          if (this._mpagespace.timer)
-            window.clearTimeout(this._mpagespace.timer);
+        if (event.currentTarget._mpagespace.pageToOpen != pageId) {
+          if (event.currentTarget._mpagespace.timer)
+            window.clearTimeout(event.currentTarget._mpagespace.timer);
           var timer = window.setTimeout(timerCallback, 500);
-          this._mpagespace.timer = timer;
-          this._mpagespace.pageToOpen = pageId;
+          event.currentTarget._mpagespace.timer = timer;
+          event.currentTarget._mpagespace.pageToOpen = pageId;
         }
 
         event.preventDefault();
@@ -109,9 +109,9 @@ let DragAndDrop = {
     dragLeave: function(event) {
       if (event.dataTransfer.types.indexOf('application/mpage-widget') != -1 ||
           event.dataTransfer.types.indexOf('text/plain') != -1) {
-        if (this._mpagespace && this._mpagespace.timer) {
-          window.clearTimeout(this._mpagespace.timer); 
-          this._mpagespace = null;
+        if (event.currentTarget._mpagespace && event.currentTarget._mpagespace.timer) {
+          window.clearTimeout(event.currentTarget._mpagespace.timer); 
+          event.currentTarget._mpagespace = null;
         }
         event.preventDefault();
         event.stopPropagation();
@@ -143,7 +143,7 @@ let DragAndDrop = {
     dragStart: function(event) {
       var doc = View.getDoc();
       var prefix = DragAndDrop.widgetHandler.prefixEl;
-      var widgetId = parseInt(this.getAttribute('id').substr(prefix.length));
+      var widgetId = parseInt(event.currentTarget.getAttribute('id').substr(prefix.length));
       var el = doc.getElementById(prefix + widgetId);
       var feedConfigEl = el.querySelector('div.feedConfig');
       if (feedConfigEl && feedConfigEl.style.display == 'block') {
@@ -153,8 +153,8 @@ let DragAndDrop = {
 
       event.dataTransfer.setData('application/mpage-widget', widgetId); 
       event.dataTransfer.setDragImage(doc.getElementById('dd-feedback'), 19, 19);
-      event.dataTransfer.effectAllowed = 'link';
-      this.style.opacity = 0.3;
+      event.dataTransfer.effectAllowed = 'move';
+      event.currentTarget.style.opacity = 0.3;
       event.stopPropagation();
     },
 
@@ -170,9 +170,9 @@ let DragAndDrop = {
           placeholderEl.setAttribute('class', 'widget');
         }
 
-        if (this.className.indexOf('column') != -1) { 
+        if (event.currentTarget.className.indexOf('column') != -1) { 
           var refEl = null;
-          for (var n=this.lastChild; n; n=n.previousSibling) {
+          for (var n=event.currentTarget.lastChild; n; n=n.previousSibling) {
             if (n.nodeName.toLowerCase() == 'div' && n.className.indexOf('widget') != -1 
                 && n.getAttribute('id') != 'dd-placeholder'){
               if ((event.layerY + 1 - n.offsetTop) / n.offsetHeight < 0.5) {
@@ -181,20 +181,20 @@ let DragAndDrop = {
                 break;
             }
           }
+          var refEl = doc.elementFromPoint(event.clientX, event.clientY);
+          while (refEl.className.indexOf('column') == -1 && refEl.className.indexOf('widget') == -1)
+            refEl = refEl.parentNode;
+          if (refEl.className.indexOf('column') != -1)
+            refEl = null;
+
           if ((refEl == null && placeholderEl.getAttribute('refElId') != '') ||
               (refEl != null && placeholderEl.getAttribute('refElId') != refEl.getAttribute('id'))) {
-            this.insertBefore(placeholderEl, refEl);
+            event.currentTarget.insertBefore(placeholderEl, refEl);
             var el = doc.getElementById(prefix + event.dataTransfer.getData('application/mpage-widget')); 
             var placeholderHeight = el ? el.offsetHeight : 150; 
             placeholderEl.style.height = placeholderHeight + 'px';
             placeholderEl.style.display = 'block';
             placeholderEl.setAttribute('refElId', refEl ? refEl.getAttribute('id') : '');
-          }
-          var wnd = doc.defaultView;
-          if (wnd.scrollMaxY > wnd.scrollY && event.layerY - wnd.scrollY + 35 > wnd.innerHeight) {
-            wnd.scrollBy(0, 10);
-          } else if (wnd.scrollY > 0 && event.layerY - wnd.scrollY < 35) {
-            wnd.scrollBy(0, -10);
           }
         }
 
@@ -273,8 +273,6 @@ let DragAndDrop = {
             return isDescendant(parentEl, childEl.parentNode);
 
         };
-        if (!isDescendant(this, event.relatedTarget))
-          placeholderEl.parentNode.removeChild(placeholderEl);
 
         event.preventDefault();
         event.stopPropagation();

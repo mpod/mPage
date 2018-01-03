@@ -246,8 +246,8 @@ Page.prototype = {
         }
       }
       this.insertToPanel(widget, panelId, null);
-      window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'widget-added-to-page:' + widget.id}));
     }
+    window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'widget-added-to-page:' + widget.id}));
   },
 
   moveWidget: function(widget, panelId, refWidget) {
