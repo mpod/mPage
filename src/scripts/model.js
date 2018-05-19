@@ -394,13 +394,12 @@ Model.prototype = {
     var page = this.getPage();
 
     page.createAndAddWidget('http://blog.mozilla.com/feed/', null, null);
-    page.createAndAddWidget('https://epubs.siam.org/action/showFeed?ui=0&mi=8xcfx1&ai=s6&jc=sjope8&type=etoc&feed=rss', null, null);
     page.createAndAddWidget('http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml', null, null);
     page.createAndAddWidget('https://www.theguardian.com/international/rss', null, null);
     page.load();
 
     page = this.addPage('Technology');
-    page.createAndAddWidget('http://feeds.arstechnica.com/arstechnica/everything', null, null);
+    page.createAndAddWidget('http://feeds.arstechnica.com/arstechnica/index', null, null);
     page.createAndAddWidget('http://rss.slashdot.org/Slashdot/slashdot', null, null);
     page.createAndAddWidget('http://feeds.wired.com/wired/index', null, null);
     page.createAndAddWidget('http://www.reddit.com/r/technology/.rss', null, null);
@@ -409,7 +408,6 @@ Model.prototype = {
     page.load();
 
     page = this.addPage('Music');
-    page.createAndAddWidget('http://www.mtv.com/rss/news/news_full.jhtml', null, null);
     page.createAndAddWidget('http://www.spin.com/news/rss/', null, null);
     page.createAndAddWidget('http://www.rollingstone.com/siteServices/rss/allNews', null, null);
     page.createAndAddWidget('http://pitchfork.com/rss/news/', null, null);

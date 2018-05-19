@@ -317,50 +317,43 @@ Feed.prototype = {
       }
       return res;
     }
-    if (isRdf) {
-      var channelEl = xmlDoc.getElementsByTagName('rss:channel')[0];
-      if (!channelEl) channelEl = xmlDoc;
-      if (this.title == null) {
-        this.title = getNodeValue(channelEl.getElementsByTagName('rss:title')[0]);
-      }
-      for (n = channelEl.firstChild; n; n = n.nextSibling){
-        if (n.tagName && n.tagName.toLowerCase() == 'rss:link') {
-          this.siteUrl = getNodeValue(n);
-          break;
-        }
-      }
-      var linkEl = channelEl.getElementsByTagName('rss:link');
-      if (linkEl) {
-        if (linkEl[0] && linkEl[0].getAttribute('rss:href'))
-          this.siteUrl = linkEl[0].getAttribute('rss:href');
-        else if (linkEl[0])
-          this.siteUrl = getNodeValue(linkEl[0]);
-      }
-    } else {
-      var channelEl = xmlDoc.getElementsByTagName('channel')[0];
-      if (!channelEl) channelEl = xmlDoc;
-      if (this.title == null) {
-        this.title = getNodeValue(channelEl.getElementsByTagName('title')[0]);
-        if (this.url.indexOf('reddit.com') != -1) {
-          this.title += ' [reddit]';
-        }
-      }
-      for (n = channelEl.firstChild; n; n = n.nextSibling){
-        if (n.tagName && n.tagName.toLowerCase() == 'link') {
-          this.siteUrl = getNodeValue(n);
-          break;
-        }
-      }
-      var linkEl = channelEl.getElementsByTagName('link');
-      if (linkEl) {
-        if (linkEl[0] && linkEl[0].getAttribute('href'))
-          this.siteUrl = linkEl[0].getAttribute('href');
-        else if (linkEl[0])
-          this.siteUrl = getNodeValue(linkEl[0]);
+
+    var getElementsByTagName = function(xmlDoc, tagName) {
+      var res = xmlDoc.getElementsByTagName(tagName);
+      if (res.length == 0)
+        res = xmlDoc.getElementsByTagName('rss:' + tagName);
+      return res;
+    }
+
+    var channelEl = getElementsByTagName(xmlDoc, 'channel')[0];
+    if (!channelEl) channelEl = xmlDoc;
+    if (this.title == null) {
+      this.title = getNodeValue(getElementsByTagName(channelEl, 'title')[0]);
+      if (this.url.indexOf('reddit.com') != -1) {
+        this.title += ' [reddit]';
       }
     }
+    for (n = channelEl.firstChild; n; n = n.nextSibling){
+      if (n.tagName && n.tagName.toLowerCase() == 'link') {
+        this.siteUrl = getNodeValue(n);  
+        break;
+      } else if (n.tagName && n.tagName.toLowerCase() == 'rss:link') {
+        this.siteUrl = getNodeValue(n);  
+        break;
+      }
+    }
+    var linkEl = getElementsByTagName(channelEl, 'link');
+    if (linkEl) {
+      if (linkEl[0] && linkEl[0].getAttribute('href'))
+        this.siteUrl = linkEl[0].getAttribute('href');
+      else if (linkEl[0] && linkEl[0].getAttribute('rss:href'))
+        this.siteUrl = linkEl[0].getAttribute('rss:href');
+      else if (linkEl[0]) 
+        this.siteUrl = getNodeValue(linkEl[0]);
+    }
+
     if (isRdf) { 
-      nodes = xmlDoc.getElementsByTagName('rss:item');
+      nodes = getElementsByTagName(xmlDoc, 'item');
     } else if (isRSS) {
       nodes = channelEl.getElementsByTagName('item');
     } else {
@@ -387,7 +380,7 @@ Feed.prototype = {
           case 'title':
             if (!entry.title) entry.title = n.firstChild ? getNodeValue(n) : '';
             break;
-	  case 'rss:title':
+          case 'rss:title':
             if (!entry.title) entry.title = n.firstChild ? getNodeValue(n) : '';
             break;
           case 'summary':
@@ -395,6 +388,7 @@ Feed.prototype = {
             entry.content = n.firstChild ? getNodeValue(n) : '';
             break;
           case 'content':
+          case 'rss:description':
           case 'description':
             if (!entry.content) {
               entry.content = n.firstChild ? getNodeValue(n) : '';
@@ -406,44 +400,18 @@ Feed.prototype = {
                 }
               } 
             }
-          case 'rss:description':
-            if (!entry.content) {
-              entry.content = n.firstChild ? getNodeValue(n) : '';
-              if (this.url.indexOf('reddit.com') != -1) {
-                var pattern = /<a href="([^"]*)">\[link\]</;
-                var result = entry.content.match(pattern);
-                if (result != null) {
-                  entry.reddit = new URL(result[1]);
-                }
-              }
-            }
-            break;
-	
             break;
           case 'enclosure':
             if (n.getAttribute('type') && n.getAttribute('type').indexOf('image') == 0) 
               entry.image = n.getAttribute('url');
             break;
+          case 'rss:link':
           case 'link':
             if (n.getAttribute('rel') == 'enclosure') {
               entry.image = n.getAttribute('href');
             } else {
               if (isAtom) {
                 if (entry.link === void 0 || 
-                    (n.getAttribute('rel') && n.getAttribute('rel') === 'alternate') ||
-                    !n.getAttribute('rel'))
-                  entry.link = prepareUri(n.getAttribute('href'));
-              } else {
-                entry.link = n.firstChild ? prepareUri(getNodeValue(n)) : null;
-              }
-            }
-            break;
-           case 'rss:link':
-            if (n.getAttribute('rel') == 'enclosure') {
-              entry.image = n.getAttribute('href');
-            } else {
-              if (isAtom) {
-                if (entry.link === void 0 ||
                     (n.getAttribute('rel') && n.getAttribute('rel') === 'alternate') ||
                     !n.getAttribute('rel'))
                   entry.link = prepareUri(n.getAttribute('href'));
