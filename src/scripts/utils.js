@@ -56,7 +56,7 @@ let Utils = {
 
 let lang = {
 'loading.label': 'Loading...',
-'widget.error.message': 'Error in feed loading.',
+'widget.error.message': 'Error in feed loading. Try with disabled tracking protection.',
 'ajaxException.title': 'Error',
 'ajaxException.message': 'Unknown error happened.',
 'invalidUrl.message': 'Invalid URL.',
