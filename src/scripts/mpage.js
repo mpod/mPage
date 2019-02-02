@@ -15,7 +15,6 @@ let mPage = {
           View.init();
           View.registerObserver();
           Storage.registerObserver();
-          mPage.model.changeActivePage();
           OptionsForm.init();
           break;
         default:
