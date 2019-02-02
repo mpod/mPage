@@ -98,12 +98,12 @@ Model.prototype = {
     }
 
     delete this.restoreInProgress;
+    this.activePageId = this.config.pageOrder[0];
     this.loaded = true;
-
-    this.changeActivePage();
 
     console.log('model.init: Done');
     window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'model-loaded'}));
+    this.changeActivePage();
   },
 
   close: function() {
