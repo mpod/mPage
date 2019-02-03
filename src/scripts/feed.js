@@ -433,6 +433,10 @@ Feed.prototype = {
           case 'dc:date':
             if (!entry.date) entry.date = n.firstChild ? Date.parse(getNodeValue(n)) : null; 
             break;
+          case 'comments':
+            if (n.firstChild)
+              entry.comments = prepareUri(getNodeValue(n));
+            break;
         }
       } 
       this.entries.push(entry);

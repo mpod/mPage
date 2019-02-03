@@ -432,6 +432,15 @@ let View = {
           entryEl.appendChild(doc.createTextNode(' '));
           entryEl.appendChild(link2El);
       }
+      if (entry.comments) {
+          var link2El = doc.createElement('a');
+          link2El.setAttribute('href', entry.comments);
+          link2El.setAttribute('target', '_blank');
+          link2El.appendChild(doc.createTextNode('[comments]'));
+          link2El.addEventListener('click', function(){this.blur();}, false); 
+          entryEl.appendChild(doc.createTextNode(' '));
+          entryEl.appendChild(link2El);
+      }
       listEl.appendChild(entryEl);
     }
 
