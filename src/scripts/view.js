@@ -142,8 +142,6 @@ let View = {
     var panelEl;
     var widgets;
 
-    // document.getElementById('main').setAttribute('title', 'mPage - ' + page.title);
-
     if (widget) {
       var widgetEl = doc.getElementById('widget-' + widget.id);
       panelEl = doc.getElementById('panel-' + widget.panelId);   
@@ -200,7 +198,7 @@ let View = {
     var headerEl = doc.createElement('div');
     var bodyEl = doc.createElement('div');
     var titleEl = doc.createElement('a');
-    var el;
+    var faviconEl = doc.createElement('img');
 
     widgetEl.setAttribute('class', 'widget');
     widgetEl.setAttribute('id', 'widget-' + widget.id);
@@ -208,6 +206,18 @@ let View = {
     widgetEl.setAttribute('widget-id', widget.id);
     headerEl.setAttribute('class', 'header');
     titleEl.setAttribute('class', 'title');
+
+    faviconEl.setAttribute('class', 'favicon');
+    if (widget.siteUrl) {
+      var url = new URL(widget.siteUrl);
+      faviconEl.addEventListener('error', function(event){
+        this.src = 'icons/icon.png';
+      }, false);
+      faviconEl.setAttribute('src', url.origin + '/favicon.ico');
+    } else {
+      faviconEl.setAttribute('src', 'icons/icon.png');
+    }
+    headerEl.appendChild(faviconEl);
 
     if (widget.siteUrl) {
       titleEl.setAttribute('target', '_blank');
