@@ -14,6 +14,8 @@ let OptionsForm = {
     OptionsForm.setSelectElValue('entrySpacing', pref.getConfig().spacing);
     OptionsForm.setSelectElValue('numberOfPanels', pref.getConfig().layout.numberOfPanels);
     document.getElementById('lock').checked = pref.getConfig().lock;
+    document.getElementById('favicon').checked = pref.getConfig().favicon;
+    document.getElementById('reader').checked = pref.getConfig().reader;
   },
 
   addListeners: function() {
@@ -22,6 +24,8 @@ let OptionsForm = {
     document.getElementById("fontSize").addEventListener('change',  OptionsForm.apply);
     document.getElementById("entrySpacing").addEventListener('change', OptionsForm.apply);
     document.getElementById("lock").addEventListener('change', OptionsForm.apply);
+    document.getElementById("favicon").addEventListener('change', OptionsForm.apply);
+    document.getElementById("reader").addEventListener('change', OptionsForm.apply);
     document.getElementById('numberOfPanels').addEventListener('change', OptionsForm.apply);
     document.getElementById('reset-button').addEventListener('click', OptionsForm.reset);
     document.querySelector('#options-container div.close-button a').addEventListener('click', OptionsForm.hide);
@@ -114,6 +118,8 @@ let OptionsForm = {
     config.font.size = OptionsForm.getSelectElValue('fontSize');
     config.spacing = OptionsForm.getSelectElValue('entrySpacing');
     config.lock = document.getElementById('lock').checked;
+    config.favicon = document.getElementById('favicon').checked;
+    config.reader = document.getElementById('reader').checked;
     config.layout.numberOfPanels = OptionsForm.getSelectElValue('numberOfPanels');
 
     var pref = new Preferences(config);

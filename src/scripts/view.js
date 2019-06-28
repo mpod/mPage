@@ -207,17 +207,19 @@ let View = {
     headerEl.setAttribute('class', 'header');
     titleEl.setAttribute('class', 'title');
 
-    faviconEl.setAttribute('class', 'favicon');
-    if (widget.siteUrl) {
-      var url = new URL(widget.siteUrl);
-      faviconEl.addEventListener('error', function(event){
-        this.src = 'icons/icon.png';
-      }, false);
-      faviconEl.setAttribute('src', url.origin + '/favicon.ico');
-    } else {
-      faviconEl.setAttribute('src', 'icons/icon.png');
+    if (widget.model.getPreferences().favicon) {
+      faviconEl.setAttribute('class', 'favicon');
+      if (widget.siteUrl) {
+        var url = new URL(widget.siteUrl);
+        faviconEl.addEventListener('error', function(event){
+          this.src = 'icons/icon.png';
+        }, false);
+        faviconEl.setAttribute('src', url.origin + '/favicon.ico');
+      } else {
+        faviconEl.setAttribute('src', 'icons/icon.png');
+      }
+      headerEl.appendChild(faviconEl);
     }
-    headerEl.appendChild(faviconEl);
 
     if (widget.siteUrl) {
       titleEl.setAttribute('target', '_blank');
@@ -417,6 +419,7 @@ let View = {
     var self = View;
     var doc = self.getDoc();
     var listEl = doc.createElement('ul');
+    var model = mPage.getModel();
 
     listEl.className = 'feeds';
     for (var i=0; i<entries.length; i++) {
@@ -424,13 +427,15 @@ let View = {
       var entryEl = doc.createElement('li');
       var linkEl = doc.createElement('a');
       if (entry.link) {
-        linkEl.setAttribute('href', entry.link.href);
+        var url = entry.link.href;
+        var openInReaderMode = model.getPreferences().reader;
+        linkEl.setAttribute('href', url);
+        linkEl.addEventListener('click', View.openLinkFunction(url, openInReaderMode), false); 
       } else {
         linkEl.setAttribute('href', 'javascript:void(0)');
       }
       linkEl.setAttribute('target', '_blank');
       linkEl.setAttribute('title', entry.title);
-      linkEl.addEventListener('click', Controller.onLinkClick, false); 
       linkEl.appendChild(doc.createTextNode(entry.title));
       entryEl.appendChild(linkEl);
       if (entry.reddit) {
@@ -455,6 +460,19 @@ let View = {
     }
 
     return listEl;
+  },
+
+  openLinkFunction: function(url, openInReaderMode) {
+    return function(event) {
+      if (openInReaderMode) {
+        browser.history.addUrl({url: url});
+      }
+      var creating = browser.tabs.create({
+        url: url,
+        openInReaderMode: openInReaderMode
+      });
+      event.preventDefault();
+    }
   },
 
   createListOfDateGroups: function(groups) {

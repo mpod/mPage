@@ -28,8 +28,8 @@ let Controller = {
   },
 
   onLinkClick: function(event) {
-    var widgetId = mpagespace.view.getWidgetId(this);
-    var widget = mpagespace.app.getModel().getPage().getWidget(widgetId);
+    var widgetId = View.getWidgetId(this);
+    var widget = mPage.getModel().getPage().getWidget(widgetId);
     if (widget) {
       widget.startVisitedFilterTimer(); 
     }

@@ -41,6 +41,7 @@ let Preferences = function(config) {
     toolbar: false,
     globalVisitedFilter: false,
     favicon: true,
+    reader: false,
     spacing: '0.375em' 
   };
   this.schemeType = ['dark', 'light'].indexOf(config.schemeType) == -1 ? defaultConfig.schemeType : config.schemeType;
@@ -51,6 +52,7 @@ let Preferences = function(config) {
   this.lock = config.lock == null ? defaultConfig.lock : config.lock === true;
   this.toolbar = config.toolbar == null ? defaultConfig.toolbar : config.toolbar === true;
   this.favicon = config.favicon == null ? defaultConfig.favicon : config.favicon === true;
+  this.reader = config.reader == null ? defaultConfig.reader : config.reader === true;
   this.spacing = config.spacing || defaultConfig.spacing; 
   this.globalVisitedFilter = config.globalVisitedFilter || defaultConfig.globalVisitedFilter;
 
@@ -72,6 +74,7 @@ Preferences.prototype = {
       lock: this.lock,
       toolbar: this.toolbar,
       favicon: this.favicon,
+      reader: this.reader,
       spacing: this.spacing,
       globalVisitedFilter: this.globalVisitedFilter
     }
@@ -129,6 +132,13 @@ Preferences.prototype = {
     return new Preferences(config);
   },
 
+  setReader: function(reader) {
+    var config = this.getConfig();
+    config.reader = reader;
+
+    return new Preferences(config);
+  },
+
   setSpacing: function(spacing) {
     var config = this.getConfig();
     config.spacing = spacing;
@@ -164,6 +174,7 @@ Preferences.prototype = {
     str.push(this.favicon);
     str.push(this.spacing);
     str.push(this.globalVisitedFilter);
+    str.push(this.reader);
 
     return str.join('|');
   },
@@ -191,6 +202,7 @@ Preferences.prototype = {
       config.favicon = str[15] === 'true';
       config.spacing = str[16];
       config.globalVisitedFilter = str[17] === 'true';
+      config.reader = str[18] === 'true';
     }
 
     return new Preferences(config);

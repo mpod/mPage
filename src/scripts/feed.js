@@ -145,7 +145,7 @@ Feed.prototype = {
   },
 
   startVisitedFilterTimer: function() {
-    var globalVisitedFilter = Storage.getModel().getPreferences().globalVisitedFilter;
+    var globalVisitedFilter = mPage.getModel().getPreferences().globalVisitedFilter;
     if (!globalVisitedFilter && !this.visitedFilter)
       return;
 
