@@ -26,3 +26,6 @@ Following permissions are requested:
 * downloads - for downloading exported OPML file
 * history - for marking links as visited when page is open in reader mode
 
+### Add it to Firefox
+
+Find add-on [here](https://addons.mozilla.org/en-US/firefox/addon/mpage/). 
