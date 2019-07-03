@@ -22,7 +22,7 @@ let View = {
         case 'widget-moved':
           widget = page.getWidget(data[1]);
           if (widget) {
-            self.draw(widget, false);
+            self.drawWidget(widget, false);
           }
           break;
         case 'widget-loaded':
@@ -30,12 +30,12 @@ let View = {
         case 'widget-changed':
           widget = page.getWidget(data[1]);
           if (widget) {
-            self.draw(widget, true);
+            self.drawWidget(widget, true);
           }
           break;
         case 'page-loaded':
           if (page.id == data[1]) {
-            self.draw(null);
+            self.drawDashboard();
             self.setActivePageOnToolbar();
           }
           break;
@@ -44,7 +44,7 @@ let View = {
           self.createPanels();
           self.createToolbar();
           self.setStyles();
-          self.draw(null);
+          self.drawDashboard();
           break;
         case 'model-loaded':
           self.createPanels();
@@ -65,6 +65,10 @@ let View = {
           break;
       }
     } 
+  },
+
+  isNarrowScreen: function() {
+    return window.innerWidth < 600;
   },
 
   init: function() {
@@ -135,50 +139,63 @@ let View = {
     widgetEl.parentNode.removeChild(widgetEl);
   },
 
-  draw: function(widget, refresh) {
+  drawWidget: function(widget, refresh) {
     var doc = View.getDoc();
     var model = mPage.getModel();
     var page = model.getPage();
     var panelEl;
     var widgets;
 
-    if (widget) {
-      var widgetEl = doc.getElementById('widget-' + widget.id);
-      panelEl = doc.getElementById('panel-' + widget.panelId);   
-      if (panelEl == null) 
-        throw new Error('Invalid model - panel not found.');
-      if (widgetEl && refresh) {
-        widgetEl.parentNode.removeChild(widgetEl);
-        widgetEl = null;
-      }
-      if (!widgetEl) {
-        widgetEl = View.createWidgetEl(widget);
-      }
-      widgets = page.getWidgetsInPanel(widget.panelId);
-      for (var i=0; i<widgets.length; i++) {
-        if (widgets[i].id === widget.id) {
-          var refWidgetEl = null;
-          if (widgets[i+1]) {
-            refWidgetEl = doc.getElementById('widget-' + widgets[i+1].id);
-          }
-          if (refWidgetEl) {
-            panelEl.insertBefore(widgetEl, refWidgetEl);
-          } else {
-            panelEl.appendChild(widgetEl);
-          }
-          break;
-        }
-      }
+    var widgetEl = doc.getElementById('widget-' + widget.id);
+    panelEl = View.findPanelEl(widget);   
+    if (widgetEl && refresh) {
+      widgetEl.parentNode.removeChild(widgetEl);
+      widgetEl = null;
+    }
+    if (!widgetEl) {
+      widgetEl = View.createWidgetEl(widget);
+    }
+    if (View.isNarrowScreen()) {
+      widgets = page.getWidgets(page.GET_WIDGETS_ARRAY);
     } else {
-      var panelId, panelEl;
+      widgets = page.getWidgetsInPanel(widget.panelId);
+    }
+    for (var i=0; i<widgets.length; i++) {
+      if (widgets[i].id === widget.id) {
+        var refWidgetEl = null;
+        if (widgets[i+1]) {
+          refWidgetEl = doc.getElementById('widget-' + widgets[i+1].id);
+        }
+        if (refWidgetEl) {
+          panelEl.insertBefore(widgetEl, refWidgetEl);
+        } else {
+          panelEl.appendChild(widgetEl);
+        }
+        break;
+      }
+    }
+  },
+
+  drawDashboard: function() {
+    var doc = View.getDoc();
+    var model = mPage.getModel();
+    var page = model.getPage();
+    var widgets;
+    var panelId, panelEl;
+
+    if (View.isNarrowScreen()) {
+      panelEl = doc.getElementById('panel-1');
+      while (panelEl.hasChildNodes()) panelEl.removeChild(panelEl.firstChild);
+      widgets = page.getWidgets(page.GET_WIDGETS_ARRAY);
+      Utils.map(widgets, function(w) {
+        panelEl.appendChild(View.createWidgetEl(w));
+      });
+    } else {
       var nPanels = model.getPreferences().layout.numberOfPanels;
-
       page.alignLayout();
-
       for (panelId=1; panelId<=nPanels; panelId++) {
         panelEl = doc.getElementById('panel-' + panelId);
         while (panelEl.hasChildNodes()) panelEl.removeChild(panelEl.firstChild);
-
         widgets = page.getWidgetsInPanel(panelId);
         Utils.map(widgets, function(w) {
           panelEl.appendChild(View.createWidgetEl(w));
@@ -191,57 +208,36 @@ let View = {
     }
   },
 
+  findPanelEl: function(widget) {
+    var doc = View.getDoc();
+    var panelEl;
+    if (View.isNarrowScreen()) {
+      panelEl = doc.getElementById('panel-1');   
+    } else {
+      panelEl = doc.getElementById('panel-' + widget.panelId);   
+    }
+    if (panelEl == null) 
+      throw new Error('Invalid model - panel not found.');
+    return panelEl;
+  },
+
   createWidgetEl: function(widget) {
     var self = View;
     var doc = self.getDoc();
     var widgetEl = doc.createElement('div');
-    var headerEl = doc.createElement('div');
     var bodyEl = doc.createElement('div');
-    var titleEl = doc.createElement('a');
-    var faviconEl = doc.createElement('img');
 
     widgetEl.setAttribute('class', 'widget');
     widgetEl.setAttribute('id', 'widget-' + widget.id);
     widgetEl.setAttribute('draggable', 'true');
     widgetEl.setAttribute('widget-id', widget.id);
-    headerEl.setAttribute('class', 'header');
-    titleEl.setAttribute('class', 'title');
 
-    if (widget.model.getPreferences().favicon) {
-      faviconEl.setAttribute('class', 'favicon');
-      if (widget.siteUrl) {
-        var url = new URL(widget.siteUrl);
-        faviconEl.addEventListener('error', function(event){
-          this.src = 'icons/icon.png';
-        }, false);
-        faviconEl.setAttribute('src', url.origin + '/favicon.ico');
-      } else {
-        faviconEl.setAttribute('src', 'icons/icon.png');
-      }
-      headerEl.appendChild(faviconEl);
-    }
-
-    if (widget.siteUrl) {
-      titleEl.setAttribute('target', '_blank');
-      titleEl.setAttribute('href', widget.siteUrl);
-      titleEl.addEventListener('click', function(){this.blur();}, false); 
-    }
-    if (widget.title) {
-      titleEl.appendChild(doc.createTextNode(widget.title));
-    } else {
-      var url = new URL(widget.url);
-      titleEl.appendChild(doc.createTextNode(url.hostname));
-    }
-
-    headerEl.appendChild(titleEl);
-
-    if (!widget.model.getPreferences().lock) {
+    if (!self.isNarrowScreen() && !widget.model.getPreferences().lock) {
       widgetEl.addEventListener('dragstart', DragAndDrop.widgetHandler.dragStart, false);
       widgetEl.addEventListener('dragend', DragAndDrop.widgetHandler.dragEnd, false);
-      headerEl.appendChild(self.createWidgetActionMenu(widget));
     }
 
-    widgetEl.appendChild(headerEl);
+    widgetEl.appendChild(self.createWidgetHeaderEl(widget));
     bodyEl.setAttribute('class', 'body');
     bodyEl.hidden = widget.minimized;
 
@@ -254,6 +250,49 @@ let View = {
     widgetEl.appendChild(self.createConfigEl(widget));
     widgetEl.appendChild(bodyEl);
     return widgetEl;
+  },
+
+  createWidgetHeaderEl: function(widget) {
+    var self = View;
+    var doc = View.getDoc();
+    var headerEl = doc.createElement('div');
+    var titleEl = doc.createElement('a');
+    titleEl.setAttribute('class', 'title');
+    headerEl.setAttribute('class', 'header');
+    if (widget.model.getPreferences().favicon) {
+      headerEl.appendChild(self.createFaviconEl(widget));
+    }
+    if (widget.siteUrl) {
+      titleEl.setAttribute('target', '_blank');
+      titleEl.setAttribute('href', widget.siteUrl);
+      titleEl.addEventListener('click', function(){this.blur();}, false); 
+    }
+    if (widget.title) {
+      titleEl.appendChild(doc.createTextNode(widget.title));
+    } else {
+      var url = new URL(widget.url);
+      titleEl.appendChild(doc.createTextNode(url.hostname));
+    }
+    headerEl.appendChild(titleEl);
+    headerEl.appendChild(self.createWidgetActionMenu(widget));
+    return headerEl;
+  },
+
+  createFaviconEl: function(widget) {
+    var self = View;
+    var doc = View.getDoc();
+    var faviconEl = doc.createElement('img');
+    faviconEl.setAttribute('class', 'favicon');
+    if (widget.siteUrl) {
+      var url = new URL(widget.siteUrl);
+      faviconEl.addEventListener('error', function(event){
+        this.src = 'icons/icon.png';
+      }, false);
+      faviconEl.setAttribute('src', url.origin + '/favicon.ico');
+    } else {
+      faviconEl.setAttribute('src', 'icons/icon.png');
+    }
+    return faviconEl;
   },
 
   createConfigEl: function(widget) {
@@ -309,6 +348,15 @@ let View = {
     row.append(el);
     row.appendChild(doc.createTextNode('Group by date'));
     configEl.appendChild(row);
+    
+    row = doc.createElement('div');
+    el = doc.createElement('input');
+    el.type = 'checkbox';
+    el.className = 'minimized';
+    el.checked = widget.minimized;
+    row.append(el);
+    row.appendChild(doc.createTextNode('Minimized'));
+    configEl.appendChild(row);
 
     row = doc.createElement('div');
     row.appendChild(doc.createTextNode('URL: ' + widget.url)); 
@@ -317,6 +365,7 @@ let View = {
     row = doc.createElement('div');
     row.style.textAlign = 'center';
     el = doc.createElement('a');
+    el.className = 'button';
     el.href = '#';
     el.appendChild(doc.createTextNode('[ Apply ]'));
     el.addEventListener('click', function(evt) {
@@ -338,10 +387,21 @@ let View = {
       el = doc.querySelector('#widget-' + widget.id + ' .groupByDate');
       config.groupByDate = el.checked;
 
+      el = doc.querySelector('#widget-' + widget.id + ' .minimized');
+      config.minimized = el.checked;
+
       widget.setBulk(config);
       evt.preventDefault();
     });
     row.appendChild(el);
+
+    el = doc.createElement('a');
+    el.href = '#';
+    el.className = 'button';
+    el.appendChild(doc.createTextNode('[ Remove feed ]'));
+    el.addEventListener('click', Controller.remove);
+    row.appendChild(el);
+
     configEl.appendChild(row);
 
     return configEl;
@@ -355,53 +415,10 @@ let View = {
     el = doc.createElement('div');
     el.setAttribute('class', 'action');
     el.appendChild(doc.createTextNode('\u2318'));
-    listEl = doc.createElement('ul');
-    listEl.setAttribute('id', 'widget-menu-list-' + widget.id);
-    listEl.setAttribute('class', 'menu-list');
-    listEl.style.left = 0;
-
-    var preventHiding = false;
-    var toggleMenu = function(e){
-      if (listEl.style.display == 'block' && !preventHiding)
-        listEl.style.display = 'none';
-      else if (this == el) {
-        var left = Math.min(0, this.parentNode.offsetWidth - (
-              this.offsetLeft - this.parentNode.getBoundingClientRect().left + 150));
-        listEl.style.left = left;
-        listEl.style.display = 'block';
-        preventHiding = true;
-      } else
-        preventHiding = false;
-    };
-    el.addEventListener('mousedown', toggleMenu, false);
-    doc.getElementsByTagName('body')[0].addEventListener('mousedown', toggleMenu, false);
-
-    var actions = [
-      {label: 'widget.action.configure', 
-        listener: function(event) {
-          doc.querySelector('#widget-' + widget.id + ' .feedConfig').style.display = 'block';
-          preventHiding = false;
-          toggleMenu();
-          event.stopPropagation();
-        }
-      },
-      {label: 'widget.action.remove', listener: Controller.remove},
-      {label: 'widget.action.minimize', listener: Controller.toggleWidget, condition: !widget.minimized},
-      {label: 'widget.action.maximize', listener: Controller.toggleWidget, condition: widget.minimized}
-    ];
-
-    for (let i=0; i<actions.length; i++) {
-      if (actions[i].condition !== undefined && !actions[i].condition) 
-        continue; 
-      itemEl = doc.createElement('li');
-      linkEl = doc.createElement('a');
-      linkEl.addEventListener('mousedown', actions[i].listener, false);
-      linkEl.appendChild(doc.createTextNode(Utils.translate(actions[i].label)));
-      itemEl.appendChild(linkEl);
-      listEl.appendChild(itemEl);
-    }
-
-    el.appendChild(listEl);
+    el.addEventListener('mousedown', function(event) {
+      doc.querySelector('#widget-' + widget.id + ' .feedConfig').style.display = 'block';
+      event.stopPropagation();
+    });
     return el;
   },
 
@@ -610,21 +627,35 @@ let View = {
     var doc = View.getDoc();
     var container = doc.getElementById('panel-container');
     var nPanels = model.getPreferences().layout.numberOfPanels;
-    var el, width;
 
     while (container.hasChildNodes()) container.removeChild(container.firstChild);
 
-    for (var i=1; i<=nPanels; i++) {
-      el = doc.createElement('td');
-      el.setAttribute('id', 'panel-' + i);
-      el.style.width = 100 / nPanels + '%';
-      el.className = i == 1 ? 'column first' : 'column';
+    if (View.isNarrowScreen()) {
+      View.createPanel(1, false, 100);
+    } else {
+      for (var i=1; i<=nPanels; i++) {
+        View.createPanel(i, true, 100 / nPanels);
+      }
+    }
+  },
+
+  createPanel: function(i, enableDd, percentageWidth) {
+    var model = mPage.getModel();
+    var doc = View.getDoc();
+    var container = doc.getElementById('panel-container');
+    var el;
+
+    el = doc.createElement('td');
+    el.setAttribute('id', 'panel-' + i);
+    el.style.width = percentageWidth + '%';
+    el.className = i == 1 ? 'column first' : 'column';
+    if (enableDd) {
       el.addEventListener('dragover', DragAndDrop.widgetHandler.dragOver, false);
       el.addEventListener('drop', DragAndDrop.widgetHandler.drop, false);
       el.addEventListener('dragenter', DragAndDrop.widgetHandler.dragEnter, false);
       el.addEventListener('dragleave', DragAndDrop.widgetHandler.dragLeave, false);
-      container.appendChild(el);
     }
+    container.appendChild(el);
   },
 
   setStyles: function() {
@@ -661,11 +692,10 @@ let View = {
     styles.push('#options-container div.group { border-color: ' + colors.border + '; }');
     styles.push('#options-container div.close-button a { color: ' + colors.misc + '; }');
     styles.push('div.feedConfig { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
-    styles.push('div.feedConfig a { color: ' + colors.misc + '; }');
-
+    styles.push('div.feedConfig a { color: ' + colors.misc + '; margin: 0 1.5em; }');
     styles.push('body { font-size: ' + font.size + 'px; }');
     styles.push('body { font-family: ' + font.family + '; }');
-
+    styles.push('button, select, input { font-size: ' + font.size + 'px; }');
     styles.push('div.body li {margin-top: ' + pref.spacing + '; margin-bottom: ' + pref.spacing + ';}');
 
     el = doc.getElementById('styles');

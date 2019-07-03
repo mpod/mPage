@@ -57,14 +57,6 @@ let Controller = {
     var widget = page.getWidget(widgetId);
 
     page.deleteWidget(widget);
-  },
-
-  toggleWidget: function(event, self) {
-    var widgetId = View.getWidgetId(this);
-    var widget = mPage.getModel().getPage().getWidget(widgetId);
-    var hide = !widget.minimized;
-
-    widget.set('minimized', hide);
   }
 }
 
