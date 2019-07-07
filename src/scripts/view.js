@@ -147,7 +147,7 @@ let View = {
     var widgets;
 
     var widgetEl = doc.getElementById('widget-' + widget.id);
-    panelEl = View.findPanelEl(widget);   
+    panelEl = View.findPanelEl(widgetEl);   
     if (widgetEl && refresh) {
       widgetEl.parentNode.removeChild(widgetEl);
       widgetEl = null;
@@ -155,11 +155,7 @@ let View = {
     if (!widgetEl) {
       widgetEl = View.createWidgetEl(widget);
     }
-    if (View.isNarrowScreen()) {
-      widgets = page.getWidgets(page.GET_WIDGETS_ARRAY);
-    } else {
-      widgets = page.getWidgetsInPanel(widget.panelId);
-    }
+    widgets = page.getWidgetsInPanel(widget.panelId);
     for (var i=0; i<widgets.length; i++) {
       if (widgets[i].id === widget.id) {
         var refWidgetEl = null;
@@ -177,30 +173,22 @@ let View = {
   },
 
   drawDashboard: function() {
+    var self = View;
     var doc = View.getDoc();
     var model = mPage.getModel();
     var page = model.getPage();
     var widgets;
     var panelId, panelEl;
 
-    if (View.isNarrowScreen()) {
-      panelEl = doc.getElementById('panel-1');
+    var nPanels = self.getNumberOfPanels();
+    page.alignLayout(nPanels);
+    for (panelId=1; panelId<=nPanels; panelId++) {
+      panelEl = doc.getElementById('panel-' + panelId);
       while (panelEl.hasChildNodes()) panelEl.removeChild(panelEl.firstChild);
-      widgets = page.getWidgets(page.GET_WIDGETS_ARRAY);
+      widgets = page.getWidgetsInPanel(panelId);
       Utils.map(widgets, function(w) {
         panelEl.appendChild(View.createWidgetEl(w));
       });
-    } else {
-      var nPanels = model.getPreferences().layout.numberOfPanels;
-      page.alignLayout();
-      for (panelId=1; panelId<=nPanels; panelId++) {
-        panelEl = doc.getElementById('panel-' + panelId);
-        while (panelEl.hasChildNodes()) panelEl.removeChild(panelEl.firstChild);
-        widgets = page.getWidgetsInPanel(panelId);
-        Utils.map(widgets, function(w) {
-          panelEl.appendChild(View.createWidgetEl(w));
-        });
-      }
     }
 
     if (mPage.isFirstRun(true)) {
@@ -208,17 +196,20 @@ let View = {
     }
   },
 
-  findPanelEl: function(widget) {
-    var doc = View.getDoc();
-    var panelEl;
-    if (View.isNarrowScreen()) {
-      panelEl = doc.getElementById('panel-1');   
-    } else {
-      panelEl = doc.getElementById('panel-' + widget.panelId);   
+  findPanelEl: function(widgetEl) {
+    for (var n=widgetEl; n; n=n.parentNode) {
+      if (n.getAttribute('id').startsWith('panel-'))
+        return n;
     }
-    if (panelEl == null) 
-      throw new Error('Invalid model - panel not found.');
-    return panelEl;
+    throw new Error('Invalid model - panel not found.');
+  },
+
+  getNumberOfPanels: function() {
+    var self = View;
+    if (self.isNarrowScreen())
+      return 1;
+    else 
+      return mPage.getModel().getPreferences().layout.numberOfPanels;
   },
 
   createWidgetEl: function(widget) {
@@ -229,13 +220,9 @@ let View = {
 
     widgetEl.setAttribute('class', 'widget');
     widgetEl.setAttribute('id', 'widget-' + widget.id);
-    widgetEl.setAttribute('draggable', 'true');
     widgetEl.setAttribute('widget-id', widget.id);
 
-    if (!self.isNarrowScreen() && !widget.model.getPreferences().lock) {
-      widgetEl.addEventListener('dragstart', DragAndDrop.widgetHandler.dragStart, false);
-      widgetEl.addEventListener('dragend', DragAndDrop.widgetHandler.dragEnd, false);
-    }
+    self.enableDragAndDrop(widgetEl);
 
     widgetEl.appendChild(self.createWidgetHeaderEl(widget));
     bodyEl.setAttribute('class', 'body');
@@ -296,7 +283,8 @@ let View = {
   },
 
   createConfigEl: function(widget) {
-    var doc = View.getDoc();
+    var self = View;
+    var doc = self.getDoc();
 
     var configEl = doc.createElement('div');
     configEl.className = 'feedConfig';
@@ -335,6 +323,8 @@ let View = {
     row.appendChild(doc.createTextNode('Show'));
     var el = doc.createElement('input');
     el.className = 'entriesToShow';
+    el.placeholder = '5';
+    el.type = 'text';
     el.value = widget.entriesToShow;
     row.appendChild(el);
     row.appendChild(doc.createTextNode('entries'));
@@ -359,47 +349,62 @@ let View = {
     configEl.appendChild(row);
 
     row = doc.createElement('div');
-    row.appendChild(doc.createTextNode('URL: ' + widget.url)); 
+    row.appendChild(doc.createTextNode('Feed URL: ' + widget.url)); 
     configEl.appendChild(row);
 
     row = doc.createElement('div');
     row.style.textAlign = 'center';
-    el = doc.createElement('a');
-    el.className = 'button';
-    el.href = '#';
-    el.appendChild(doc.createTextNode('[ Apply ]'));
+
+    var createButtonEl = function(label) {
+      var el = doc.createElement('a');
+      el.className = 'button';
+      el.href = '#';
+      el.appendChild(doc.createTextNode(label));
+      return el
+    }
+
+    el = createButtonEl('[ Up ]');
+    el.className = 'for-mobile-only';
+    el.addEventListener('click', Controller.moveUp);
+    row.appendChild(el);
+
+    el = createButtonEl('[ Close ]');
     el.addEventListener('click', function(evt) {
-      doc.querySelector('#widget-' + widget.id + ' .feedConfig').style.display = 'none';
+      var widgetEl = self.findWidgetEl(widget);
+      widgetEl.querySelector('.feedConfig').style.display = 'none';
       var config = {};
-      var el = doc.querySelector('#widget-' + widget.id + ' .entriesToShow');
+      var el = widgetEl.querySelector('.entriesToShow');
       var n = parseInt(el.value);
       if (isNaN(n) || n <= 0) n = 5;
       el.value = n;
       config.entriesToShow = n;
 
-      el = doc.querySelector('#widget-' + widget.id + ' .hoursFilter');
+      el = widgetEl.querySelector('.hoursFilter');
       n = parseInt(el.value);
       if (isNaN(n) || n <= 0) n = 0;
       config.hoursFilter = n;
-      el = doc.querySelector('#widget-' + widget.id + ' .daysOrHours');
+      el = widgetEl.querySelector('.daysOrHours');
       if (el.selectedIndex == 1) config.hoursFilter = config.hoursFilter * 24;
 
-      el = doc.querySelector('#widget-' + widget.id + ' .groupByDate');
+      el = widgetEl.querySelector('.groupByDate');
       config.groupByDate = el.checked;
 
-      el = doc.querySelector('#widget-' + widget.id + ' .minimized');
+      el = widgetEl.querySelector('.minimized');
       config.minimized = el.checked;
 
       widget.setBulk(config);
+      self.enableDragAndDrop(self.findWidgetEl(widget));
       evt.preventDefault();
     });
     row.appendChild(el);
 
-    el = doc.createElement('a');
-    el.href = '#';
-    el.className = 'button';
-    el.appendChild(doc.createTextNode('[ Remove feed ]'));
+    el = createButtonEl('[ Remove feed ]');
     el.addEventListener('click', Controller.remove);
+    row.appendChild(el);
+
+    el = createButtonEl('[ Down ]');
+    el.className = 'for-mobile-only';
+    el.addEventListener('click', Controller.moveDown);
     row.appendChild(el);
 
     configEl.appendChild(row);
@@ -416,10 +421,39 @@ let View = {
     el.setAttribute('class', 'action');
     el.appendChild(doc.createTextNode('\u2318'));
     el.addEventListener('mousedown', function(event) {
-      doc.querySelector('#widget-' + widget.id + ' .feedConfig').style.display = 'block';
+      var widgetEl = self.findWidgetEl(widget);
+      widgetEl.querySelector('.feedConfig').style.display = 'block';
+      self.disableDragAndDrop(widgetEl);
       event.stopPropagation();
     });
     return el;
+  },
+
+  findWidgetEl: function(widget) {
+    var self = View;
+    var doc = self.getDoc();
+    return doc.querySelector('#widget-' + widget.id);
+  },
+
+  disableDragAndDrop: function(widgetEl) {
+    var self = View;
+    var doc = self.getDoc();
+    widgetEl.setAttribute('draggable', 'false');
+    widgetEl.removeEventListener('dragstart', DragAndDrop.widgetHandler.dragStart, false);
+    widgetEl.removeEventListener('dragend', DragAndDrop.widgetHandler.dragEnd, false);
+  },
+
+  enableDragAndDrop: function(widgetEl) {
+    var self = View;
+    var doc = self.getDoc();
+
+    if (!self.isNarrowScreen() && !mPage.getModel().getPreferences().lock) {
+      widgetEl.setAttribute('draggable', 'true');
+      widgetEl.removeEventListener('dragstart', DragAndDrop.widgetHandler.dragStart, false);
+      widgetEl.addEventListener('dragstart', DragAndDrop.widgetHandler.dragStart, false);
+      widgetEl.removeEventListener('dragend', DragAndDrop.widgetHandler.dragEnd, false);
+      widgetEl.addEventListener('dragend', DragAndDrop.widgetHandler.dragEnd, false);
+    }
   },
 
   createLoadingBody: function() {
@@ -623,19 +657,16 @@ let View = {
   },
 
   createPanels: function() {
+    var self = View;
     var model = mPage.getModel();
-    var doc = View.getDoc();
+    var doc = self.getDoc();
     var container = doc.getElementById('panel-container');
-    var nPanels = model.getPreferences().layout.numberOfPanels;
+    var nPanels = self.getNumberOfPanels();
 
     while (container.hasChildNodes()) container.removeChild(container.firstChild);
 
-    if (View.isNarrowScreen()) {
-      View.createPanel(1, false, 100);
-    } else {
-      for (var i=1; i<=nPanels; i++) {
-        View.createPanel(i, true, 100 / nPanels);
-      }
+    for (var i=1; i<=nPanels; i++) {
+      View.createPanel(i, true, 100 / nPanels);
     }
   },
 
@@ -659,11 +690,19 @@ let View = {
   },
 
   setStyles: function() {
+    var self = View;
     var pref = mPage.getModel().getPreferences();
     var colors = pref.colors;
     var font = pref.font;
-    var doc = View.getDoc();
+    var doc = self.getDoc();
     var el, styles = [];
+    if (self.isNarrowScreen()) {
+      var showNotForMobile = 'none'; 
+      var showForMobileOnly = 'initial';
+    } else {
+      var showNotForMobile = 'table-row'; 
+      var showForMobileOnly = 'none';
+    }
 
     styles.push('body { background-color: ' + colors.background + '; border-color: ' + colors.border + '; }');
     styles.push('#nav-list li a { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
@@ -692,9 +731,11 @@ let View = {
     styles.push('#options-container div.group { border-color: ' + colors.border + '; }');
     styles.push('#options-container div.close-button a { color: ' + colors.misc + '; }');
     styles.push('div.feedConfig { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
-    styles.push('div.feedConfig a { color: ' + colors.misc + '; margin: 0 1.5em; }');
+    styles.push('div.feedConfig a { color: ' + colors.misc + ';}');
     styles.push('body { font-size: ' + font.size + 'px; }');
     styles.push('body { font-family: ' + font.family + '; }');
+    styles.push('body tr.not-for-mobile { display: ' + showNotForMobile + '; }');
+    styles.push('body a.for-mobile-only { display: ' + showForMobileOnly  + '; }');
     styles.push('button, select, input { font-size: ' + font.size + 'px; }');
     styles.push('div.body li {margin-top: ' + pref.spacing + '; margin-bottom: ' + pref.spacing + ';}');
 
@@ -788,7 +829,9 @@ let View = {
     var el, listEl, itemEl, linkEl
 
     el = doc.getElementById('mpage-menu');
+    el = self.removeAllEventHandlers(el);
     listEl = doc.getElementById('mpage-menu-list');
+    self.removeChildren(listEl);
 
     var preventHiding = false;
     var toggleMenu = function(){
@@ -847,6 +890,16 @@ let View = {
       itemEl.appendChild(linkEl);
       listEl.appendChild(itemEl);
     }
+  },
+
+  removeChildren: function(el) {
+    while (el.hasChildNodes()) el.removeChild(el.firstChild);
+  },
+
+  removeAllEventHandlers: function(el) {
+    var cloneEl = el.cloneNode(true);
+    el.replaceWith(cloneEl);
+    return cloneEl;
   }
 }
 

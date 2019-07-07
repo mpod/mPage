@@ -32,9 +32,9 @@ let OptionsForm = {
     document.getElementById('export-button').addEventListener('click', OptionsForm.exportToOpml);
     document.getElementById('import-button').addEventListener('click', function() { document.getElementById("import-file").click(); });
     document.getElementById('import-file').addEventListener('change', OptionsForm.importFromOpml);
-    document.getElementById('import-old-button').addEventListener('click', function() { document.getElementById("import-old-file").click(); });
-    document.getElementById('import-old-file').addEventListener('change', OptionsForm.importOld);
-
+    document.getElementById('export-json-button').addEventListener('click', OptionsForm.exportToJson);
+    document.getElementById('import-json-button').addEventListener('click', function() { document.getElementById("import-json-file").click(); });
+    document.getElementById('import-json-file').addEventListener('change', OptionsForm.importFromJson);
   },
 
   show: function() {
@@ -130,15 +130,13 @@ let OptionsForm = {
     var reader = new FileReader();
     reader.onloadend = function(e) {
       Converter.importFromOpml(reader.result, true);
-      Storage.save(mPage.getModel().getConfig());
     };
     reader.readAsText(evt.target.files[0]);
   },
 
-  importOld: function(evt) {
-    console.log(evt.target.files[0].name);
-    if (evt.target.files[0].name != 'mpage.extension.json') {
-      alert(Utils.translate('Only mpage.extension.json file can be imported here!'));
+  importFromJson: function(evt) {
+    if (!evt.target.files[0].name.endsWith('.json')) {
+      alert(Utils.translate('Only file with extension .json file can be imported here!'));
       return;
     }
     var reader = new FileReader();
@@ -146,6 +144,14 @@ let OptionsForm = {
       Storage.save(JSON.parse(reader.result)).then(function() { Storage.load(); }, null);  
     };
     reader.readAsText(evt.target.files[0]);
+  },
+
+  exportToJson: function() {
+    browser.downloads.download({
+      url: window.URL.createObjectURL(new Blob([JSON.stringify(Storage.getData())], {type: 'application/json'})),
+      filename: 'mpage.extension.json',
+      saveAs: true
+    });
   },
 
   exportToOpml: function() {

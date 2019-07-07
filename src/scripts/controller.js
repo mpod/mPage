@@ -57,6 +57,41 @@ let Controller = {
     var widget = page.getWidget(widgetId);
 
     page.deleteWidget(widget);
+  },
+
+  moveUp: function(event, self) {
+    var widgetId = View.getWidgetId(this);
+    var page = mPage.getModel().getPage();
+    var widget = page.getWidget(widgetId);
+    var widgetEl = View.getWidgetEl(widgetId);
+    var prevWidgetEl = widgetEl.previousElementSibling;
+
+    if (prevWidgetEl == null) return;
+
+    var prevWidgetId = View.getWidgetId(prevWidgetEl);
+    var prevWidget = page.getWidget(prevWidgetId);
+    page.moveWidget(widget, prevWidget.panelId, prevWidget);
+  },
+
+  moveDown: function(event, self) {
+    var widgetId = View.getWidgetId(this);
+    var page = mPage.getModel().getPage();
+    var widget = page.getWidget(widgetId);
+    var widgetEl = View.getWidgetEl(widgetId);
+    var nextWidgetEl = widgetEl.nextElementSibling;
+
+    if (nextWidgetEl == null) return;
+
+    var refWidgetEl = nextWidgetEl.nextElementSibling;
+    if (refWidgetEl == null) {
+      var nextWidgetId = View.getWidgetId(nextWidgetEl);
+      var nextWidget = page.getWidget(nextWidgetId);
+      page.moveWidget(widget, nextWidget.panelId, null);
+    } else {
+      var refWidgetId = View.getWidgetId(refWidgetEl);
+      var refWidget = page.getWidget(refWidgetId);
+      page.moveWidget(widget, refWidget.panelId, refWidget);
+    }
   }
 }
 

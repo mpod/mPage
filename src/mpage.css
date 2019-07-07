@@ -311,7 +311,7 @@ ul.menu-list a:hover {
 }
 
 div.feedConfig {
-  padding-bottom: 0.375em;
+  padding-bottom: 0.75em;
   border-bottom: 1px dashed;
 }
 
@@ -321,6 +321,14 @@ div.feedConfig div {
 
 div.feedConfig input {
   margin: 0 0.375em 0 0.375em;
+}
+
+div.feedConfig input[type="text"] {
+  width: 4em;
+}
+
+div.feedConfig a {
+  margin: 0 1em;
 }
 
 #message {

@@ -100,7 +100,6 @@ let Converter = {
     model.setPreferences(pref);
     model.changeActivePage();
 
-    window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'model-loaded'}));
     console.log('converter.importFromOpml: Done');
   },
 

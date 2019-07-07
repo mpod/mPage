@@ -56,7 +56,8 @@ Page.prototype = {
     for (var widgetId in this.widgets) {
       this.widgets[widgetId].load();
     }
-    this.alignLayout();
+    var nPanelsReq = this.model.getPreferences().layout.numberOfPanels;
+    this.alignLayout(nPanelsReq);
     window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'page-loaded:' + this.id}));
   },
 
@@ -113,8 +114,7 @@ Page.prototype = {
     return result;
   },
 
-  alignLayout: function() {
-    var nPanelsReq = this.model.getPreferences().layout.numberOfPanels;
+  alignLayout: function(nPanelsReq) {
     var nPanels = 1;
     var panel, widget;
     var self = this;
