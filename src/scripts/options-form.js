@@ -40,11 +40,17 @@ let OptionsForm = {
   show: function() {
     var panelEl = document.getElementById('options-container');
     panelEl.style.display = 'table-cell';
+    if (View.isNarrowScreen()) {
+      panelEl.previousElementSibling.style.display = 'none';
+    }
   },
 
   hide: function(e) {
     var panelEl = document.getElementById('options-container');
     panelEl.style.display = 'none';
+    if (View.isNarrowScreen()) {
+      panelEl.previousElementSibling.style.display = 'initial';
+    }
     e.preventDefault();
   },
 

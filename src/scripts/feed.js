@@ -84,8 +84,8 @@ Feed.prototype = {
     } else {
       this[property] = value;
       this.setDirty();
-      window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'widget-changed:' + this.id + ':' + property}));
     }
+    window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'widget-changed:' + this.id + ':' + property}));
   },
 
   setBulk: function(config) {

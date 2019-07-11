@@ -17,17 +17,25 @@
         <div class="button">[ Close ]</div>
       </div>
     </div>
-    <div id="toolbar">     
+    <div id="toolbar" style="display: none;">     
       <div id="nav-container">
         <div class="nav-width-clip">
           <div id="nav-drop-indicator-bar"></div>
           <ul id="nav-list"></ul>
         </div>
       </div>
-      <div id="mpage-menu">&#x273F;
-        <ul id="mpage-menu-list" class="menu-list"></ul>
-      </div>
     </div> 
+    <div id="mpage-menu" style="display: none;">&#x273F;
+      <ul id="mpage-menu-list" class="menu-list"></ul>
+    </div>
+    <div id="toolbar-mobile" style="display: none;">
+      <div style="display: flex; flex-direction: row;">
+        <div class="active-page" style="flex-grow: 1;"></div>
+        <div class="mpage-menu-mobile">...</div>
+      </div>
+      <div class="nav-container pages" style="display: none;"></div>
+      <div class="nav-container menu" style="display: none;"></div>
+    </div>
     <table id="page-container">
       <tr>
         <td style="vertical-align: top;">

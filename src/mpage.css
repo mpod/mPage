@@ -2,7 +2,7 @@ html {
   min-height: 100vh;
 }
 
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,tr,table { 
 	margin:0;
 	padding:0;
 }
@@ -37,7 +37,7 @@ body {
   display: none;
 }
 
-#toolbar {
+#toolbar, #toolbar-mobile {
   border-bottom: 1px dashed;
   border-color: inherit;
   position: relative;
@@ -87,6 +87,29 @@ body {
 }
 
 #nav-list li a.active:hover {
+}
+
+#toolbar-mobile .active-page, #toolbar-mobile .mpage-menu-mobile {
+  padding: 0.75em 0.75em;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+#toolbar-mobile .nav-container {
+  border-top: 1px dashed;
+  border-color: inherit;
+  padding: 0.5em 0.5em;
+}
+
+#toolbar-mobile .nav-container div {
+  padding: 0 0.25em;
+  line-height: 2.5em;
+  cursor: pointer;
+}
+
+#toolbar-mobile .menu {
+  text-align: right;
 }
 
 #nav-drop-indicator-bar {
