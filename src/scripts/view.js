@@ -68,7 +68,6 @@ let View = {
   },
 
   isNarrowScreen: function() {
-    return true;
     return window.screen.width <= 600;
   },
 
