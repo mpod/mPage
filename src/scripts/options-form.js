@@ -16,6 +16,7 @@ let OptionsForm = {
     document.getElementById('lock').checked = pref.getConfig().lock;
     document.getElementById('favicon').checked = pref.getConfig().favicon;
     document.getElementById('reader').checked = pref.getConfig().reader;
+    document.getElementById('comments').checked = pref.getConfig().comments;
   },
 
   addListeners: function() {
@@ -27,8 +28,9 @@ let OptionsForm = {
     document.getElementById("favicon").addEventListener('change', OptionsForm.apply);
     document.getElementById("reader").addEventListener('change', OptionsForm.apply);
     document.getElementById('numberOfPanels').addEventListener('change', OptionsForm.apply);
+    document.getElementById('comments').addEventListener('change', OptionsForm.apply);
     document.getElementById('reset-button').addEventListener('click', OptionsForm.reset);
-    document.querySelector('#options-container div.close-button a').addEventListener('click', OptionsForm.hide);
+    document.querySelector('#options-container div.last a.button').addEventListener('click', OptionsForm.hide);
     document.getElementById('export-button').addEventListener('click', OptionsForm.exportToOpml);
     document.getElementById('import-button').addEventListener('click', function() { document.getElementById("import-file").click(); });
     document.getElementById('import-file').addEventListener('change', OptionsForm.importFromOpml);
@@ -37,20 +39,21 @@ let OptionsForm = {
     document.getElementById('import-json-file').addEventListener('change', OptionsForm.importFromJson);
   },
 
+  isOpen: function() {
+    var containerEl = document.getElementById('options-container');
+    return containerEl.style.display != 'none';
+  },
+
   show: function() {
     var panelEl = document.getElementById('options-container');
     panelEl.style.display = 'table-cell';
-    if (View.isNarrowScreen()) {
-      panelEl.previousElementSibling.style.display = 'none';
-    }
+    View.toggleLastPanelBorder();
   },
 
   hide: function(e) {
     var panelEl = document.getElementById('options-container');
     panelEl.style.display = 'none';
-    if (View.isNarrowScreen()) {
-      panelEl.previousElementSibling.style.display = 'initial';
-    }
+    View.toggleLastPanelBorder();
     e.preventDefault();
   },
 
@@ -126,6 +129,7 @@ let OptionsForm = {
     config.lock = document.getElementById('lock').checked;
     config.favicon = document.getElementById('favicon').checked;
     config.reader = document.getElementById('reader').checked;
+    config.comments = document.getElementById('comments').checked;
     config.layout.numberOfPanels = OptionsForm.getSelectElValue('numberOfPanels');
 
     var pref = new Preferences(config);

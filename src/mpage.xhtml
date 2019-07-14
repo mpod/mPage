@@ -4,6 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link href="/fonts/css/fontawesome.css" rel="stylesheet"/>
+    <link href="/fonts/css/solid.css" rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" href="/mpage.css"/>
     <style id="styles"></style>
     <link rel="icon" href="icons/icon.png"/>
@@ -14,7 +16,7 @@
     <div id="message">
       <div class="dialog">
         <p></p>
-        <div class="button">[ Close ]</div>
+        <div><a href="#" class="button">Close</a></div>
       </div>
     </div>
     <div id="toolbar" style="display: none;">     
@@ -25,13 +27,13 @@
         </div>
       </div>
     </div> 
-    <div id="mpage-menu" style="display: none;">&#x273F;
+    <div id="mpage-menu" style="display: none;"><i class="fas fa-bars"></i>
       <ul id="mpage-menu-list" class="menu-list"></ul>
     </div>
     <div id="toolbar-mobile" style="display: none;">
       <div style="display: flex; flex-direction: row;">
         <div class="active-page" style="flex-grow: 1;"></div>
-        <div class="mpage-menu-mobile">...</div>
+        <div class="mpage-menu-mobile"><i class="fas fa-bars"></i></div>
       </div>
       <div class="nav-container pages" style="display: none;"></div>
       <div class="nav-container menu" style="display: none;"></div>
@@ -123,6 +125,10 @@
                 <td>Open in reader:</td>
                 <td><input id="reader" type="checkbox"/></td>
               </tr>
+              <tr>
+                <td>Show link to comments:</td>
+                <td><input id="comments" type="checkbox"/></td>
+              </tr>
               <tr class="not-for-mobile">
                 <td>Lock elements on page:</td>
                 <td><input id="lock" type="checkbox"/></td>
@@ -190,7 +196,9 @@
               </tr>
             </table>
           </div>
-          <div class="close-button"><a href="#">[ Close ]</a></div>
+          <div class="last">
+            <a href="#" class="button">Close</a>
+          </div>
         </td>
       </tr>
     </table>

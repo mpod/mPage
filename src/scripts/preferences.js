@@ -42,6 +42,7 @@ let Preferences = function(config) {
     globalVisitedFilter: false,
     favicon: true,
     reader: false,
+    comments: true,
     spacing: '0.375em' 
   };
   this.schemeType = ['dark', 'light'].indexOf(config.schemeType) == -1 ? defaultConfig.schemeType : config.schemeType;
@@ -53,6 +54,7 @@ let Preferences = function(config) {
   this.toolbar = config.toolbar == null ? defaultConfig.toolbar : config.toolbar === true;
   this.favicon = config.favicon == null ? defaultConfig.favicon : config.favicon === true;
   this.reader = config.reader == null ? defaultConfig.reader : config.reader === true;
+  this.comments = config.comments == null ? defaultConfig.comments : config.comments === true;
   this.spacing = config.spacing || defaultConfig.spacing; 
   this.globalVisitedFilter = config.globalVisitedFilter || defaultConfig.globalVisitedFilter;
 
@@ -76,6 +78,7 @@ Preferences.prototype = {
       favicon: this.favicon,
       reader: this.reader,
       spacing: this.spacing,
+      comments: this.comments,
       globalVisitedFilter: this.globalVisitedFilter
     }
   },
@@ -128,6 +131,13 @@ Preferences.prototype = {
   setFavicon: function(favicon) {
     var config = this.getConfig();
     config.favicon = favicon;
+
+    return new Preferences(config);
+  },
+
+  setComments: function(comments) {
+    var config = this.getConfig();
+    config.comments = comments;
 
     return new Preferences(config);
   },

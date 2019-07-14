@@ -27,9 +27,6 @@ let mPage = {
   getModel: function() {
     return mPage.model;
   },
-  isFirstRun: function() {
-    return false;
-  },
   addPage: function() {
     var pageName = prompt(Utils.translate('addPage.message'));
     if (pageName != null) {
@@ -60,6 +57,19 @@ let mPage = {
       var widget = page.createAndAddWidget(result, null, page.getFirstWidget());
       widget.load(true);
     }
+  },
+
+  setAsStartPage: function() {
+    var order = [];
+    var model = mPage.getModel();
+    var activePage = model.getPage();
+    order.push(activePage.id);
+    for (var j=0, pageOrder=model.getPageOrder(); j<pageOrder.length; j++) {
+      let p = model.getPage(pageOrder[j]);
+      if (p == activePage) continue;
+      order.push(p.id);
+    }
+    mPage.getModel().setPageOrder(order);
   },
 }
 

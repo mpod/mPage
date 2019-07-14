@@ -33,6 +33,10 @@ body {
   border-right: 1px dashed;
 }
 
+#panel-container td.last {
+  border-right: none;
+}
+
 #dd-placeholder {
   display: none;
 }
@@ -94,6 +98,7 @@ body {
   font-weight: 700;
   cursor: pointer;
   text-transform: uppercase;
+  font-size: 1.25em;
 }
 
 #toolbar-mobile .nav-container {
@@ -180,16 +185,20 @@ body {
   padding: 0 0.75em 0.75em 0.75em;
 }
 
-
-#options-container .close-button {
+#options-container div.last {
   text-align: center;
+  padding-bottom: 0.75em;
 }
 
-#options-container .close-button a {
+a.button {
+  text-transform: uppercase;
   text-decoration: none;
+  padding: 0.5em;
+  margin: 0.5em 0.5em;
+  font-weight: bolder;
 }
 
-#options-container .close-button a:hover {
+a.button:hover {
   text-decoration: underline;
   cursor: pointer;
 }
@@ -217,7 +226,8 @@ div.header a {
 }
 
 div.header div.action {
-  margin-left: 0.25em;
+  padding-left: 0.5em;
+  padding-right: 2em;
   cursor: pointer;
   position: relative;
   width: 16px;
@@ -294,16 +304,13 @@ div.body .available-feeds select.feeds {
   width: 100%;
 }
 
-div.body .available-feeds .button {
-  line-height: 1.5em;
-  display: block;
-  text-align: right;
-  width: 100%;
-}
-
 div.body .available-feeds p {
   line-height: 1.5em;
   text-align: left;
+}
+
+div.body .available-feeds div {
+  text-align: right;
 }
 
 ul.menu-list {
@@ -339,7 +346,7 @@ div.feedConfig {
 }
 
 div.feedConfig div {
-  padding-top: 0.375em;
+  padding-top: 0.5em;
 }
 
 div.feedConfig input {
@@ -348,10 +355,6 @@ div.feedConfig input {
 
 div.feedConfig input[type="text"] {
   width: 4em;
-}
-
-div.feedConfig a {
-  margin: 0 1em;
 }
 
 #message {
@@ -368,7 +371,7 @@ div.feedConfig a {
   margin: 0 auto;
   padding: 0.75em 1.5em;
   z-index: 1000;
-  max-width: 400px;
+  max-width: 300px;
 }
 
 #message .dialog p {

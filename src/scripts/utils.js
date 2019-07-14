@@ -62,7 +62,7 @@ let lang = {
 'invalidUrl.message': 'Invalid URL.',
 'doNotAskAgain.label': "Don't ask again",
 
-'welcome.message': 'Welcome to mPage!<br/><br/>To add a news feed it is enough to drag and drop a link to the page. For other commands and options search for sign \u273F in the top right corner of the page.<br/><br/>Latest release fixes few bugs and gives option for grouping feeds by date.',
+'welcome.message': 'Welcome to mPage!<br/><br/>To add a news feed it is enough to drag and drop a link to the page. Check out version for Firefox mobile as well.',
 
 'close.label': 'Close',
 
@@ -96,6 +96,7 @@ let lang = {
 'toolbar.action.addpage': 'Add page',
 'toolbar.action.deletepage': 'Delete page',
 'toolbar.action.renamepage': 'Rename page',
+'toolbar.action.setstartpage': 'Set as start page',
 'toolbar.action.options': 'Options',
 
 'options.schemes.custom': 'Custom',
