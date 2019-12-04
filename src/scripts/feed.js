@@ -360,6 +360,13 @@ Feed.prototype = {
       nodes = channelEl.getElementsByTagName('entry');
     }
 
+    // Validate site url
+    try {
+      new URL(this.siteUrl);
+    } catch (e) {
+      this.siteUrl = null;
+    }
+
     var prepareUri = function(uri) {
       var url = null;
       try {

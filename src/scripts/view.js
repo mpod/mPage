@@ -253,7 +253,7 @@ let View = {
     if (widget.model.getPreferences().favicon) {
       headerEl.appendChild(self.createFaviconEl(widget));
     }
-    if (widget.siteUrl) {
+    if (widget.siteUrl && self.isValidUrl(widget.siteUrl)) {
       titleEl.setAttribute('target', '_blank');
       titleEl.setAttribute('href', widget.siteUrl);
       titleEl.addEventListener('click', function(){this.blur();}, false); 
@@ -269,12 +269,21 @@ let View = {
     return headerEl;
   },
 
+  isValidUrl: function(url) {
+    try {
+      new URL(url);
+      return true;
+    } catch(e) {
+      return false;
+    }
+  },
+
   createFaviconEl: function(widget) {
     var self = View;
     var doc = View.getDoc();
     var faviconEl = doc.createElement('img');
     faviconEl.setAttribute('class', 'favicon');
-    if (widget.siteUrl) {
+    if (widget.siteUrl && self.isValidUrl(widget.siteUrl)) {
       var url = new URL(widget.siteUrl);
       faviconEl.addEventListener('error', function(event){
         this.src = 'icons/icon.png';
