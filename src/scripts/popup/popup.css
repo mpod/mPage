@@ -1,0 +1,17 @@
+html, body {
+  width: 300px;
+  overflow: hidden;
+}
+
+#feeds {
+  padding: 16px;
+}
+
+.feed {
+  line-height: 1.5em;
+}
+
+.text-section-header {
+  font-weight: light; 
+}
+

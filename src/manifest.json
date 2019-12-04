@@ -12,7 +12,7 @@
   "author": "Matija Podravec",
   "homepage_url": "https://github.com/mpod/mpage",
   "permissions": [
-    "<all_urls>", "storage", "downloads", "history"
+    "<all_urls>", "storage", "downloads", "history", "tabs"
   ],
   "browser_action": {
     "browser_style": true,
@@ -22,7 +22,13 @@
   },
   "background": {
     "scripts": [
-      "background.js"
+      "scripts/background.js"
     ] 
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/extract-feeds.js"]
+    }
+  ]
 }

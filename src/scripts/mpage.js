@@ -74,3 +74,12 @@ let mPage = {
 }
 
 window.addEventListener('load', () => mPage.init(), {once: true, passive: true});
+
+browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request && request.cmd === 'add' && request.url) {
+    console.log('mpage cmd received', request);
+    var page = mPage.getModel().getPage();
+    var widget = page.createAndAddWidget(request.url, null, page.getFirstWidget());
+    widget.load(true);
+  }
+});
