@@ -9,7 +9,7 @@ Simple dashboard-like feed reader ([Firefox add-on](https://addons.mozilla.org/e
 <kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/light-theme.png" width="400"/></kbd>
 <kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/dark-theme.png" width="400"/></kbd>
 <kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/random-theme.png" width="400"/></kbd>
-<kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/android.png" width="400"/></kbd>
+<kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/android.png" width="200"/></kbd>
 </p>
 
 ### Instructions
