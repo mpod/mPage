@@ -6,10 +6,10 @@ Simple dashboard-like feed reader ([Firefox add-on](https://addons.mozilla.org/e
 ### Screenshots
 
 <p float="left">
-<kbd><img src="https://raw.github.com/mpod/mPage/master/light-theme.png" width="400"/></kbd>
-<kbd><img src="https://raw.github.com/mpod/mPage/master/dark-theme.png" width="400"/></kbd>
-<kbd><img src="https://raw.github.com/mpod/mPage/master/random-theme.png" width="400"/></kbd>
-<kbd><img src="https://raw.github.com/mpod/mPage/master/android.png" width="400"/></kbd>
+<kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/light-theme.png" width="400"/></kbd>
+<kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/dark-theme.png" width="400"/></kbd>
+<kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/random-theme.png" width="400"/></kbd>
+<kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/android.png" width="400"/></kbd>
 </p>
 
 ### Instructions
