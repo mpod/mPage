@@ -8,7 +8,7 @@
   "description": "Simple dashboard-like feed reader",
   "manifest_version": 2,
   "name": "mPage",
-  "version": "1.16",
+  "version": "1.17",
   "author": "Matija Podravec",
   "homepage_url": "https://github.com/mpod/mpage",
   "permissions": [

@@ -61,8 +61,9 @@ function updateWithAvailableFeeds(tabId, checkResult) {
   if (checkResult && checkResult.hasFeeds) {
     browser.browserAction.setBadgeText({text: '!'});
     browser.browserAction.setBadgeBackgroundColor({color: '#f15a22'});
-    browser.browserAction.setBadgeTextColor({color: 'white'});
     browser.browserAction.setPopup({popup: "/scripts/popup/popup.html"});
+    if (browser.browserAction.setBadgeTextColor)
+      browser.browserAction.setBadgeTextColor({color: 'white'});
   } else {
     browser.browserAction.setBadgeText({text: ''});
     browser.browserAction.setPopup({popup: ''});
