@@ -14,7 +14,7 @@ Click to expand.
 * **Default dark theme:**  
   <kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/dark-theme.png" width="400"/></kbd>
 
-* **Random generated theme:**  
+* **Randomly generated theme:**  
   <kbd><img src="https://raw.github.com/mpod/mPage/master/screenshots/random-theme.png" width="400"/></kbd>
 
 * **Version for Firefox for Android:**      
