@@ -33,7 +33,7 @@ Permissions
 Following permissions are requested: 
 
 * `<all_urls>`: for downloading RSS feeds
-* `storage`: for storing configuration in 'mpage.extension.json' file
+* `storage`: for storing configuration in `mpage.extension.json` file
 * `downloads`: for downloading exported OPML file
 * `history`: for marking links as visited when page is open in reader mode
 * `tabs`: for accessing URL of active tabs, needed in discovering of feeds
