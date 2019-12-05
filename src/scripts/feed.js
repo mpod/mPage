@@ -220,6 +220,7 @@ Feed.prototype = {
       var endIndex = htmlText.indexOf('>', index);
       if (endIndex != -1) {
         var attributes = htmlText.substr(index, endIndex - index).match(/\w+\s*=\s*("[^"]*")|('[^']*')/ig);
+        attributes = attributes || [];
         var title = Utils.translate('subscribe.noFeedTitle'), href = '', type = '';
         for (var i=0; i<attributes.length; i++) {
           var splitIdx = attributes[i].indexOf('=');
@@ -229,7 +230,7 @@ Feed.prototype = {
           if (attribute[0].trim() == 'type') type = attribute[1];
           if (attribute[0].trim() == 'href') {
             try {
-              href = new URL(attribute[1]).href;
+              href = this.prepareUri(attribute[1]).href;
             } catch (e) {
               continue;
             }
@@ -291,6 +292,16 @@ Feed.prototype = {
       }
     } 
     feedProcessor.parseFromString(feedText, uri);
+  },
+
+  prepareUri: function(uri) {
+    var url = null;
+    try {
+      url = new URL(uri);
+    } catch (e) {
+      url = new URL('http://' + uri);
+    }
+    return url;
   },
 
   process: function(feedText) {
@@ -367,16 +378,6 @@ Feed.prototype = {
       this.siteUrl = null;
     }
 
-    var prepareUri = function(uri) {
-      var url = null;
-      try {
-        url = new URL(uri);
-      } catch (e) {
-        url = new URL('http://' + uri);
-      }
-      return url;
-    };
-
     for (var i=0, count = nodes.length; i<count; i++){
       node = nodes[i];
       entry = {};
@@ -403,7 +404,7 @@ Feed.prototype = {
                 var pattern = /<a href="([^"]*)">\[link\]</;
                 var result = entry.content.match(pattern);
                 if (result != null) {
-                  entry.reddit = new URL(result[1]);
+                  entry.reddit = this.prepareUri(result[1]);
                 }
               } 
             }
@@ -421,9 +422,9 @@ Feed.prototype = {
                 if (entry.link === void 0 || 
                     (n.getAttribute('rel') && n.getAttribute('rel') === 'alternate') ||
                     !n.getAttribute('rel'))
-                  entry.link = prepareUri(n.getAttribute('href'));
+                  entry.link = this.prepareUri(n.getAttribute('href'));
               } else {
-                entry.link = n.firstChild ? prepareUri(getNodeValue(n)) : null;
+                entry.link = n.firstChild ? this.prepareUri(getNodeValue(n)) : null;
               }
             }
             break;
@@ -442,7 +443,7 @@ Feed.prototype = {
             break;
           case 'comments':
             if (n.firstChild)
-              entry.comments = prepareUri(getNodeValue(n));
+              entry.comments = this.prepareUri(getNodeValue(n));
             break;
         }
       } 

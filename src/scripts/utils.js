@@ -56,7 +56,7 @@ let Utils = {
 
 let lang = {
 'loading.label': 'Loading...',
-'widget.error.message': 'Error in feed loading. Try with disabled tracking protection.',
+'widget.error.message': 'Feed loading has failed. Try with disabled tracking protection, or if you are sure that the feed should work fine then report a bug to the author of add-on.',
 'ajaxException.title': 'Error',
 'ajaxException.message': 'Unknown error happened.',
 'invalidUrl.message': 'Invalid URL.',
