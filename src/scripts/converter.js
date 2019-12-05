@@ -58,27 +58,27 @@ let Converter = {
     } 
 
     var model = mPage.getModel();
-    var page, pages, homePage;
+    var page, pages, importPageId;
     if (!merge) {
       model.empty();
       page = model.getPage();
     } else {
       pages = model.getPages(model.GET_PAGES_TITLE);
-      if (pages['Home'])
-        page = pages['Home'];
+      if (pages['Imported'])
+        page = pages['Imported'];
       else {
-        page = model.addPage('Home');
+        page = model.addPage('Imported');
         pages = model.getPages(model.GET_PAGES_TITLE);
       }
     }
-    homePageId = page.id;
+    importPageId = page.id;
 
     try {
       processOutlines(body, page, merge, pages);
     } catch (e) {
       console.log('converter.import: Error in processing OPML file - ' + e.message);
-      if (homePageId != null) {
-        page = model.getPage(homePageId);
+      if (importPageId != null) {
+        page = model.getPage(importPageId);
         if (page.getWidgets(page.GET_WIDGETS_ARRAY).length == 0) {
           model.deletePage(page.id);
         }
@@ -88,8 +88,8 @@ let Converter = {
       return;
     }
 
-    if (homePageId != null) {
-      page = model.getPage(homePageId);
+    if (importPageId != null) {
+      page = model.getPage(importPageId);
       if (page.getWidgets(page.GET_WIDGETS_ARRAY).length == 0) {
         console.log('converter.import: Deleting home page.');
         model.deletePage(page.id);
@@ -98,7 +98,7 @@ let Converter = {
 
     var pref = model.getPreferences().deserialize(body.getAttribute('mpage'));
     model.setPreferences(pref);
-    model.changeActivePage();
+    model.changeActivePage(importPageId);
 
     console.log('converter.importFromOpml: Done');
   },

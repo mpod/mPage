@@ -165,9 +165,14 @@ let OptionsForm = {
   },
 
   exportToOpml: function() {
+    var padStr = function(i) {
+      return (i < 10) ? "0" + i : "" + i;
+    }
+    var d = new Date();
+    var dStr = [d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()].map(padStr).join('');
     browser.downloads.download({
       url: window.URL.createObjectURL(new Blob([Converter.exportToOpml(mPage.getModel())], {type: 'application/xml'})),
-      filename: 'mpage-export.xml',
+      filename: 'mpage-export-' + dStr + '.opml',
       saveAs: true
     })
   },

@@ -191,6 +191,7 @@ Preferences.prototype = {
 
   deserialize: function(str) {
     var config = this.getConfig();
+    str = str || '';
     str = str.split('|');
 
     if (str.length == 17) {
