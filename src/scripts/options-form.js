@@ -17,6 +17,7 @@ let OptionsForm = {
     document.getElementById('favicon').checked = pref.getConfig().favicon;
     document.getElementById('reader').checked = pref.getConfig().reader;
     document.getElementById('comments').checked = pref.getConfig().comments;
+    document.getElementById('notifications').checked = pref.getConfig().notifications;
   },
 
   addListeners: function() {
@@ -27,6 +28,7 @@ let OptionsForm = {
     document.getElementById("lock").addEventListener('change', OptionsForm.apply);
     document.getElementById("favicon").addEventListener('change', OptionsForm.apply);
     document.getElementById("reader").addEventListener('change', OptionsForm.apply);
+    document.getElementById("notifications").addEventListener('change', OptionsForm.apply);
     document.getElementById('numberOfPanels').addEventListener('change', OptionsForm.apply);
     document.getElementById('comments').addEventListener('change', OptionsForm.apply);
     document.getElementById('reset-button').addEventListener('click', OptionsForm.reset);
@@ -129,6 +131,7 @@ let OptionsForm = {
     config.lock = document.getElementById('lock').checked;
     config.favicon = document.getElementById('favicon').checked;
     config.reader = document.getElementById('reader').checked;
+    config.notifications = document.getElementById('notifications').checked;
     config.comments = document.getElementById('comments').checked;
     config.layout.numberOfPanels = OptionsForm.getSelectElValue('numberOfPanels');
 
@@ -156,23 +159,26 @@ let OptionsForm = {
     reader.readAsText(evt.target.files[0]);
   },
 
+  now: function() {
+    var padStr = function(i) {
+      return (i < 10) ? "0" + i : "" + i;
+    }
+    var d = new Date();
+    return [d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()].map(padStr).join('');
+  },
+
   exportToJson: function() {
     browser.downloads.download({
       url: window.URL.createObjectURL(new Blob([JSON.stringify(Storage.getData())], {type: 'application/json'})),
-      filename: 'mpage.extension.json',
+      filename: 'mpage-extension-' + OptionsForm.now() + '.json',
       saveAs: true
     });
   },
 
   exportToOpml: function() {
-    var padStr = function(i) {
-      return (i < 10) ? "0" + i : "" + i;
-    }
-    var d = new Date();
-    var dStr = [d.getFullYear(), d.getMonth() + 1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()].map(padStr).join('');
     browser.downloads.download({
       url: window.URL.createObjectURL(new Blob([Converter.exportToOpml(mPage.getModel())], {type: 'application/xml'})),
-      filename: 'mpage-export-' + dStr + '.opml',
+      filename: 'mpage-export-' + OptionsForm.now() + '.opml',
       saveAs: true
     })
   },

@@ -7,7 +7,7 @@ let mPage = {
     function processEvent(e) {
       let topic = e.type;
       let data = e.detail;
-      console.log('model.observe: ' + topic + '/' + data);
+      console.log('mpage.observe: ' + topic + '/' + data);
       data = data.split(':');
 
       switch(data[0]) {
@@ -17,6 +17,10 @@ let mPage = {
           Storage.registerObserver();
           OptionsForm.init();
           break;
+        case 'preferences-changed':
+          var notifications = mPage.getModel().getPreferences().notifications;
+          browser.runtime.sendMessage({cmd: 'notifications', value: notifications});
+          break;
         default:
           break;
       }
@@ -24,9 +28,11 @@ let mPage = {
     window.document.documentElement.addEventListener('mpage-model', processEvent, false);
   
   },
+
   getModel: function() {
     return mPage.model;
   },
+
   addPage: function() {
     var pageName = prompt(Utils.translate('addPage.message'));
     if (pageName != null) {
@@ -77,7 +83,6 @@ window.addEventListener('load', () => mPage.init(), {once: true, passive: true})
 
 browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request && request.cmd === 'add' && request.url) {
-    console.log('mpage cmd received', request);
     var page = mPage.getModel().getPage();
     var widget = page.createAndAddWidget(request.url, null, page.getFirstWidget());
     widget.load(true);

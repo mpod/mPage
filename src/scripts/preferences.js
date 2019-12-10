@@ -43,6 +43,7 @@ let Preferences = function(config) {
     favicon: true,
     reader: false,
     comments: true,
+    notifications: true,
     spacing: '0.375em' 
   };
   this.schemeType = ['dark', 'light'].indexOf(config.schemeType) == -1 ? defaultConfig.schemeType : config.schemeType;
@@ -57,6 +58,7 @@ let Preferences = function(config) {
   this.comments = config.comments == null ? defaultConfig.comments : config.comments === true;
   this.spacing = config.spacing || defaultConfig.spacing; 
   this.globalVisitedFilter = config.globalVisitedFilter || defaultConfig.globalVisitedFilter;
+  this.notifications = config.notifications == null ? defaultConfig.notifications : config.notifications === true;
 
   this.layout = {
     numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ? 
@@ -79,7 +81,8 @@ Preferences.prototype = {
       reader: this.reader,
       spacing: this.spacing,
       comments: this.comments,
-      globalVisitedFilter: this.globalVisitedFilter
+      globalVisitedFilter: this.globalVisitedFilter,
+      notifications: this.notifications
     }
   },
 
@@ -163,6 +166,13 @@ Preferences.prototype = {
     return new Preferences(config);
   },
 
+  setFeedsDiscoveryNotification: function(notifications) {
+    var config = this.getConfig();
+    config.notifications = notifications;
+
+    return new Preferences(config);
+  },
+
   serialize: function() {
     var str = [];
 
@@ -185,6 +195,7 @@ Preferences.prototype = {
     str.push(this.spacing);
     str.push(this.globalVisitedFilter);
     str.push(this.reader);
+    str.push(this.notifications);
 
     return str.join('|');
   },
@@ -194,27 +205,46 @@ Preferences.prototype = {
     str = str || '';
     str = str.split('|');
 
-    if (str.length == 17) {
+    if (str.length >= 1) 
       config.schemeType = str[0];
+    if (str.length >= 2) 
       config.schemeName = str[1];
+    if (str.length >= 3) 
       config.colors.background = str[2];
+    if (str.length >= 4) 
       config.colors.border = str[3];
-      config.colors.link = str[4];
+    if (str.length >= 5) 
+      config.colors.li6k = str[4];
+    if (str.length >= 6) 
       config.colors.visited = str[5];
+    if (str.length >= 7) 
       config.colors.title = str[6];
+    if (str.length >= 8) 
       config.colors.menu = str[7];
+    if (str.length >= 9) 
       config.colors.menuText = str[8];
+    if (str.length >= 10) 
       config.colors.menuSel = str[9];
+    if (str.length >= 11) 
       config.colors.misc = str[10];
+    if (str.length >= 12) 
       config.font.size = str[11];
+    if (str.length >= 13) 
       config.layout.numberOfPanels = str[12];
+    if (str.length >= 14) 
       config.lock = str[13] === 'true';
+    if (str.length >= 15) 
       config.toolbar = str[14] === 'true';
+    if (str.length >= 16) 
       config.favicon = str[15] === 'true';
+    if (str.length >= 17) 
       config.spacing = str[16];
+    if (str.length >= 18) 
       config.globalVisitedFilter = str[17] === 'true';
+    if (str.length >= 19) 
       config.reader = str[18] === 'true';
-    }
+    if (str.length >= 20) 
+      config.notifications = str[19] === 'true';
 
     return new Preferences(config);
   }

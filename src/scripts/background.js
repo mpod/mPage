@@ -15,6 +15,9 @@ let Main = {
  *
  * background -> mpage
  *   * 'add': triggers an action of adding a feed to mpage, it contains url as a parameter
+ *
+ * content -> background
+ *   * 'notifications': sends update of notification flag to the background script
  */
 
 browser.browserAction.onClicked.addListener(function() {
@@ -52,18 +55,23 @@ function handleMessage(request, sender, sendResponse) {
         var activeTabUrl = activeTab.url;
         browser.tabs.sendMessage(mPageTab.id, {cmd: 'add', url: activeTabUrl});
       });
-  } 
+  } else if (request && request.cmd === 'notifications') {
+    showNotifications = request.value;
+    updateWithAvailableFeeds(null);
+  }
 }
 
 browser.runtime.onMessage.addListener(handleMessage);
 
-function updateWithAvailableFeeds(tabId, checkResult) {
+function updateWithAvailableFeeds(checkResult) {
   if (checkResult && checkResult.hasFeeds) {
-    browser.browserAction.setBadgeText({text: '!'});
-    browser.browserAction.setBadgeBackgroundColor({color: '#f15a22'});
     browser.browserAction.setPopup({popup: "/scripts/popup/popup.html"});
-    if (browser.browserAction.setBadgeTextColor)
-      browser.browserAction.setBadgeTextColor({color: 'white'});
+    if (showNotifications) {
+      browser.browserAction.setBadgeText({text: '!'});
+      browser.browserAction.setBadgeBackgroundColor({color: '#f15a22'});
+      if (browser.browserAction.setBadgeTextColor)
+        browser.browserAction.setBadgeTextColor({color: 'white'});
+    }
   } else {
     browser.browserAction.setBadgeText({text: ''});
     browser.browserAction.setPopup({popup: ''});
@@ -74,15 +82,31 @@ function checkFeeds(tabId) {
   browser.tabs
     .sendMessage(tabId, {cmd: 'check-feeds'})
     .then(response => {
-      updateWithAvailableFeeds(tabId, response);
+      updateWithAvailableFeeds(response);
     })
     .catch(error => {
-      updateWithAvailableFeeds(tabId, null);
+      updateWithAvailableFeeds(null);
     });
 }
 
 browser.tabs.onActivated.addListener(tab => checkFeeds(tab.tabId));
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
-  if (changeInfo.status === 'complete') checkFeeds(tabId)
+  if (changeInfo.status === 'complete') 
+    checkFeeds(tabId)
+  else if (changeInfo.url)
+    updateWithAvailableFeeds(null);
 });
+
+var showNotifications = true;
+
+browser.storage
+  .local
+  .get('configuration')
+  .then(function(item) {
+    showNotifications = item.configuration.preferences.notifications;
+  })
+  .catch(error =>
+    console.log(error)
+  );
+

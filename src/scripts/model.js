@@ -409,7 +409,6 @@ Model.prototype = {
 
     page = this.addPage('Music');
     page.createAndAddWidget('http://www.spin.com/news/rss/', null, null);
-    page.createAndAddWidget('http://www.rollingstone.com/siteServices/rss/allNews', null, null);
     page.createAndAddWidget('http://pitchfork.com/rss/news/', null, null);
     page.createAndAddWidget('http://feeds.feedburner.com/stereogum/cBYa?format=xml', null, null);
     page.createAndAddWidget('http://www.reddit.com/r/Music/.rss', null, null);
@@ -419,7 +418,7 @@ Model.prototype = {
     page.createAndAddWidget('http://www.livescience.com/home/feed/site.xml', null, null);
     page.createAndAddWidget('http://feeds.sciencedaily.com/sciencedaily?format=xml', null, null);
     page.createAndAddWidget('https://www.theguardian.com/science/rss', null, null);
-    page.createAndAddWidget('http://www.nasa.gov/rss/breaking_news.rss', null, null);
+    page.createAndAddWidget('https://www.jpl.nasa.gov/multimedia/rss/news.xml', null, null);
     page.createAndAddWidget('http://www.reddit.com/r/science/.rss', null, null);
     page.load();
 

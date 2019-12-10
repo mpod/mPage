@@ -24,7 +24,10 @@ let Converter = {
             widget = page.createAndAddWidget(n.getAttribute('xmlUrl'), null, null);
           }
           console.log('converter.importFromOpml: Update widget ' + widget.id);
-          widget.title = n.getAttribute('title');
+          if (n.getAttribute('title') !== 'undefined')
+            widget.title = n.getAttribute('title');
+          else
+            widget.title = null;
           if (n.hasAttribute('mpage')) {
             var options = n.getAttribute('mpage').split('|');
             page.removeFromPanel(widget);
@@ -93,6 +96,7 @@ let Converter = {
       if (page.getWidgets(page.GET_WIDGETS_ARRAY).length == 0) {
         console.log('converter.import: Deleting home page.');
         model.deletePage(page.id);
+        importPageId = null;
       }
     }
 
