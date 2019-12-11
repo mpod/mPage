@@ -65,7 +65,8 @@ browser.runtime.onMessage.addListener(handleMessage);
 
 function updateWithAvailableFeeds(checkResult) {
   if (checkResult && checkResult.hasFeeds) {
-    browser.browserAction.setPopup({popup: "/scripts/popup/popup.html"});
+    if (!isAndroid)
+      browser.browserAction.setPopup({popup: "/scripts/popup/popup.html"});
     if (showNotifications) {
       browser.browserAction.setBadgeText({text: '!'});
       browser.browserAction.setBadgeBackgroundColor({color: '#f15a22'});
@@ -99,14 +100,15 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 });
 
 var showNotifications = true;
+var isAndroid = false;
 
-browser.storage
-  .local
-  .get('configuration')
-  .then(function(item) {
-    showNotifications = item.configuration.preferences.notifications;
+Promise
+  .all([ browser.storage.local.get('configuration'), browser.runtime.getPlatformInfo() ])
+  .then(function(result) {
+    showNotifications = result[0].configuration.preferences.notifications;
+    isAndroid = result[1].os === 'android';
   })
   .catch(error =>
     console.log(error)
-  );
+  )
 
