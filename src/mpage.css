@@ -237,6 +237,9 @@ div.header div.action {
 
 div.body {
   margin-top: 0.75em;
+  overflow-x: hidden;
+  width: 0;
+  min-width: 100%;
 }
 
 div.body ul {
