@@ -1,12 +1,12 @@
 'use strict';
 
 let View = {
-  processEvent: function(e) {  
+  processEvent: function(e) {
     var self = View;
     let topic = e.type;
     let data = e.detail;
 
-    if (topic == 'mpage-model') {  
+    if (topic == 'mpage-model') {
       var widget;
       console.log('view.observe: ' + topic + '/' + data);
       data = data.split(':');
@@ -64,7 +64,7 @@ let View = {
           console.log('view.observe: Event ignored!');
           break;
       }
-    } 
+    }
   },
 
   isNarrowScreen: function() {
@@ -91,7 +91,7 @@ let View = {
   },
 
   getDoc: function() {
-    return document;  
+    return document;
   },
 
   registerObserver: function() {
@@ -109,7 +109,7 @@ let View = {
 
     var msgEl = doc.getElementById('message');
     var pEl = msgEl.querySelector('p');
-    
+
     while (pEl.hasChildNodes()) pEl.removeChild(pEl.firstChild)
     var messageParts = message.split('<br/>');
     for (var i=0; i<messageParts.length; i++) {
@@ -129,8 +129,8 @@ let View = {
     for (var n=el; n; n=n.parentNode) {
       if (n.className && n.className.indexOf('widget') != -1) {
         return n.getAttribute('widget-id');
-      }  
-    } 
+      }
+    }
     return null;
   },
 
@@ -147,7 +147,7 @@ let View = {
     var widgets;
 
     var widgetEl = doc.getElementById('widget-' + widget.id);
-    panelEl = View.findPanelEl(widget);   
+    panelEl = View.findPanelEl(widget);
     if (widgetEl && refresh) {
       widgetEl.parentNode.removeChild(widgetEl);
       widgetEl = null;
@@ -212,7 +212,7 @@ let View = {
     var self = View;
     if (self.isNarrowScreen())
       return 1;
-    else 
+    else
       return mPage.getModel().getPreferences().layout.numberOfPanels;
   },
 
@@ -235,7 +235,7 @@ let View = {
     if (widget.isInitialized() == true) {
       bodyEl.appendChild(self.createFeedBody(widget));
     } else {
-      bodyEl.appendChild(self.createLoadingBody());  
+      bodyEl.appendChild(self.createLoadingBody());
     }
 
     widgetEl.appendChild(self.createConfigEl(widget));
@@ -256,7 +256,7 @@ let View = {
     if (widget.siteUrl && self.isValidUrl(widget.siteUrl)) {
       titleEl.setAttribute('target', '_blank');
       titleEl.setAttribute('href', widget.siteUrl);
-      titleEl.addEventListener('click', function(){this.blur();}, false); 
+      titleEl.addEventListener('click', function(){this.blur();}, false);
     }
     if (widget.title) {
       titleEl.appendChild(doc.createTextNode(widget.title));
@@ -310,7 +310,7 @@ let View = {
     el.placeholder = 'infinite';
     el.type = 'text';
     el.className = 'hoursFilter';
-    if (widget.hoursFilter > 0) 
+    if (widget.hoursFilter > 0)
       if (widget.hoursFilter % 24 == 0)
         el.value = widget.hoursFilter / 24;
       else
@@ -351,7 +351,7 @@ let View = {
     row.append(el);
     row.appendChild(doc.createTextNode('Group by date'));
     configEl.appendChild(row);
-    
+
     row = doc.createElement('div');
     el = doc.createElement('input');
     el.type = 'checkbox';
@@ -362,7 +362,7 @@ let View = {
     configEl.appendChild(row);
 
     row = doc.createElement('div');
-    row.appendChild(doc.createTextNode('URL: ' + widget.url)); 
+    row.appendChild(doc.createTextNode('URL: ' + widget.url));
     configEl.appendChild(row);
 
     row = doc.createElement('div');
@@ -480,12 +480,12 @@ let View = {
   createLoadingBody: function() {
     var self = View;
     var doc = self.getDoc();
-    var divEl = doc.createElement('div');  
+    var divEl = doc.createElement('div');
     divEl.setAttribute('class', 'loading');
     var titleTextEl = doc.createTextNode(Utils.translate('loading.label'));
     divEl.appendChild(titleTextEl);
     return divEl;
-  }, 
+  },
 
   createListOfFeeds: function(entries) {
     var self = View;
@@ -502,7 +502,7 @@ let View = {
         var url = entry.link.href;
         var openInReaderMode = model.getPreferences().reader;
         linkEl.setAttribute('href', url);
-        linkEl.addEventListener('click', View.openLinkFunction(url, openInReaderMode), false); 
+        linkEl.addEventListener('click', View.openLinkFunction(url, openInReaderMode), false);
       }
       linkEl.setAttribute('target', '_blank');
       linkEl.setAttribute('title', entry.title);
@@ -513,7 +513,7 @@ let View = {
           link2El.setAttribute('href', entry.reddit.href);
           link2El.setAttribute('target', '_blank');
           link2El.appendChild(doc.createTextNode('[link]'));
-          link2El.addEventListener('click', function(){this.blur();}, false); 
+          link2El.addEventListener('click', function(){this.blur();}, false);
           entryEl.appendChild(doc.createTextNode(' '));
           entryEl.appendChild(link2El);
       }
@@ -522,7 +522,7 @@ let View = {
           link2El.setAttribute('href', entry.comments);
           link2El.setAttribute('target', '_blank');
           link2El.appendChild(doc.createTextNode('[comments]'));
-          link2El.addEventListener('click', function(){this.blur();}, false); 
+          link2El.addEventListener('click', function(){this.blur();}, false);
           entryEl.appendChild(doc.createTextNode(' '));
           entryEl.appendChild(link2El);
       }
@@ -571,7 +571,7 @@ let View = {
     var groupsDict = {};
     for (var i=0; i<entries.length; i++) {
       var entry = entries[i];
-      if (entry.date) { 
+      if (entry.date) {
         if (entry.date === parseInt(entry.date, 10))
           entry.date = new Date(entry.date);
         entry.date = new Date(
@@ -619,7 +619,7 @@ let View = {
     if (widget.isInFeedSelectingState()) return self.createFeedSelectingBody(widget);
 
     var entries = widget.getEntriesToShow();
-    
+
     if (widget.groupByDate) {
       return self.createListOfDateGroups(self.groupEntriesByDate(entries));
     } else {
@@ -630,18 +630,18 @@ let View = {
   createErrorBody: function(widget) {
     var self = View;
     var doc = self.getDoc();
-    var divEl = doc.createElement('div');  
+    var divEl = doc.createElement('div');
     divEl.className = 'error';
     var titleTextEl = doc.createTextNode(widget.getErrorMessage());
     divEl.appendChild(titleTextEl);
-    return divEl;  
+    return divEl;
   },
 
   createFeedSelectingBody: function(widget) {
     var self = View;
     var doc = self.getDoc();
     var wrapperEl = doc.createElement('div');
-  
+
     wrapperEl.className = 'available-feeds';
 
     var pEl = doc.createElement('p');
@@ -667,9 +667,9 @@ let View = {
 
     wrapperEl.querySelector('a.button').addEventListener('click', function() {
       var opt = selectEl.options[selectEl.selectedIndex];
-      widget.set('url', opt.value); 
+      widget.set('url', opt.value);
       this.blur();
-    }, false); 
+    }, false);
 
     return wrapperEl;
   },
@@ -715,14 +715,17 @@ let View = {
     var doc = self.getDoc();
     var el, styles = [];
     if (self.isNarrowScreen()) {
-      var showNotForMobile = 'none'; 
+      var showNotForMobile = 'none';
       var showForMobileOnly = 'initial';
     } else {
-      var showNotForMobile = 'table-row'; 
+      var showNotForMobile = 'table-row';
       var showForMobileOnly = 'none';
     }
 
     styles.push('body { background-color: ' + colors.background + '; border-color: ' + colors.border + '; }');
+    if (pref.stickyHeader) {
+      styles.push('#page-header { position: sticky; top: 0;  background-color: ' + colors.background + '; }');
+    }
     styles.push('#nav-list li a { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
     styles.push('#nav-list li.first a { border-color: ' + colors.border + '; }');
     styles.push('#nav-list li.active a { color: ' + colors.misc + '; }');
@@ -738,13 +741,13 @@ let View = {
     styles.push('div.body div.loading{ color: ' + colors.link + '; }');
     styles.push('div.body div.error{ color: ' + colors.link + '; }');
     styles.push('ul.menu-list { background-color: ' + colors.menu + ';');
-    styles.push('  box-shadow: 1px 1px ' + colors.border + '; }'); 
-    styles.push('ul.menu-list a { color: ' + colors.menuText + '; }'); 
+    styles.push('  box-shadow: 1px 1px ' + colors.border + '; }');
+    styles.push('ul.menu-list a { color: ' + colors.menuText + '; }');
     styles.push('ul.menu-list a:hover { background-color: ' + colors.menuSel + '; }');
     styles.push('#dd-placeholder { background-color: ' + colors.misc + '; }');
     styles.push('#nav-drop-indicator-bar { background-color: ' + colors.misc + '; }');
     styles.push('#message .dialog { background-color: ' + colors.menu + ';');
-    styles.push('  box-shadow: 1px 1px 1px ' + colors.border + ';'); 
+    styles.push('  box-shadow: 1px 1px 1px ' + colors.border + ';');
     styles.push('  color: ' + colors.menuText + '; }');
     styles.push('#options-container { color: ' + colors.link + '; }');
     styles.push('#options-container div.group { border-color: ' + colors.border + '; }');
@@ -779,7 +782,7 @@ let View = {
   },
 
   prepareOpenPageFunc: function(pageId) {
-    return function() { 
+    return function() {
       mPage.getModel().changeActivePage(pageId);
     };
   },
@@ -808,11 +811,11 @@ let View = {
 
     var activePage = model.getPage();
     for (var j=0, pageOrder=model.getPageOrder(); j<pageOrder.length; j++) {
-      let p = model.getPage(pageOrder[j]); 
+      let p = model.getPage(pageOrder[j]);
       let item = doc.createElement('li');
       let className = '';
       item.setAttribute('id', 'page-' + p.id);
-      if (p.id == activePage.id) className = 'active'; 
+      if (p.id == activePage.id) className = 'active';
       if (!model.getPreferences().lock) {
         item.setAttribute('draggable', 'true');
         item.addEventListener('dragstart', DragAndDrop.pageHandler.dragStart, false);
@@ -822,7 +825,7 @@ let View = {
       item.setAttribute('class', className);
       let link = doc.createElement('a');
       link.appendChild(doc.createTextNode(p.title));
-      link.addEventListener('click', self.prepareOpenPageFunc(p.id), false); 
+      link.addEventListener('click', self.prepareOpenPageFunc(p.id), false);
       item.appendChild(link);
       menu.appendChild(item);
     }
@@ -866,7 +869,7 @@ let View = {
       if (p == activePage) continue;
       el = doc.createElement('div');
       el.appendChild(createPageLink(p));
-      el.addEventListener('click',self. prepareOpenPageFunc(p.id), false); 
+      el.addEventListener('click',self. prepareOpenPageFunc(p.id), false);
       menu.appendChild(el);
     }
   },
@@ -935,42 +938,42 @@ let View = {
     var doc = self.getDoc();
     var el1, el2;
     var actions = [
-      {label: 'toolbar.action.addfeed', 
+      {label: 'toolbar.action.addfeed',
         listener: function(event) {
           toggleMenu();
           event.stopPropagation();
           mPage.addFeed();
         }
       },
-      {label: 'toolbar.action.addpage', 
+      {label: 'toolbar.action.addpage',
         listener: function(event) {
           toggleMenu();
           event.stopPropagation();
           mPage.addPage();
         }
       },
-      {label: 'toolbar.action.deletepage', 
+      {label: 'toolbar.action.deletepage',
         listener: function(event) {
           toggleMenu();
           event.stopPropagation();
           mPage.deletePage();
         }
       },
-      {label: 'toolbar.action.renamepage', 
+      {label: 'toolbar.action.renamepage',
         listener: function(event) {
           toggleMenu();
           event.stopPropagation();
           mPage.renamePage();
         }
       },
-      {label: 'toolbar.action.setstartpage', 
+      {label: 'toolbar.action.setstartpage',
         listener: function(event) {
           toggleMenu();
           event.stopPropagation();
           mPage.setAsStartPage();
         }, condition: self.isNarrowScreen
       },
-      {label: 'toolbar.action.options', 
+      {label: 'toolbar.action.options',
         listener: function(event) {
           toggleMenu();
           event.stopPropagation();
@@ -980,8 +983,8 @@ let View = {
     ];
 
     for (let i=0; i<actions.length; i++) {
-      if (actions[i].condition !== undefined && !actions[i].condition()) 
-        continue; 
+      if (actions[i].condition !== undefined && !actions[i].condition())
+        continue;
       el1 = doc.createElement(itemTag);
       el2 = doc.createElement('a');
       el2.addEventListener('mousedown', actions[i].listener, false);

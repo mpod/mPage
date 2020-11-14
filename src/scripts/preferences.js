@@ -44,6 +44,7 @@ let Preferences = function(config) {
     reader: false,
     comments: true,
     notifications: true,
+    stickyHeader: true,
     spacing: '0.375em' 
   };
   this.schemeType = ['dark', 'light'].indexOf(config.schemeType) == -1 ? defaultConfig.schemeType : config.schemeType;
@@ -59,6 +60,7 @@ let Preferences = function(config) {
   this.spacing = config.spacing || defaultConfig.spacing; 
   this.globalVisitedFilter = config.globalVisitedFilter || defaultConfig.globalVisitedFilter;
   this.notifications = config.notifications == null ? defaultConfig.notifications : config.notifications === true;
+  this.stickyHeader = config.stickyHeader == null ? defaultConfig.stickyHeader : config.stickyHeader === true;
 
   this.layout = {
     numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ? 
@@ -82,7 +84,8 @@ Preferences.prototype = {
       spacing: this.spacing,
       comments: this.comments,
       globalVisitedFilter: this.globalVisitedFilter,
-      notifications: this.notifications
+      notifications: this.notifications,
+      stickyHeader: this.stickyHeader
     }
   },
 
@@ -173,6 +176,14 @@ Preferences.prototype = {
     return new Preferences(config);
   },
 
+
+  setStickyHeader: function(stickyHeader) {
+    var config = this.getConfig();
+    config.stickyHeader = stickyHeader;
+
+    return new Preferences(config);
+  },
+
   serialize: function() {
     var str = [];
 
@@ -196,6 +207,7 @@ Preferences.prototype = {
     str.push(this.globalVisitedFilter);
     str.push(this.reader);
     str.push(this.notifications);
+    str.push(this.stickyHeader);
 
     return str.join('|');
   },
@@ -245,6 +257,8 @@ Preferences.prototype = {
       config.reader = str[18] === 'true';
     if (str.length >= 20) 
       config.notifications = str[19] === 'true';
+    if (str.length >= 21) 
+      config.stickyHeader = str[20] === 'true';
 
     return new Preferences(config);
   }

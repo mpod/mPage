@@ -18,6 +18,7 @@ let OptionsForm = {
     document.getElementById('reader').checked = pref.getConfig().reader;
     document.getElementById('comments').checked = pref.getConfig().comments;
     document.getElementById('notifications').checked = pref.getConfig().notifications;
+    document.getElementById('stickyHeader').checked = pref.getConfig().stickyHeader;
   },
 
   addListeners: function() {
@@ -29,6 +30,7 @@ let OptionsForm = {
     document.getElementById("favicon").addEventListener('change', OptionsForm.apply);
     document.getElementById("reader").addEventListener('change', OptionsForm.apply);
     document.getElementById("notifications").addEventListener('change', OptionsForm.apply);
+    document.getElementById("stickyHeader").addEventListener('change', OptionsForm.apply);
     document.getElementById('numberOfPanels').addEventListener('change', OptionsForm.apply);
     document.getElementById('comments').addEventListener('change', OptionsForm.apply);
     document.getElementById('reset-button').addEventListener('click', OptionsForm.reset);
@@ -132,6 +134,7 @@ let OptionsForm = {
     config.favicon = document.getElementById('favicon').checked;
     config.reader = document.getElementById('reader').checked;
     config.notifications = document.getElementById('notifications').checked;
+    config.stickyHeader = document.getElementById('stickyHeader').checked;
     config.comments = document.getElementById('comments').checked;
     config.layout.numberOfPanels = OptionsForm.getSelectElValue('numberOfPanels');
 
