@@ -41,6 +41,10 @@ body {
   display: none;
 }
 
+#page-header {
+  border-color: inherit;
+}
+
 #toolbar, #toolbar-mobile {
   border-bottom: 1px dashed;
   border-color: inherit;
