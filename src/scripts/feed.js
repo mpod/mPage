@@ -307,7 +307,20 @@ Feed.prototype = {
   process: function(feedText) {
     var parser = new DOMParser();
     var xmlDoc = parser.parseFromString(feedText, 'text/xml');
+
     var docEl = xmlDoc.documentElement;
+    if (docEl.tagName == 'parsererror' && docEl.firstChild.data.indexOf('junk after document element') != -1) {
+      var m = docEl.firstChild.data.match(/Line Number (\d+), Column (\d+)/);
+      var line = parseInt(m[1]);
+      var column = parseInt(m[2]);
+      var allLines = feedText.split('\n');
+      var validLines = allLines.slice(0, line -1);
+      var lastLine = allLines[line - 1].substring(0, column - 1);
+      validLines.push(lastLine);
+      xmlDoc = parser.parseFromString(validLines.join('\n'), 'text/xml');
+      docEl = xmlDoc.documentElement;
+    }
+
     var nodes, node, entry, n;
 
     var isAtom = docEl.tagName == 'feed';
@@ -315,13 +328,15 @@ Feed.prototype = {
     var isRdf = docEl.tagName == 'rdf:RDF';
 
     if (!isAtom && !isRSS && !isRdf) {
-			throw new Error('Unsupported feed format.');
-  	}
+      throw new Error('Unsupported feed format.');
+    }
 
     var getNodeValue = function(node) {
       var res = '';
 
-      node = node.firstChild;
+      if (node) {
+        node = node.firstChild;
+      }
       while (node && res == '') {
         res = (node.nodeValue || '').trim();
         node = node.nextSibling;
@@ -381,7 +396,7 @@ Feed.prototype = {
     for (var i=0, count = nodes.length; i<count; i++){
       node = nodes[i];
       entry = {};
-			entry.readed = false;
+      entry.readed = false;
 
       for (var n = node.firstChild; n; n = n.nextSibling) {
         switch (n.tagName) {
