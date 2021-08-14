@@ -12,10 +12,78 @@ body {
   line-height: 1.5em;
   font-family: "Proxima Nova Regular","Helvetica Neue",Arial,Helvetica,sans-serif;
   min-height: 100vh;
+  overflow: hidden;
 }
 
 .clear {
   clear: both;
+}
+
+#middle {
+    top: 0px;
+    bottom: 0px;
+    margin: 0 auto;
+    position: absolute;
+    width: 100%;
+	border-color: inherit;
+	font-size: inherit;
+	background-color: inherit;
+}
+
+#middle-offset {
+  position: relative;
+  height: 100%;
+  border-color: inherit;
+  font-size: inherit;
+  background-color: inherit;
+}
+
+
+#page-header{
+    position: relative;
+    left: 0;
+    top: 0;
+	z-index: 50; 
+	background-color: inherit;
+	border-color: inherit;
+	font-size: inherit;
+}
+
+#page-header .sidetitle
+{
+  padding: 0 0.75em;
+  display: inline;
+  text-decoration: none;
+  line-height: 2.5em;
+  font-weight: 1000;
+}
+
+
+#toolbar{
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 15em;
+    height: 100%;
+	border-color: inherit;
+	font-size: inherit;
+	background-color: inherit;
+}
+
+
+#page-table {
+    position: absolute;
+    left:  15em;
+    top: 0;
+    float: right;
+    width: calc(100% -  15em);
+    height: 100%;
+	overflow-y: auto;
+	scrollbar-width: thin;
+	border-color: inherit;
+	font-size: inherit;
+	background-color: inherit;
+	border-left: 1px dashed;
 }
 
 #page-container {
@@ -41,52 +109,59 @@ body {
   display: none;
 }
 
-#page-header {
-  border-color: inherit;
-}
 
-#toolbar, #toolbar-mobile {
+#toolbar-mobile {
   border-bottom: 1px dashed;
   border-color: inherit;
   position: relative;
 }
 
 #nav-container {
-  line-height: 1.5em;
-  padding: 0.25em 0;
-}
+  height: calc(100% - 2.5em);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  width:100%;
+  font-size: inherit;
+  background-color: inherit;
+  border-color: inherit;
+ }
 
 #nav-container .nav-width-clip {
-  overflow: hidden;
+  overflow-x: hidden;
   margin: 0 2em 0 0em;
   position: relative;
+  width:100%;
 }
 
 #nav-list {
   display: inline;
   list-style-type: none;
-  line-height: 1.5em;
   transition-property: margin;
   transition-duration: 0.3s;
   transition-timing-function: ease-out;
+  width:100%;
+  font-size: inherit;
+  background-color: inherit;
+  border-color: inherit;
 }
 
-#nav-list li {
-  white-space: nowrap;
-  display: inline; 
-}
 
 #nav-list li a, #nav-list li a:link {
   padding: 0 0.75em;
   display: inline;
   text-decoration: none;
-  border-right: 1px dashed;
-  line-height: 1.5em;
+  line-height: 2em;
 }
 
-#nav-list li a:hover {
+#nav-list li:hover a{
   cursor: pointer;
   text-decoration: underline;
+}
+
+
+#nav-list  li.active  {
+border: 2px solid;
+border-radius: 5px;
 }
 
 #nav-list li.active a {
@@ -122,9 +197,8 @@ body {
 }
 
 #nav-drop-indicator-bar {
-  background-color: #e6ac32; 
-  width: 3px;
-  height: 1.5em;
+  width: 100%;
+  height: 3px;
   position: absolute;
   display: none;
 }
@@ -150,11 +224,11 @@ body {
 }
 
 #mpage-menu {
-  width: 1.5em;
-  height: 1.5em;
+  width: 2em;
+  height: 2em;
   position: absolute;
   display: block;
-  top: 0.25em;
+  top: 0.5em;
   right: 0.5em;
   text-align: center;
   cursor: pointer;
@@ -325,7 +399,7 @@ ul.menu-list {
   top: 16px;
   margin: 0;
   padding: 0;
-  z-index: 10;
+  z-index: 100;
   width: 150px;
   text-align: center;
   display: none;
@@ -388,3 +462,4 @@ div.feedConfig input[type="text"] {
   text-decoration: underline;
   cursor: pointer;
 }
+
