@@ -723,9 +723,7 @@ let View = {
     }
 
     styles.push('body { background-color: ' + colors.background + '; border-color: ' + colors.border + '; }');
-    if (pref.stickyHeader) {
-      styles.push('#page-header { position: sticky; top: 0;  background-color: ' + colors.background + '; }');
-    }
+    styles.push('#page-header { position: sticky; top: 0;  background-color: ' + colors.background + '; }');
 
 	styles.push('#page-container background-color: ' + colors.background + '; }');
 	styles.push('#toolbar background-color: ' + colors.background + '; }');
