@@ -22,7 +22,7 @@ let DragAndDrop = {
         for (var n=event.currentTarget.lastChild; n; n=n.previousSibling) {
           if (n.nodeName.toLowerCase() == 'li' && 
             n.getAttribute('id').indexOf(prefix) != -1) {
-              if ((event.layerX + 1 - n.offsetLeft) / n.offsetWidth < 0.5) {
+              if ((event.layerY + 1 - n.offsetTop) / n.offsetHeight < 0.5) {
                 refEl = n;
               } else
                 break;
@@ -30,9 +30,9 @@ let DragAndDrop = {
         }
         if (refEl != indicatorBarEl.nextSibling) {
           if (refEl == null)
-            indicatorBarEl.style.left = (event.currentTarget.lastChild.offsetLeft + event.currentTarget.lastChild.offsetWidth - 1) + 'px';
+            indicatorBarEl.style.top = (event.currentTarget.lastChild.offsetTop + event.currentTarget.lastChild.offsetHeight - 1) + 'px';
           else
-            indicatorBarEl.style.left = (refEl.offsetLeft - 1) + 'px';
+            indicatorBarEl.style.top = (refEl.offsetTop - 1) + 'px';
           indicatorBarEl._mpagespace = {refEl: refEl};
         }
 
@@ -43,8 +43,8 @@ let DragAndDrop = {
         for (var n=event.currentTarget.lastChild; n; n=n.previousSibling) {
           if (n.nodeName.toLowerCase() == 'li' && 
             n.getAttribute('id').indexOf(prefix) != -1 &&
-            event.layerX >= n.offsetLeft &&
-            event.layerX <= n.offsetLeft + n.offsetWidth) {
+            event.layerY >= n.offsetTop &&
+            event.layerY <= n.offsetTop + n.offsetHeight) {
               refEl = n;
               break;
           }

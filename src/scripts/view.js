@@ -336,7 +336,7 @@ let View = {
     row.appendChild(doc.createTextNode('Show'));
     var el = doc.createElement('input');
     el.className = 'entriesToShow';
-    el.placeholder = '5';
+    el.placeholder = '10';
     el.type = 'text';
     el.value = widget.entriesToShow;
     row.appendChild(el);
@@ -723,10 +723,16 @@ let View = {
     }
 
     styles.push('body { background-color: ' + colors.background + '; border-color: ' + colors.border + '; }');
-    if (pref.stickyHeader) {
-      styles.push('#page-header { position: sticky; top: 0;  background-color: ' + colors.background + '; }');
-    }
-    styles.push('#nav-list li a { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
+    styles.push('#page-header { position: sticky; top: 0;  background-color: ' + colors.background + '; }');
+
+	styles.push('#page-container background-color: ' + colors.background + '; }');
+	styles.push('#toolbar background-color: ' + colors.background + '; }');
+	
+    styles.push('#page-header a.sidetitle { color: ' + colors.title + '; }');
+    styles.push('#nav-list li.active {  border-color: ' + colors.misc + '; }');
+    styles.push('#page-table {  border-color: ' + colors.border + '; }');
+
+    styles.push('#nav-list li a { color: ' + colors.link + '; }');
     styles.push('#nav-list li.first a { border-color: ' + colors.border + '; }');
     styles.push('#nav-list li.active a { color: ' + colors.misc + '; }');
     styles.push('#nav-action-left, #nav-action-right, #mpage-menu { color: ' + colors.misc + '; }');
@@ -820,12 +826,13 @@ let View = {
         item.setAttribute('draggable', 'true');
         item.addEventListener('dragstart', DragAndDrop.pageHandler.dragStart, false);
         item.addEventListener('dragend', DragAndDrop.pageHandler.dragEnd, false);
+		item.addEventListener('click', self.prepareOpenPageFunc(p.id), false);
       }
       if (j == 0) className = className + ' first';
       item.setAttribute('class', className);
       let link = doc.createElement('a');
       link.appendChild(doc.createTextNode(p.title));
-      link.addEventListener('click', self.prepareOpenPageFunc(p.id), false);
+
       item.appendChild(link);
       menu.appendChild(item);
     }
