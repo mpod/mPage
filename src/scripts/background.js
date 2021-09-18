@@ -18,6 +18,9 @@ let Main = {
  *
  * content -> background
  *   * 'notifications': sends update of notification flag to the background script
+ *
+ * mpage -> background
+ *   * 'fetch-feed': triggers download of a feed
  */
 
 browser.browserAction.onClicked.addListener(function() {
@@ -58,7 +61,16 @@ function handleMessage(request, sender, sendResponse) {
   } else if (request && request.cmd === 'notifications') {
     showNotifications = request.value;
     updateWithAvailableFeeds(null);
+  } else if (request && request.cmd === 'fetch-feed') {
+    return fetch(request.url)
+      .then(response => {
+        if (!response.ok) {
+          return Promise.reject(new Error(`Failed to fetch ${target} with status code ${response.status}!`));
+        } else if (response.ok) 
+          return Promise.resolve(response.text());
+      })
   }
+  return false;
 }
 
 browser.runtime.onMessage.addListener(handleMessage);

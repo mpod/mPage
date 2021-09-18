@@ -179,16 +179,16 @@ Feed.prototype = {
         console.log('feed.load: ajax error handler executed for widget ' + self.id + '.');
     }
 
-    var processHandler = function(request) {
+    var processHandler = function(response) {
       try {
         self.entries = [];
-        self.process(request.responseText);
+        self.process(response);
         self.state = 'LOADED';
         window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'widget-loaded:' + self.id}));
       } catch (e) {
         console.log('feed.load: First level error on widget ' + self.id + ' - ' + e.message);
         try {
-          self.extractFeeds(request.responseText);
+          self.extractFeeds(response);
           self.state = 'LOADED';
           window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'widget-loaded:' + self.id}));
         } catch (e) {
@@ -202,7 +202,7 @@ Feed.prototype = {
 
     this.state = 'LOADING';
     this.errorMessage = null;
-    Ajax.load(this.url, processHandler, {errorHandler: errorHandler});  
+    browser.runtime.sendMessage({cmd: 'fetch-feed', url: this.url}).then(processHandler, errorHandler);
   },
 
   extractFeeds: function(htmlText) {

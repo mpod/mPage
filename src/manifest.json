@@ -2,13 +2,13 @@
   "applications": {
     "gecko": {
       "id": "{b9ca4756-a187-4a50-b350-7c860e9a863d}",
-      "strict_min_version": "63.0"
+      "strict_min_version": "80.0"
     }
   },
   "description": "Simple dashboard-like feed reader",
   "manifest_version": 2,
   "name": "mPage",
-  "version": "1.26",
+  "version": "1.27",
   "author": "Matija Podravec",
   "homepage_url": "https://github.com/mpod/mpage",
   "permissions": [
