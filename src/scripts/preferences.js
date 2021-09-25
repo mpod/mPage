@@ -34,7 +34,8 @@ let Preferences = function(config) {
       family: 'Verdana,sans-serif'
     },
     layout: {
-      numberOfPanels: 3
+      numberOfPanels: 3,
+      menu: 'sticky-header'
     },
     customCss: null,
     lock: false,
@@ -61,8 +62,8 @@ let Preferences = function(config) {
   this.notifications = config.notifications == null ? defaultConfig.notifications : config.notifications === true;
 
   this.layout = {
-    numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ? 
-      defaultConfig.layout.numberOfPanels : parseInt(config.layout.numberOfPanels)
+    numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ?  defaultConfig.layout.numberOfPanels : parseInt(config.layout.numberOfPanels),
+    menu: (!config.layout || ['sticky-header', 'sidebar'].indexOf(config.layout.menu) == -1) ? defaultConfig.layout.menu : config.layout.menu
   }
 }
 
@@ -82,7 +83,7 @@ Preferences.prototype = {
       spacing: this.spacing,
       comments: this.comments,
       globalVisitedFilter: this.globalVisitedFilter,
-      notifications: this.notifications
+      notifications: this.notifications,
     }
   },
 
@@ -113,6 +114,7 @@ Preferences.prototype = {
   setLayout: function(layout) {
     var config = this.getConfig();
     config.layout.numberOfPanels = parseInt(layout.numberOfPanels);
+    config.layout.menu = layout.menu;
 
     return new Preferences(config);
   },
@@ -173,6 +175,7 @@ Preferences.prototype = {
     return new Preferences(config);
   },
 
+
   serialize: function() {
     var str = [];
 
@@ -196,6 +199,7 @@ Preferences.prototype = {
     str.push(this.globalVisitedFilter);
     str.push(this.reader);
     str.push(this.notifications);
+    str.push(this.lauout.menu);
 
     return str.join('|');
   },
@@ -245,6 +249,8 @@ Preferences.prototype = {
       config.reader = str[18] === 'true';
     if (str.length >= 20) 
       config.notifications = str[19] === 'true';
+    if (str.length >= 21) 
+      config.layout.menu = ['sticky-header', 'sidebar'].find(str[20]) == -1 ? config.layout.menu : str[20];
 
     return new Preferences(config);
   }

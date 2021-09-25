@@ -13,6 +13,7 @@ let OptionsForm = {
     OptionsForm.setSelectElValue('fontSize', pref.getConfig().font.size);
     OptionsForm.setSelectElValue('entrySpacing', pref.getConfig().spacing);
     OptionsForm.setSelectElValue('numberOfPanels', pref.getConfig().layout.numberOfPanels);
+    OptionsForm.setSelectElValue('menuLayout', pref.getConfig().layout.menu);
     document.getElementById('lock').checked = pref.getConfig().lock;
     document.getElementById('favicon').checked = pref.getConfig().favicon;
     document.getElementById('reader').checked = pref.getConfig().reader;
@@ -29,6 +30,7 @@ let OptionsForm = {
     document.getElementById("favicon").addEventListener('change', OptionsForm.apply);
     document.getElementById("reader").addEventListener('change', OptionsForm.apply);
     document.getElementById("notifications").addEventListener('change', OptionsForm.apply);
+    document.getElementById("menuLayout").addEventListener('change', OptionsForm.apply);
     document.getElementById('numberOfPanels').addEventListener('change', OptionsForm.apply);
     document.getElementById('comments').addEventListener('change', OptionsForm.apply);
     document.getElementById('reset-button').addEventListener('click', OptionsForm.reset);
@@ -133,6 +135,7 @@ let OptionsForm = {
     config.reader = document.getElementById('reader').checked;
     config.notifications = document.getElementById('notifications').checked;
     config.comments = document.getElementById('comments').checked;
+    config.layout.menu = OptionsForm.getSelectElValue('menuLayout');
     config.layout.numberOfPanels = OptionsForm.getSelectElValue('numberOfPanels');
 
     var pref = new Preferences(config);
