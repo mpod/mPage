@@ -75,7 +75,7 @@ let View = {
     var doc = View.getDoc();
     console.log('init view');
 
-    var menu = doc.getElementById('nav-list');
+    var menu = doc.getElementById('page-menu-list');
     menu.addEventListener('dragover', DragAndDrop.pageHandler.dragOver, false);
     menu.addEventListener('drop', DragAndDrop.pageHandler.drop, false);
     menu.addEventListener('dragenter', DragAndDrop.pageHandler.dragEnter, false);
@@ -723,16 +723,17 @@ let View = {
     }
 
     styles.push('body { background-color: ' + colors.background + '; border-color: ' + colors.border + '; }');
-    if (pref.stickyHeader) {
-      styles.push('#page-header { position: sticky; top: 0;  background-color: ' + colors.background + '; }');
-    }
-    styles.push('#nav-list li a { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
-    styles.push('#nav-list li.first a { border-color: ' + colors.border + '; }');
-    styles.push('#nav-list li.active a { color: ' + colors.misc + '; }');
-    styles.push('#nav-action-left, #nav-action-right, #mpage-menu { color: ' + colors.misc + '; }');
+    styles.push('#menu-container { position: sticky; top: 0;  background-color: ' + colors.background + '; border-color: ' + colors.border + ' }');
+    styles.push('.sticky-header #page-menu-list li { border-color: ' + colors.border + '; }');
+    styles.push('.sidebar #menu-container { border-color: ' + colors.border + '; }');
+    styles.push('.sidebar #page-menu { border-color: ' + colors.border + '; }');
+    styles.push('#page-menu-list li a { color: ' + colors.link + '; }');
+    styles.push('#page-menu-list li.active a { color: ' + colors.misc + '; }');
+    styles.push('#action-menu { color: ' + colors.misc + '; }');
     styles.push('#panel-container td.column { border-color: ' + colors.border + '; }');
-    styles.push('#toolbar-mobile .nav-container div { color: ' + colors.misc + '; }');
-    styles.push('#toolbar-mobile .active-page, #toolbar-mobile .mpage-menu-mobile { color: ' + colors.misc + '; }');
+    styles.push('#page-menu-mobile { border-color: ' + colors.border + '; }');
+    styles.push('#page-menu-mobile .nav-container div { color: ' + colors.misc + '; }');
+    styles.push('#page-menu-mobile .active-page, #page-menu-mobile .action-menu-mobile { color: ' + colors.misc + '; }');
     styles.push('div.widget { border-color: ' + colors.border + '; }');
     styles.push('div.header a, div.header .action { color: ' + colors.title + '; }');
     styles.push('div.body li { color: ' + colors.link + '; }');
@@ -791,10 +792,12 @@ let View = {
     var self = View;
     var doc = self.getDoc();
     if (self.isNarrowScreen()) {
-      doc.getElementById('toolbar-mobile').style.display = 'block';
+      doc.getElementById('page-menu-mobile').style.display = 'block';
       self.createToolbarMobile();
     } else {
-      doc.getElementById('toolbar').style.display = 'block';
+      var pref = mPage.getModel().getPreferences();
+      doc.getElementById('menu-container').style.display = 'block';
+      doc.getElementById('container').className = pref.layout.menu;
       self.createToolbarStandard();
     }
   },
@@ -806,7 +809,7 @@ let View = {
     if (model == null) {
       return;
     }
-    var menu = doc.getElementById('nav-list');
+    var menu = doc.getElementById('page-menu-list');
     self.removeChildren(menu);
 
     var activePage = model.getPage();
@@ -839,7 +842,7 @@ let View = {
     if (model == null) {
       return;
     }
-    var toolbarEl = doc.getElementById('toolbar-mobile');
+    var toolbarEl = doc.getElementById('page-menu-mobile');
 
     var createPageLink = function(page) {
       var el = doc.createElement('a');
@@ -878,10 +881,10 @@ let View = {
     var self = View;
     var doc = self.getDoc();
     if (self.isNarrowScreen()) {
-      doc.getElementById('toolbar-mobile').style.display = 'block';
+      doc.getElementById('page-menu-mobile').style.display = 'block';
       self.createToolbarMenuMobile();
     } else {
-      doc.getElementById('mpage-menu').style.display = 'block';
+      doc.getElementById('action-menu').style.display = 'block';
       self.createToolbarMenuStandard();
     }
   },
@@ -891,9 +894,9 @@ let View = {
     var doc = self.getDoc();
     var el, listEl, itemEl, linkEl
 
-    el = doc.getElementById('mpage-menu');
+    el = doc.getElementById('action-menu');
     el = self.removeAllEventHandlers(el);
-    listEl = doc.getElementById('mpage-menu-list');
+    listEl = doc.getElementById('action-menu-list');
     self.removeChildren(listEl);
 
     var preventHiding = false;
@@ -916,8 +919,8 @@ let View = {
   createToolbarMenuMobile: function(widget) {
     var self = View;
     var doc = self.getDoc();
-    var toolbarEl = doc.getElementById('toolbar-mobile');
-    var buttonEl = toolbarEl.querySelector('.mpage-menu-mobile');
+    var toolbarEl = doc.getElementById('page-menu-mobile');
+    var buttonEl = toolbarEl.querySelector('.action-menu-mobile');
     buttonEl = self.removeAllEventHandlers(buttonEl);
     var menuEl = toolbarEl.querySelector('.menu')
     self.removeChildren(menuEl);

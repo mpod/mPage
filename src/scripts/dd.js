@@ -15,6 +15,8 @@ let DragAndDrop = {
       var prefix = DragAndDrop.pageHandler.prefixEl;
       var doc = View.getDoc();
       var refEl = null;
+      var pageLayout = doc.getElementById('container').className;
+      if (['sidebar', 'sticky-header'].indexOf(pageLayout) == -1) pageLayout = 'sticky-header';
 
       if (event.dataTransfer.types.indexOf('application/mpage-page') != -1) {
         var indicatorBarEl = doc.getElementById('nav-drop-indicator-bar'); 
@@ -22,15 +24,21 @@ let DragAndDrop = {
         for (var n=event.currentTarget.lastChild; n; n=n.previousSibling) {
           if (n.nodeName.toLowerCase() == 'li' && 
             n.getAttribute('id').indexOf(prefix) != -1) {
-              if ((event.layerX + 1 - n.offsetLeft) / n.offsetWidth < 0.5) {
+              if (pageLayout == 'sidebar' && (event.layerY + 1 - n.offsetTop) / n.offsetHeight < 0.5) {
+                refEl = n;
+              } else if (pageLayout == 'sticky-header' && (event.layerX + 1 - n.offsetLeft) / n.offsetWidth < 0.5) {
                 refEl = n;
               } else
                 break;
           }
         }
         if (refEl != indicatorBarEl.nextSibling) {
-          if (refEl == null)
+          if (pageLayout == 'sidebar' && refEl == null) 
+            indicatorBarEl.style.top = (event.currentTarget.lastChild.offsetTop + event.currentTarget.lastChild.offsetHeight - 1) + 'px';
+          else if (refEl == null)
             indicatorBarEl.style.left = (event.currentTarget.lastChild.offsetLeft + event.currentTarget.lastChild.offsetWidth - 1) + 'px';
+          else if (pageLayout == 'sidebar')
+            indicatorBarEl.style.top = (refEl.offsetTop - 1) + 'px';
           else
             indicatorBarEl.style.left = (refEl.offsetLeft - 1) + 'px';
           indicatorBarEl._mpagespace = {refEl: refEl};
@@ -41,7 +49,15 @@ let DragAndDrop = {
       } else if (event.dataTransfer.types.indexOf('application/mpage-widget') != -1 ||
                  event.dataTransfer.types.indexOf('text/plain') != -1) {
         for (var n=event.currentTarget.lastChild; n; n=n.previousSibling) {
-          if (n.nodeName.toLowerCase() == 'li' && 
+          if (pageLayout == 'sidebar' && 
+            n.nodeName.toLowerCase() == 'li' && 
+            n.getAttribute('id').indexOf(prefix) != -1 &&
+            event.layerY >= n.offsetTop &&
+            event.layerY <= n.offsetTop + n.offsetHeight) {
+              refEl = n;
+              break;
+          } else if (pageLayout == 'sticky-header' && 
+            n.nodeName.toLowerCase() == 'li' && 
             n.getAttribute('id').indexOf(prefix) != -1 &&
             event.layerX >= n.offsetLeft &&
             event.layerX <= n.offsetLeft + n.offsetWidth) {
@@ -80,7 +96,7 @@ let DragAndDrop = {
         var refEl = indicatorBarEl._mpagespace.refEl;
         indicatorBarEl.style.display = 'none';
         el.parentNode.insertBefore(el, refEl);
-        if (refEl.className == 'first') {
+        if (refEl && refEl.className == 'first') {
           refEl.className = '';
           el.className = 'first';
         }
