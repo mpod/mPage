@@ -2,7 +2,7 @@ html {
   min-height: 100vh;
 }
 
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,tr,table { 
+html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,tr,table { 
 	margin:0;
 	padding:0;
 }
@@ -26,15 +26,22 @@ body {
   border-collapse: collapse;
   padding: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   font-size: inherit;
 }
 
 .sidebar #page-container {
   flex: 1;
   overflow: auto;
+  height: 100vh;
+  scrollbar-width: thin;
 }
 
+.sticky-header #page-container {
+  overflow: auto;
+  height: calc(100vh - 4em);
+  scrollbar-width: thin;
+}
 #panel-container td.column {
   height: 100%;
   padding: 0 0 2em 0;
@@ -55,24 +62,30 @@ body {
 }
 
 .sidebar #menu-container {
-  width: 150px;
+  width: 250px;
   display: flex;
   flex-direction: column;
   border-right: 1px dashed;
-
 }
 
-#page-menu, #page-menu-mobile {
+#page-menu-mobile {
   position: relative;
   overflow: hidden;
   line-height: 1.5em;
 }
 
+#page-menu {
+  position: relative;
+  overflow: auto;
+  scrollbar-width: thin;
+  line-height: 1.5em;
+}
 .sidebar #page-menu {
   flex-grow: 1;
   margin-top: 2em;
   padding: 0.75em;
   border-top: 1px dashed;
+  height:calc(100vh - 4em);
 }
 
 .sticky-header #page-menu {
@@ -151,11 +164,11 @@ body {
 }
 
 .sidebar #nav-drop-indicator-bar {
-  width: 120px;
+  width: 220px;
   height: 3px;
 }
 
-.sticky-heder #nav-drop-indicator-bar {
+.sticky-header #nav-drop-indicator-bar {
   width: 3px;
   height: 1.5em;
 }
