@@ -68,6 +68,18 @@ body {
   border-right: 1px dashed;
 }
 
+.sticky-header #menu-container #page-menu,
+.sticky-header #menu-container #page-menu #page-menu-list
+{
+transform:rotateX(180deg);
+}
+
+.sidebar #menu-container #page-menu,
+.sidebar #menu-container #page-menu #page-menu-list
+{
+transform: scaleX(-1);
+}
+
 #page-menu-mobile {
   position: relative;
   overflow: hidden;
