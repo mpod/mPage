@@ -199,7 +199,7 @@ Preferences.prototype = {
     str.push(this.globalVisitedFilter);
     str.push(this.reader);
     str.push(this.notifications);
-    str.push(this.lauout.menu);
+    str.push(this.layout.menu);
 
     return str.join('|');
   },
