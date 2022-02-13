@@ -19,6 +19,7 @@ let OptionsForm = {
     document.getElementById('reader').checked = pref.getConfig().reader;
     document.getElementById('comments').checked = pref.getConfig().comments;
     document.getElementById('notifications').checked = pref.getConfig().notifications;
+    document.getElementById('orderedList').checked = pref.getConfig().orderedList;
   },
 
   addListeners: function() {
@@ -30,6 +31,7 @@ let OptionsForm = {
     document.getElementById("favicon").addEventListener('change', OptionsForm.apply);
     document.getElementById("reader").addEventListener('change', OptionsForm.apply);
     document.getElementById("notifications").addEventListener('change', OptionsForm.apply);
+    document.getElementById("orderedList").addEventListener('change', OptionsForm.apply);
     document.getElementById("menuLayout").addEventListener('change', OptionsForm.apply);
     document.getElementById('numberOfPanels').addEventListener('change', OptionsForm.apply);
     document.getElementById('comments').addEventListener('change', OptionsForm.apply);
@@ -134,6 +136,7 @@ let OptionsForm = {
     config.favicon = document.getElementById('favicon').checked;
     config.reader = document.getElementById('reader').checked;
     config.notifications = document.getElementById('notifications').checked;
+    config.orderedList = document.getElementById('orderedList').checked;
     config.comments = document.getElementById('comments').checked;
     config.layout.menu = OptionsForm.getSelectElValue('menuLayout');
     config.layout.numberOfPanels = OptionsForm.getSelectElValue('numberOfPanels');

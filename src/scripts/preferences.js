@@ -45,6 +45,7 @@ let Preferences = function(config) {
     reader: false,
     comments: true,
     notifications: true,
+    orderedList: false,
     spacing: '0.375em' 
   };
   this.schemeType = ['dark', 'light'].indexOf(config.schemeType) == -1 ? defaultConfig.schemeType : config.schemeType;
@@ -60,6 +61,7 @@ let Preferences = function(config) {
   this.spacing = config.spacing || defaultConfig.spacing; 
   this.globalVisitedFilter = config.globalVisitedFilter || defaultConfig.globalVisitedFilter;
   this.notifications = config.notifications == null ? defaultConfig.notifications : config.notifications === true;
+  this.orderedList = config.orderedList == null ? defaultConfig.orderedList : config.orderedList === true;
 
   this.layout = {
     numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ?  defaultConfig.layout.numberOfPanels : parseInt(config.layout.numberOfPanels),
@@ -84,97 +86,9 @@ Preferences.prototype = {
       comments: this.comments,
       globalVisitedFilter: this.globalVisitedFilter,
       notifications: this.notifications,
+      orderedList: this.orderedList,
     }
   },
-
-  setFont: function(family, size) {
-    var config = this.getConfig();
-    config.font.size = size;
-    config.font.family = family;
-
-    return new Preferences(config);
-  },
-
-  setColorScheme: function(scheme) {
-    var config = this.getConfig();
-    config.schemeType = scheme.schemeType;
-    config.schemeName = config.schemeName;
-    config.colors = scheme.colors;
-
-    return new Preferences(config);
-  },
-
-  setCustomCss: function(customCss) {
-    var config = this.getConfig();
-    config.customCss = customCss
-
-    return new Preferences(config);
-  },
-
-  setLayout: function(layout) {
-    var config = this.getConfig();
-    config.layout.numberOfPanels = parseInt(layout.numberOfPanels);
-    config.layout.menu = layout.menu;
-
-    return new Preferences(config);
-  },
-
-  setLock: function(lock) {
-    var config = this.getConfig();
-    config.lock = lock;
-
-    return new Preferences(config);
-  },
-
-  setToolbar: function(toolbar) {
-    var config = this.getConfig();
-    config.toolbar = toolbar;
-
-    return new Peferences(config);
-  },
-
-  setFavicon: function(favicon) {
-    var config = this.getConfig();
-    config.favicon = favicon;
-
-    return new Preferences(config);
-  },
-
-  setComments: function(comments) {
-    var config = this.getConfig();
-    config.comments = comments;
-
-    return new Preferences(config);
-  },
-
-  setReader: function(reader) {
-    var config = this.getConfig();
-    config.reader = reader;
-
-    return new Preferences(config);
-  },
-
-  setSpacing: function(spacing) {
-    var config = this.getConfig();
-    config.spacing = spacing;
-
-    return new Preferences(config);
-  },
-
-  setGlobalVisitedFilter: function(globalVisitedFilter) {
-    var config = this.getConfig();
-    config.globalVisitedFilter = globalVisitedFilter;
-
-    return new Preferences(config);
-  },
-
-  setFeedsDiscoveryNotification: function(notifications) {
-    var config = this.getConfig();
-    config.notifications = notifications;
-
-    return new Preferences(config);
-  },
-
 
   serialize: function() {
     var str = [];
@@ -200,6 +114,7 @@ Preferences.prototype = {
     str.push(this.reader);
     str.push(this.notifications);
     str.push(this.layout.menu);
+    str.push(this.orderedList);
 
     return str.join('|');
   },
@@ -251,6 +166,8 @@ Preferences.prototype = {
       config.notifications = str[19] === 'true';
     if (str.length >= 21) 
       config.layout.menu = ['sticky-header', 'sidebar'].find(str[20]) == -1 ? config.layout.menu : str[20];
+    if (str.length >= 22)
+      config.orderedList = str[21] === 'true';
 
     return new Preferences(config);
   }

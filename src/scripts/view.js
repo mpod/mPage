@@ -490,8 +490,12 @@ let View = {
   createListOfFeeds: function(entries) {
     var self = View;
     var doc = self.getDoc();
-    var listEl = doc.createElement('ul');
     var model = mPage.getModel();
+    var listEl;
+    if (model.getPreferences().orderedList)
+      listEl = doc.createElement('ol');
+    else
+      listEl = doc.createElement('ul');
 
     listEl.className = 'feeds';
     for (var i=0; i<entries.length; i++) {
