@@ -305,9 +305,9 @@ let View = {
 
     var row, el;
     row = doc.createElement('div');
-    row.appendChild(doc.createTextNode('Show within'));
+    row.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.showwithin")));
     el = doc.createElement('input');
-    el.placeholder = 'infinite';
+    el.placeholder = browser.i18n.getMessage("config.view.infinite");
     el.type = 'text';
     el.className = 'hoursFilter';
     if (widget.hoursFilter > 0)
@@ -320,11 +320,11 @@ let View = {
     el.className = 'daysOrHours';
     var optEl = doc.createElement('option');
     optEl.value = 'hours';
-    optEl.appendChild(doc.createTextNode('hours'));
+    optEl.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.hours")));
     el.appendChild(optEl);
     optEl = doc.createElement('option');
     optEl.value = 'days';
-    optEl.appendChild(doc.createTextNode('days'));
+    optEl.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.days")));
     el.appendChild(optEl);
     if (widget.hoursFilter % 24 == 0) {
       el.selectIndex = 1;
@@ -333,14 +333,14 @@ let View = {
     configEl.appendChild(row);
 
     row = doc.createElement('div');
-    row.appendChild(doc.createTextNode('Show'));
+    row.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.show")));
     var el = doc.createElement('input');
     el.className = 'entriesToShow';
     el.placeholder = '5';
     el.type = 'text';
     el.value = widget.entriesToShow;
     row.appendChild(el);
-    row.appendChild(doc.createTextNode('entries'));
+    row.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.entries")));
     configEl.appendChild(row);
 
     row = doc.createElement('div');
@@ -349,7 +349,7 @@ let View = {
     el.className = 'groupByDate';
     el.checked = widget.groupByDate;
     row.append(el);
-    row.appendChild(doc.createTextNode('Group by date'));
+    row.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.group")));
     configEl.appendChild(row);
 
     row = doc.createElement('div');
@@ -358,7 +358,7 @@ let View = {
     el.className = 'minimized';
     el.checked = widget.minimized;
     row.append(el);
-    row.appendChild(doc.createTextNode('Minimized'));
+    row.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.minimized")));
     configEl.appendChild(row);
 
     row = doc.createElement('div');
@@ -381,7 +381,7 @@ let View = {
     el.addEventListener('click', Controller.moveUp);
     row.appendChild(el);
 
-    el = createButtonEl('Apply');
+    el = createButtonEl(browser.i18n.getMessage("config.view.apply"));
     el.addEventListener('click', function(evt) {
       var widgetEl = self.findWidgetEl(widget);
       widgetEl.querySelector('.feedConfig').style.display = 'none';
@@ -411,7 +411,7 @@ let View = {
     });
     row.appendChild(el);
 
-    el = createButtonEl('Remove');
+    el = createButtonEl(browser.i18n.getMessage("config.view.remove"));
     el.addEventListener('click', Controller.remove);
     row.appendChild(el);
 
@@ -482,7 +482,7 @@ let View = {
     var doc = self.getDoc();
     var divEl = doc.createElement('div');
     divEl.setAttribute('class', 'loading');
-    var titleTextEl = doc.createTextNode(Utils.translate('loading.label'));
+    var titleTextEl = doc.createTextNode(browser.i18n.getMessage('loading.label'));
     divEl.appendChild(titleTextEl);
     return divEl;
   },
@@ -649,7 +649,7 @@ let View = {
     wrapperEl.className = 'available-feeds';
 
     var pEl = doc.createElement('p');
-    pEl.appendChild(doc.createTextNode(Utils.translate('subscribe.availableFeeds')));
+    pEl.appendChild(doc.createTextNode(browser.i18n.getMessage('subscribe.availableFeeds')));
     wrapperEl.appendChild(pEl);
 
     var selectEl = doc.createElement('select');
@@ -664,7 +664,7 @@ let View = {
     wrapperEl.appendChild(selectEl);
     var aEl = doc.createElement('a');
     aEl.className = 'button';
-    aEl.appendChild(doc.createTextNode(Utils.translate('subscribe.availableFeeds.continue')));
+    aEl.appendChild(doc.createTextNode(browser.i18n.getMessage('subscribe.availableFeeds.continue')));
     var divEl = doc.createElement('div');
     divEl.appendChild(aEl);
     wrapperEl.appendChild(divEl);
@@ -995,7 +995,7 @@ let View = {
       el1 = doc.createElement(itemTag);
       el2 = doc.createElement('a');
       el2.addEventListener('mousedown', actions[i].listener, false);
-      el2.appendChild(doc.createTextNode(Utils.translate(actions[i].label)));
+      el2.appendChild(doc.createTextNode(browser.i18n.getMessage(actions[i].label)));
       el1.appendChild(el2);
       containerEl.appendChild(el1);
     }

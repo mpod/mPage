@@ -221,8 +221,8 @@ Model.prototype = {
   deletePage: function(pageId) {
     if (this.config.pageOrder.length == 1) {
       console.log('model.deletePage: The last page.');
-      window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + Utils.translate('deletePage.error.message')}));
-      throw new Error(Utils.translate('deletePage.error.message'));
+      window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + browser.i18n.getMessage('deletePage.error.message')}));
+      throw new Error(browser.i18n.getMessage('deletePage.error.message'));
     }
 
     if (pageId == null) 
@@ -244,16 +244,16 @@ Model.prototype = {
   addPage: function(pageTitle, refPage) {
     if (pageTitle == '') {
       console.log('model.addPage: Page title cannot be an empty string.');
-      window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + Utils.translate('error.emptyName.message')}));
-      throw new Error(Utils.translate('error.emptyName.message'));
+      window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + browser.i18n.getMessage('error.emptyName.message')}));
+      throw new Error(browser.i18n.getMessage('error.emptyName.message'));
     }
     var pageOrder = this.getPageOrder();
     var refPageIdx = null;
     for (var i=0; i<pageOrder.length; i++) {
       if (this.getPage(pageOrder[i]).title == pageTitle) {
         console.log('model.addPage: Page with the same name already exists.');
-        window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + Utils.translate('addPage.error.message')}));
-        throw new Error(Utils.translate('addPage.error.message'));
+        window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + browser.i18n.getMessage('addPage.error.message')}));
+        throw new Error(browser.i18n.getMessage('addPage.error.message'));
       }
       if (refPage && pageOrder[i] == refPage.id) {
         refPageIdx = i;
@@ -285,8 +285,8 @@ Model.prototype = {
     for (var i=0; i<pageOrder.length; i++) {
       if (pageOrder[i] != pageId && this.getPage(pageOrder[i]).title == newTitle) {
         console.log('model.renamePage: Page with the same name already exists.');
-        window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + Utils.translate('renamePage.error.message')}));
-        throw new Error(Utils.translate('renamePage.error.message'));
+        window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + browser.i18n.getMessage('renamePage.error.message')}));
+        throw new Error(browser.i18n.getMessage('renamePage.error.message'));
       }
     }
     page.title = newTitle;

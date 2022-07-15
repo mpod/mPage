@@ -155,7 +155,7 @@ let OptionsForm = {
 
   importFromJson: function(evt) {
     if (!evt.target.files[0].name.endsWith('.json')) {
-      alert(Utils.translate('Only file with extension .json file can be imported here!'));
+      alert(browser.i18n.getMessage('options.form.alert'));
       return;
     }
     var reader = new FileReader();

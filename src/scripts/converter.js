@@ -87,7 +87,7 @@ let Converter = {
         }
       }
       if (statusCallback)
-        statusCallback(Utils.translate('converter.import.error'));
+        statusCallback(browser.i18n.getMessage("converter.import.error"));
       return;
     }
 
