@@ -102,8 +102,8 @@ transform: scaleX(-1);
 }
 
 .sticky-header #page-menu {
-  margin: 0 2em 0 0em;
-  padding: .25em 0;
+  margin: 0;
+  padding: 0;
 }
 
 #page-menu-mobile {
