@@ -9,7 +9,7 @@
   "default_locale": "en_US",
   "name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
-  "version": "1.31",
+  "version": "1.32",
   "author": "Matija Podravec",
   "homepage_url": "https://github.com/mpod/mpage",
   "permissions": [
