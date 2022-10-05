@@ -88,8 +88,6 @@
 "xmpage.opt.scheme.random":{"message":"Casuale"},
 "xmpage.opt.button.export":{"message":"Esportazione"},
 "xmpage.opt.stickyheader":{"message":"Barra superiore"},
-"xmpage.opt.button.import":{"message":"Importa"},
-"xmpage.opt.button.export":{"message":"Esporta"},
 "options.form.alert":{"message":"Solo il file con estensione .json può essere importato qui!"},
 "config.view.showwithin":{"message":"Mostra fino a"},
 "config.view.infinite":{"message":"Infinito"},
