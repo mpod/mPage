@@ -206,8 +206,8 @@ Page.prototype = {
     try {
       new URL(url);
     } catch(e) {
-      window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + Utils.translate('invalidUrl.message')}));
-      throw new Error(Utils.translate('invalidUrl.message'));
+      window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'alert:' + browser.i18n.getMessage('invalidUrl.message')}));
+      throw new Error(browser.i18n.getMessage('invalidUrl.message'));
     }
 
     var config = {

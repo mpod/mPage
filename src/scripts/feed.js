@@ -59,7 +59,7 @@ Feed.prototype = {
       if (this.errorMessage)
         return this.errorMessage;
       else
-        return Utils.translate('widget.error.message');
+        return browser.i18n.getMessage('widget.error.message');
     else
       return null;
   },
@@ -221,7 +221,7 @@ Feed.prototype = {
       if (endIndex != -1) {
         var attributes = htmlText.substr(index, endIndex - index).match(/\w+\s*=\s*("[^"]*")|('[^']*')/ig);
         attributes = attributes || [];
-        var title = Utils.translate('subscribe.noFeedTitle'), href = '', type = '';
+        var title = browser.i18n.getMessage('subscribe.noFeedTitle'), href = '', type = '';
         for (var i=0; i<attributes.length; i++) {
           var splitIdx = attributes[i].indexOf('=');
           if (splitIdx == -1) continue;
@@ -249,7 +249,7 @@ Feed.prototype = {
     }
 
     if (this.availableFeeds.length == 0) {
-      this.errorMessage = Utils.translate('subscribe.noAvailableFeeds');
+      this.errorMessage = browser.i18n.getMessage('subscribe.noAvailableFeeds');
 			throw new Error('No feeds found in HTML.');
     } else if (this.availableFeeds.length == 1) {
       this.set('url', this.availableFeeds[0].href); 

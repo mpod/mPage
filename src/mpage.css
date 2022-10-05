@@ -8,9 +8,9 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textar
 }
 
 body {
+    font-family: "Proxima Nova Regular","Helvetica Neue",Arial,Helvetica,sans-serif;    
   font-size: 13px;
-  line-height: 1.5em;
-  font-family: "Proxima Nova Regular","Helvetica Neue",Arial,Helvetica,sans-serif;
+    line-height: 1.5em;
   min-height: 100vh;
 }
 
@@ -42,7 +42,8 @@ body {
   height: calc(100vh - 4em);
   scrollbar-width: thin;
 }
-#panel-container td.column {
+
+#panel-container .column {
   height: 100%;
   padding: 0 0 2em 0;
   vertical-align: top;
@@ -95,14 +96,14 @@ transform: scaleX(-1);
 .sidebar #page-menu {
   flex-grow: 1;
   margin-top: 2em;
-  padding: 0.75em;
+  padding: 0 .75em;
   border-top: 1px dashed;
   height:calc(100vh - 4em);
 }
 
 .sticky-header #page-menu {
-  margin: 0 2em 0 0em;
-  padding: 0.25em 0;
+  margin: 0;
+  padding: 0;
 }
 
 #page-menu-mobile {
@@ -111,11 +112,18 @@ transform: scaleX(-1);
 
 #page-menu-list {
   list-style-type: none;
-  line-height: 1.5em;
 }
 
 #page-menu-list li {
   white-space: nowrap;
+}
+
+.sticky-header #page-menu-list {
+  line-height: 2em;
+}
+.sidebar #page-menu-list {
+  line-height: 2em;
+  margin: 5px;
 }
 
 .sticky-header #page-menu-list li {
@@ -176,13 +184,15 @@ transform: scaleX(-1);
 }
 
 .sidebar #nav-drop-indicator-bar {
-  width: 220px;
+  width: 250px;
   height: 3px;
+  left: 0!important;
 }
 
 .sticky-header #nav-drop-indicator-bar {
   width: 3px;
-  height: 1.5em;
+  height: 2em;
+  top: 0!important;
 }
 
 #action-menu {

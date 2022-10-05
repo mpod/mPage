@@ -34,7 +34,7 @@ let mPage = {
   },
 
   addPage: function() {
-    var pageName = prompt(Utils.translate('addPage.message'));
+    var pageName = prompt(browser.i18n.getMessage('addPage.message'));
     if (pageName != null) {
       var model = mPage.getModel();
       var page = model.addPage(pageName, model.getPage());
@@ -43,21 +43,21 @@ let mPage = {
   },
 
   deletePage: function() {
-    if (confirm(Utils.translate('deletePage.message'))) {  
+    if (confirm(browser.i18n.getMessage('deletePage.message'))) {  
       mPage.getModel().deletePage(); 
     } 
   },
 
   renamePage: function() {
     var page = mPage.getModel().getPage();
-    var result = prompt(Utils.translate('renamePage.message'));   
+    var result = prompt(browser.i18n.getMessage('renamePage.message'));   
     if (result != null) {
       mPage.getModel().renamePage(page.id, result); 
     }
   },
 
   addFeed: function() {
-    var result = prompt(Utils.translate('addFeed.message'));   
+    var result = prompt(browser.i18n.getMessage('addFeed.message'));   
     if (result != null) {
       var page = mPage.getModel().getPage();
       var widget = page.createAndAddWidget(result, null, page.getFirstWidget());

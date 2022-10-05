@@ -9,14 +9,14 @@
     <link rel="stylesheet" type="text/css" href="/mpage.css"/>
     <style id="styles"></style>
     <link rel="icon" href="icons/icon.png"/>
-    <title>mPage</title>
+    <title data-i18n="xmpage.appName"></title>
   </head>
   <body>
     <img id="dd-feedback" src="icons/feedback.png" style="display:none;"/>
     <div id="message">
       <div class="dialog">
         <p></p>
-        <div><a href="#" class="button">Close</a></div>
+        <div><a href="#" class="button" data-i18n="xmpage.button.close"></a></div>
       </div>
     </div>
     <div id="container" class="sticky-header">
@@ -50,11 +50,11 @@
               <div class="group">
                 <table>
                   <tr>
-                    <td style="width: 160px;">Scheme type:</td>
+                    <td style="width: 160px;" data-i18n="xmpage.opt.scheme"></td>
                     <td>
                       <select id="schemeType">
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
+                        <option value="light" data-i18n="xmpage.opt.scheme.light"></option>
+                        <option value="dark" data-i18n="xmpage.opt.scheme.dark"></option>
                       </select>
                     </td>
                   </tr>
@@ -73,10 +73,10 @@
                   </tr>
                   <tr>
                     <td></td>
-                    <td><button id="shuffleColors">Random</button></td>
+                    <td><button id="shuffleColors" data-i18n="xmpage.opt.scheme.random"></button></td>
                   </tr>
                   <tr>
-                    <td>Font size:</td>
+                    <td data-i18n="xmpage.opt.fontsize"></td>
                     <td>
                       <select id="fontSize">
                         <option value="9">9</option>
@@ -108,51 +108,51 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>Spacing:</td>
+                    <td data-i18n="xmpage.opt.spacing"></td>
                     <td>
                       <select id="entrySpacing">
-                        <option value="0">None</option>
-                        <option value="0.375em">Small</option>
-                        <option value="0.75em">Medium</option>
-                        <option value="1.125em">Large</option>
+                        <option value="0" data-i18n="xmpage.opt.spacing.none"></option>
+                        <option value="0.375em" data-i18n="xmpage.opt.spacing.small"></option>
+                        <option value="0.75em" data-i18n="xmpage.opt.spacing.medium"></option>
+                        <option value="1.125em" data-i18n="xmpage.opt.spacing.large"></option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>Show favicons:</td>
+                    <td data-i18n="xmpage.opt.favicon"></td>
                     <td><input id="favicon" type="checkbox"/></td>
                   </tr>
                   <tr>
-                    <td>Open in reader:</td>
+                    <td data-i18n="xmpage.opt.openinreader"></td>
                     <td><input id="reader" type="checkbox"/></td>
                   </tr>
                   <tr>
-                    <td>Show link to comments:</td>
+                    <td data-i18n="xmpage.opt.comments"></td>
                     <td><input id="comments" type="checkbox"/></td>
                   </tr>
                   <tr class="not-for-mobile">
-                    <td>Lock elements on page:</td>
+                    <td data-i18n="xmpage.opt.lock"></td>
                     <td><input id="lock" type="checkbox"/></td>
                   </tr>
                   <tr class="not-for-mobile">
-                    <td>Notifications:</td>
+                    <td data-i18n="xmpage.opt.notifications"></td>
                     <td><input id="notifications" type="checkbox"/></td>
                   </tr>
                   <tr>
-                    <td>Numbered feeds:</td>
+                    <td data-i18n="xmpage.opt.numbered"></td>
                     <td><input id="orderedList" type="checkbox"/></td>
                   </tr>
                   <tr class="not-for-mobile">
-                    <td>Layout:</td>
+                    <td data-i18n="xmpage.opt.layout"></td>
                     <td>
                       <select id="menuLayout">
-                        <option value="sticky-header">Sticky header</option>
-                        <option value="sidebar">Sidebar</option>
+                        <option value="sticky-header" data-i18n="xmpage.opt.stickyheader"></option>
+                        <option value="sidebar" data-i18n="xmpage.opt.sidebar"></option>
                       </select>
                     </td>
                   </tr>
                   <tr class="not-for-mobile">
-                    <td>Number of panels:</td>
+                    <td data-i18n="xmpage.opt.panels"></td>
                     <td>
                       <select id="numberOfPanels">
                         <option value="2">2</option>
@@ -169,53 +169,48 @@
               <div class="group">
                 <table>
                   <tr>
-                    <td colspan="2">
-                      OPML is recommended format for transfering configuration between RSS readers (if supported by other reader).
-                    </td>
-                  </tr>
+                    <td colspan="2" data-i18n="xmpage.opt.opml"></td></tr>
                   <tr>
-                    <td style="width: 160px;">Import from OPML file:</td>
+                    <td style="width: 160px;" data-i18n="xmpage.opt.opml.import"></td>
                     <td>
                       <input type="file" id="import-file" accept=".opml" style="display:none"/>
-                      <button id="import-button">Import</button>
+                      <button id="import-button" data-i18n="xmpage.opt.button.import"></button>
                     </td>
                   </tr>
                   <tr>
-                    <td>Export to OPML file:</td>
-                    <td><button id="export-button">Export</button></td>
+                    <td data-i18n="xmpage.opt.opml.export"></td>
+                    <td><button id="export-button" data-i18n="xmpage.opt.button.export"></button></td>
                   </tr>
                 </table>
               </div>
               <div class="group">
                 <table>
                   <tr>
-                    <td colspan="2">
-                      JSON is recommended format for transfering configuration between computers.
-                    </td>
+                    <td colspan="2" data-i18n="xmpage.opt.json"></td>
                   </tr>
                   <tr>
-                    <td style="width: 160px;">Import from JSON file:</td>
+                    <td style="width: 160px;" data-i18n="xmpage.opt.json.import"></td>
                     <td>
                       <input type="file" id="import-json-file" accept="application/json" style="display:none"/>
-                      <button id="import-json-button">Import</button>
+                      <button id="import-json-button" data-i18n="xmpage.opt.button.import"></button>
                     </td>
                   </tr>
                   <tr>
-                    <td>Export to JSON file:</td>
-                    <td><button id="export-json-button">Export</button></td>
+                    <td data-i18n="xmpage.opt.json.export"></td>
+                    <td><button id="export-json-button" data-i18n="xmpage.opt.button.export"></button></td>
                   </tr>
                 </table>
               </div>
               <div class="group">
                 <table>
                   <tr>
-                    <td style="width: 160px;">Reset to default values:</td>
-                    <td><button id="reset-button">Reset</button></td>
+                    <td style="width: 160px;" data-i18n="xmpage.opt.reset"></td>
+                    <td><button id="reset-button" data-i18n="xmpage.opt.button.reset"></button></td>
                   </tr>
                 </table>
               </div>
               <div class="last">
-                <a href="#" class="button">Close</a>
+                <a href="#" class="button" data-i18n="xmpage.button.close"></a>
               </div>
             </td>
           </tr>

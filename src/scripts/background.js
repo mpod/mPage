@@ -25,6 +25,7 @@ let Main = {
 
 browser.browserAction.onClicked.addListener(function() {
   browser.tabs.create({url: '/mpage.xhtml'});
+  localization (); 
 });
 
 function getActiveTab() {
@@ -123,4 +124,3 @@ Promise
   .catch(error =>
     console.log(error)
   )
-

@@ -5,14 +5,19 @@
       "strict_min_version": "80.0"
     }
   },
-  "description": "Simple dashboard-like feed reader",
   "manifest_version": 2,
-  "name": "mPage",
+  "default_locale": "en_US",
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDesc__",
   "version": "1.31",
   "author": "Matija Podravec",
   "homepage_url": "https://github.com/mpod/mpage",
   "permissions": [
-    "<all_urls>", "storage", "downloads", "history", "tabs"
+    "<all_urls>",
+    "storage",
+    "downloads",
+    "history",
+    "tabs"
   ],
   "browser_action": {
     "browser_style": true,
@@ -23,12 +28,16 @@
   "background": {
     "scripts": [
       "scripts/background.js"
-    ] 
+    ]
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["scripts/extract-feeds.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "scripts/extract-feeds.js"
+      ]
     }
   ]
 }
