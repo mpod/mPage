@@ -578,11 +578,11 @@ let View = {
       if (entry.date) {
         if (entry.date === parseInt(entry.date, 10))
           entry.date = new Date(entry.date);
-        entry.date = new Date(
+          entry.date = new Date(
           entry.date.getFullYear(),
           entry.date.getMonth(),
           entry.date.getDate()
-        );
+          );
       } else
         entry.date = today;
       var key = entry.date.getTime();
@@ -591,22 +591,24 @@ let View = {
     }
     var groupsList = [];
     for (var key in groupsDict) {
+      var opt = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+      var la = browser.i18n.getMessage('@@ui_locale');
       var groupDate = new Date(parseInt(key));
       var daysAgo = Math.round((today.getTime() - groupDate.getTime()) / (1000 * 60 * 60 * 24));
-      var suffix = 'today';
+      var suffix = browser.i18n.getMessage('date.today');
       if (daysAgo == 0)
-        suffix = 'today';
+        suffix = browser.i18n.getMessage('date.today');
       else if (daysAgo == 1)
-        suffix = '1 day ago';
+        suffix = browser.i18n.getMessage('date.1dayago');
       else if (daysAgo == -1)
-        suffix = '1 day ahead';
+        suffix = browser.i18n.getMessage('date.1dayahead');
       else if (daysAgo < -1)
-        suffix = Math.abs(daysAgo) + ' days ahead';
+        suffix = Math.abs(daysAgo) + browser.i18n.getMessage('date.daysahead')
       else
-        suffix = daysAgo + ' days ago';
+        suffix = daysAgo + browser.i18n.getMessage('date.daysago');
       groupsList.push({
         date: groupDate,
-        dateLabel: groupDate.toDateString() + ' (' + suffix + ')',
+        dateLabel: groupDate.toLocaleDateString(la, opt) + ' (' + suffix + ')',
         entries: groupsDict[key]
       });
     }

@@ -98,7 +98,12 @@
 "config.view.group":{"message":"Raggruppa per data"},
 "config.view.minimized":{"message":"Minimizzato"},
 "config.view.apply":{"message":"Applica"},
-"config.view.remove":{"message":"Rimuovi"}
+"config.view.remove":{"message":"Rimuovi"},
+"date.1dayago":{"message":"1 giorno fa"},
+"date.1dayahead":{"message":"1 giorno avanti"},
+"date.daysago":{"message":" giorni fa"},
+"date.daysahead":{"message":" giorni avanti"},
+"date.today":{"message":"oggi"}
 }
 
 
