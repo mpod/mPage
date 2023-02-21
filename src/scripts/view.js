@@ -713,11 +713,18 @@ let View = {
     container.appendChild(el);
   },
 
+  shadeRGBColor: function(color, percent) {
+    var f=color.split(","),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=parseInt(f[0].slice(4)),G=parseInt(f[1]),B=parseInt(f[2]);
+    return "rgb("+(Math.round((t-R)*p)+R)+","+(Math.round((t-G)*p)+G)+","+(Math.round((t-B)*p)+B)+")";
+  },
+
   setStyles: function() {
     var self = View;
     var pref = mPage.getModel().getPreferences();
     var colors = pref.colors;
     var font = pref.font;
+    var scheme= pref.schemeType;
+    var fileCSS = '/css/' + pref.layout.style + '/mpage.css';
     var doc = self.getDoc();
     var el, styles = [];
     if (self.isNarrowScreen()) {
@@ -727,50 +734,66 @@ let View = {
       var showNotForMobile = 'table-row';
       var showForMobileOnly = 'none';
     }
-
-    styles.push('body { background-color: ' + colors.background + '; border-color: ' + colors.border + '; }');
-    styles.push('#menu-container { position: sticky; top: 0;  background-color: ' + colors.background + '; border-color: ' + colors.border + ' }');
-    styles.push('.sticky-header #page-menu-list li { border-color: ' + colors.border + '; }');
-    styles.push('.sidebar #menu-container { border-color: ' + colors.border + '; }');
-    styles.push('.sidebar #page-menu { border-color: ' + colors.border + '; }');
-    styles.push('#page-menu-list li a { color: ' + colors.link + '; }');
-    styles.push('#page-menu-list li.active a { color: ' + colors.misc + '; }');
-    styles.push('#action-menu { color: ' + colors.misc + '; }');
-    styles.push('#panel-container td.column { border-color: ' + colors.border + '; }');
-    styles.push('#page-menu-mobile { border-color: ' + colors.border + '; }');
-    styles.push('#page-menu-mobile .nav-container div { color: ' + colors.misc + '; }');
-    styles.push('#page-menu-mobile .active-page, #page-menu-mobile .action-menu-mobile { color: ' + colors.misc + '; }');
-    styles.push('div.widget { border-color: ' + colors.border + '; }');
-    styles.push('div.header a, div.header .action { color: ' + colors.title + '; }');
-    styles.push('div.body li { color: ' + colors.link + '; }');
-    styles.push('div.body a:visited{ color: ' + colors.visited + '; }');
-    styles.push('div.body .available-feeds p { color: ' + colors.link + '; }');
-    styles.push('div.body div.loading{ color: ' + colors.link + '; }');
-    styles.push('div.body div.error{ color: ' + colors.link + '; }');
-    styles.push('ul.menu-list { background-color: ' + colors.menu + ';');
-    styles.push('  box-shadow: 1px 1px ' + colors.border + '; }');
-    styles.push('ul.menu-list a { color: ' + colors.menuText + '; }');
-    styles.push('ul.menu-list a:hover { background-color: ' + colors.menuSel + '; }');
-    styles.push('#dd-placeholder { background-color: ' + colors.misc + '; }');
-    styles.push('#nav-drop-indicator-bar { background-color: ' + colors.misc + '; }');
-    styles.push('#message .dialog { background-color: ' + colors.menu + ';');
-    styles.push('  box-shadow: 1px 1px 1px ' + colors.border + ';');
-    styles.push('  color: ' + colors.menuText + '; }');
-    styles.push('#options-container { color: ' + colors.link + '; }');
-    styles.push('#options-container div.group { border-color: ' + colors.border + '; }');
-    styles.push('div a.button { color: ' + colors.misc + '; }');
-    styles.push('div.feedConfig { color: ' + colors.link + '; border-color: ' + colors.border + '; }');
-    styles.push('body { font-size: ' + font.size + 'px; }');
-    styles.push('body { font-family: ' + font.family + '; }');
-    styles.push('body tr.not-for-mobile { display: ' + showNotForMobile + '; }');
-    styles.push('body a.for-mobile-only { display: ' + showForMobileOnly  + '; }');
-    styles.push('button, select, input { font-size: ' + font.size + 'px; }');
-    styles.push('div.body li {margin-top: ' + pref.spacing + '; margin-bottom: ' + pref.spacing + ';}');
-
+    var ld = 1;
+    if (scheme="light") {
+      ld=-1;
+    } else {
+      ld=1;
+    } 
+    console.log(scheme + ' ' + ld);
+    
+    var p05 = 0.05 * ld;
+    var p10 = 0.10 * ld;
+    var p15 = 0.15 * ld;
+    var p20 = 0.20 * ld;
+    var p25 = 0.25 * ld;
+    var p30 = 0.30 * ld;
+    var p35 = 0.35 * ld;
+    var p40 = 0.40 * ld;
+    var p45 = 0.45 * ld;
+    var p50 = 0.50 * ld;
+    
+    styles.push(':root {--colors-background:' + colors.background + ';'); 
+    styles.push('       --colors-border:' + colors.border + ';');
+    styles.push('       --colors-link:' + colors.link + ';');
+    styles.push('       --colors-misc:' + colors.misc + ';');
+    styles.push('       --colors-menu:' + colors.menu + ';');  
+    styles.push('       --colors-menusel:' + colors.menuSel + ';'); 
+    styles.push('       --colors-menutext:' + colors.menuText + ';'); 
+    styles.push('       --colors-title:' + colors.title + ';'); 
+    styles.push('       --colors-visited:' + colors.visited + ';');  
+    styles.push('       --font-family:' + font.family + ';'); 
+    styles.push('       --font-size:' + font.size + 'px;'); 
+    styles.push('       --pref-spacing:' + pref.spacing + ';'); 
+    styles.push('       --showformobileonly:' + showForMobileOnly + ';'); 
+    styles.push('       --shownotformobile:' + showNotForMobile + ';');
+    styles.push('       --colors-background00:' + colors.background + ';');
+    styles.push('       --colors-background05:' + self.shadeRGBColor(colors.background, p05) + ';');
+    styles.push('       --colors-background10:' + self.shadeRGBColor(colors.background, p10) + ';');
+    styles.push('       --colors-background15:' + self.shadeRGBColor(colors.background, p15) + ';');
+    styles.push('       --colors-background20:' + self.shadeRGBColor(colors.background, p20) + ';');
+    styles.push('       --colors-background25:' + self.shadeRGBColor(colors.background, p25) + ';');
+    styles.push('       --colors-background30:' + self.shadeRGBColor(colors.background, p30) + ';');
+    styles.push('       --colors-background35:' + self.shadeRGBColor(colors.background, p35) + ';');
+    styles.push('       --colors-background40:' + self.shadeRGBColor(colors.background, p40) + ';');
+    styles.push('       --colors-background45:' + self.shadeRGBColor(colors.background, p45) + ';');
+    styles.push('       --colors-background50:' + self.shadeRGBColor(colors.background, p50) + ';}');
+    
     el = doc.getElementById('styles');
 
     while (el.hasChildNodes()) el.removeChild(el.firstChild);
     el.appendChild(doc.createTextNode(styles.join('\n')));
+
+    var mcss = doc.getElementById('mpagecss');
+    
+    if (mcss) mcss.parentNode.removeChild(mcss);
+           
+    mcss = doc.createElement('link');
+    mcss.setAttribute('id', 'mpagecss');
+    mcss.setAttribute('type', 'text/css');
+    mcss.setAttribute("href", fileCSS);
+    mcss.setAttribute('rel', 'stylesheet');
+    doc.getElementsByTagName('head')[0].appendChild(mcss);
 
     if (pref.customCss) {
       el = doc.getElementById('customCss');

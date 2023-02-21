@@ -35,7 +35,8 @@ let Preferences = function(config) {
     },
     layout: {
       numberOfPanels: 3,
-      menu: 'sticky-header'
+      menu: 'sticky-header',
+      style: '01'
     },
     customCss: null,
     lock: false,
@@ -65,7 +66,8 @@ let Preferences = function(config) {
 
   this.layout = {
     numberOfPanels: (!config.layout || isNaN(parseInt(config.layout.numberOfPanels))) ?  defaultConfig.layout.numberOfPanels : parseInt(config.layout.numberOfPanels),
-    menu: (!config.layout || ['sticky-header', 'sidebar'].indexOf(config.layout.menu) == -1) ? defaultConfig.layout.menu : config.layout.menu
+    menu: (!config.layout || ['sticky-header', 'sidebar'].indexOf(config.layout.menu) == -1) ? defaultConfig.layout.menu : config.layout.menu,
+    style: (!config.layout || ['01', '02', '03', '04', '05', '06', '07'].indexOf(config.layout.style) == -1) ? defaultConfig.layout.style : config.layout.style 
   }
 }
 
@@ -115,7 +117,8 @@ Preferences.prototype = {
     str.push(this.notifications);
     str.push(this.layout.menu);
     str.push(this.orderedList);
-
+    str.push(this.layout.style);
+    
     return str.join('|');
   },
 
@@ -168,6 +171,8 @@ Preferences.prototype = {
       config.layout.menu = ['sticky-header', 'sidebar'].find(str[20]) == -1 ? config.layout.menu : str[20];
     if (str.length >= 22)
       config.orderedList = str[21] === 'true';
+    if (str.length >= 23) 
+      config.layout.style = ['01', '02', '03', '04', '05', '06', '07'].find(str[22]) == -1 ? config.layout.style : str[22];
 
     return new Preferences(config);
   }

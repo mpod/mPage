@@ -103,7 +103,15 @@
 "date.1dayahead":{"message":"1 day ahead"},
 "date.daysago":{"message":" days ago"},
 "date.daysahead":{"message":" days ahead"},
-"date.today":{"message":"today"}
+"date.today":{"message":"today"},
+"xmpage.opt.style":{"message":"Style"},
+"xmpage.opt.style.01":{"message":"Classic"},
+"xmpage.opt.style.02":{"message":"Leaf"},
+"xmpage.opt.style.03":{"message":"Square"},
+"xmpage.opt.style.04":{"message":"Two Sides"},
+"xmpage.opt.style.05":{"message":"Neumorphic 1"},
+"xmpage.opt.style.06":{"message":"Neumorphic 2"},
+"xmpage.opt.style.07":{"message":"Neumorphic 3"}
 }
 
 
