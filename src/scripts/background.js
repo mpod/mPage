@@ -36,7 +36,6 @@ browser.browserAction.onClicked.addListener(function() {
         else
           return browser.tabs.update(tabs[0].id, {active: true});
       })
-  localization (); 
 });
 
 function getActiveTab() {
