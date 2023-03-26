@@ -735,10 +735,9 @@ let View = {
       var showForMobileOnly = 'none';
     }
     var ld = 1;
+    
     if (scheme=="light") {
-      ld=-1;
-    } else {
-      ld=1;
+      ld = -1;
     } 
     
     var p05 = 0.05 * ld;
