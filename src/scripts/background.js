@@ -24,8 +24,18 @@ let Main = {
  */
 
 browser.browserAction.onClicked.addListener(function() {
-  browser.tabs.create({url: '/mpage.xhtml'});
-  localization (); 
+    var mPageUrl = browser.runtime.getURL('/mpage.xhtml');
+    var mPageTab = browser
+      .tabs
+      .query({url: mPageUrl + '*', currentWindow: true})
+      .then(function(tabs) {
+        if (!tabs.length)
+          return browser
+            .tabs
+            .create({url: '/mpage.xhtml'})
+        else
+          return browser.tabs.update(tabs[0].id, {active: true});
+      })
 });
 
 function getActiveTab() {
@@ -34,7 +44,18 @@ function getActiveTab() {
 
 function handleMessage(request, sender, sendResponse) {
   if (request && request.cmd === 'open') {
-    browser.tabs.create({url: '/mpage.xhtml'});
+    var mPageUrl = browser.runtime.getURL('/mpage.xhtml');
+    var mPageTab = browser
+      .tabs
+      .query({url: mPageUrl + '*', currentWindow: true})
+      .then(function(tabs) {
+        if (!tabs.length)
+          return browser
+            .tabs
+            .create({url: '/mpage.xhtml'})
+        else
+          return browser.tabs.update(tabs[0].id, {active: true});
+      });
   } else if (request && request.cmd === 'add') {
     var mPageUrl = browser.runtime.getURL('/mpage.xhtml');
     var mPageTab = browser

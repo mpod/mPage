@@ -98,7 +98,20 @@
 "config.view.group":{"message":"Raggruppa per data"},
 "config.view.minimized":{"message":"Minimizzato"},
 "config.view.apply":{"message":"Applica"},
-"config.view.remove":{"message":"Rimuovi"}
+"config.view.remove":{"message":"Rimuovi"},
+"date.1dayago":{"message":"1 giorno fa"},
+"date.1dayahead":{"message":"1 giorno avanti"},
+"date.daysago":{"message":" giorni fa"},
+"date.daysahead":{"message":" giorni avanti"},
+"date.today":{"message":"oggi"},
+"xmpage.opt.style":{"message":"Stile"},
+"xmpage.opt.style.01":{"message":"Classico"},
+"xmpage.opt.style.02":{"message":"Foglia"},
+"xmpage.opt.style.03":{"message":"Riquadro"},
+"xmpage.opt.style.04":{"message":"Due lati"},
+"xmpage.opt.style.05":{"message":"Neumorphic 1"},
+"xmpage.opt.style.06":{"message":"Neumorphic 2"},
+"xmpage.opt.style.07":{"message":"Neumorphic 3"}
 }
 
 

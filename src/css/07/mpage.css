@@ -1,0 +1,519 @@
+html {
+     min-height: 100vh;
+}
+ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td,tr,table {
+     margin:0;
+     padding:0;
+}
+ body {
+     font-family: "Proxima Nova Regular","Helvetica Neue",Arial,Helvetica,sans-serif;
+     font-size: 13px;
+     line-height: 1.5em;
+     min-height: calc(100vh - .25em - 10px);
+}
+ .clear {
+     clear: both;
+}
+ #container.sidebar {
+     display: flex;
+}
+ #page-container > table:first-child {
+     border-collapse: collapse;
+     padding: 0;
+     width: 100%;
+     height: 100%;
+     font-size: inherit;
+}
+ .sidebar #page-container {
+     flex: 1;
+     border: 0;
+     border-radius: 5px 5px;
+     overflow: auto;
+     height: calc(100vh - 14px);
+     scrollbar-width: thin;
+     margin: 5px;
+}
+ .sticky-header #page-container {
+     overflow: auto;
+     border: 0;
+     border-radius: 5px 5px;
+     height: calc(100vh - 2em - 28px);
+     scrollbar-width: thin;
+     margin: 5px;
+}
+ #panel-container .column {
+     height: 100%;
+     padding: 0 0 2em 0;
+     vertical-align: top;
+}
+ #panel-container td.last {
+     border-right: none;
+}
+ #dd-placeholder {
+     display: none;
+}
+ #menu-container {
+}
+ .sidebar #menu-container {
+     width: 250px;
+     display: flex;
+     flex-direction: column;
+}
+ .sticky-header #menu-container #page-menu, .sticky-header #menu-container #page-menu #page-menu-list {
+     transform:rotateX(180deg);
+}
+ .sidebar #menu-container #page-menu, .sidebar #menu-container #page-menu #page-menu-list {
+     transform: scaleX(-1);
+}
+ #page-menu-mobile {
+     position: relative;
+     overflow: hidden;
+     line-height: 1.5em;
+}
+ #page-menu {
+     position: relative;
+     overflow: auto;
+     scrollbar-width: thin;
+     line-height: 1.5em;
+}
+ .sidebar #page-menu {
+     border: 0;
+     border-radius: 10px;
+     background: linear-gradient(145deg, var(--colors-background05), var(--colors-background20));
+     box-shadow:  -7px 7px 14px var(--colors-background40),
+                   7px -70px 14px var(--colors-background05);
+     flex-grow: 1;
+     margin: calc(2em + 10px) 5px 5px 5px;
+     padding: 0 .75em;
+     height:calc(100vh - 2.25em - 18px);
+}
+ .sticky-header #page-menu {
+     border: 0;
+     border-radius: 10px;
+     background: linear-gradient(145deg, var(--colors-background05), var(--colors-background20));
+     box-shadow:  7px -7px 14px var(--colors-background40),
+                 -7px 7px 14px var(--colors-background05);
+     margin: 5px 3em 5px 5px;
+     padding: .25em 0;
+}
+ #page-menu-mobile {
+     border-bottom: 1px dashed;
+}
+ #page-menu-list {
+     list-style-type: none;
+}
+ #page-menu-list li {
+     white-space: nowrap;
+}
+ .sticky-header #page-menu-list {
+     line-height: 2em;
+}
+ .sidebar #page-menu-list {
+     line-height: 2em;
+     margin: 5px;
+}
+ .sticky-header #page-menu-list li {
+     display: inline;
+     border-right: 1px dashed;
+}
+ .sidebar #page-menu-list li a, .sidebar #page-menu-list li a:link {
+     padding: 0;
+     line-height: 1.75em;
+}
+ #page-menu-list li a, #page-menu-list li a:link {
+     padding: 0 0.75em;
+     display: inline;
+     text-decoration: none;
+     line-height: 1.5em;
+}
+ #page-menu-list li:hover a {
+     cursor: pointer;
+     text-decoration: underline;
+}
+ #page-menu-list li.active a {
+     font-weight: 700;
+     text-transform: uppercase;
+}
+ #page-menu-mobile .active-page, #page-menu-mobile .action-menu-mobile {
+     padding: 0.75em 0.75em;
+     font-weight: 700;
+     cursor: pointer;
+     text-transform: uppercase;
+     font-size: 1.25em;
+}
+ #page-menu-mobile .nav-container {
+     border-top: 1px dashed;
+     border-color: inherit;
+     padding: 0.5em 0.5em;
+}
+ #page-menu-mobile .nav-container div {
+     padding: 0 0.25em;
+     line-height: 2.5em;
+     cursor: pointer;
+}
+ #page-menu-mobile .menu {
+     text-align: right;
+}
+ #nav-drop-indicator-bar {
+     background-color: #e6ac32;
+     position: absolute;
+     display: none;
+}
+ .sidebar #nav-drop-indicator-bar {
+     width: 250px;
+     height: 3px;
+     left: 0!important;
+}
+ .sticky-header #nav-drop-indicator-bar {
+     width: 3px;
+     height: 2em;
+     top: 0!important;
+}
+ #action-menu {
+     width: 1.5em;
+     height: 1.5em;
+}
+ .sticky-header #action-menu {
+     position: absolute;
+     display: block;
+     top: 0.25em;
+     right: 0.5em;
+     text-align: center;
+     cursor: pointer;
+     margin: 5px;
+}
+ .sidebar #action-menu {
+     position: absolute;
+     display: block;
+     top: 0.25em;
+     left: 50%;
+     transform: translate(-50%, 0);
+     text-align: center;
+     cursor: pointer;
+     margin: 5px;
+}
+ #options-container {
+     width: 300px;
+     padding-top: 0.75em;
+     vertical-align: top;
+}
+ #options-container div.color-box {
+     background-color: red;
+     width: 1.5em;
+     height: 1.5em;
+     float: left;
+     margin: 0 0.5em 0 0;
+}
+ #options-container div.group {
+     border-bottom: 1px dashed;
+     margin-bottom: 0.75em;
+}
+ #options-container table {
+     border-collapse: collapse;
+     border-spacing: 0;
+     width: 100%;
+}
+ #options-container table td {
+     padding: 0 0.75em 0.75em 0.75em;
+}
+ #options-container div.last {
+     text-align: center;
+     padding-bottom: 0.75em;
+}
+ a.button {
+     text-transform: uppercase;
+     text-decoration: none;
+     padding: 0.5em;
+     margin: 0.5em 0.5em;
+     font-weight: bolder;
+}
+ a.button:hover {
+     text-decoration: underline;
+     cursor: pointer;
+}
+ div.widget {
+     margin:9px;
+     border-radius: 10px;
+     background: linear-gradient(145deg, var(--colors-background05), var(--colors-background20));
+     box-shadow:   7px 7px 14px var(--colors-background40),
+                   -7px -7px 14px var(--colors-background05);
+     padding: 0.75em;
+}
+ div.header {
+     line-height: 1.5em;
+}
+ div.header img.favicon {
+     margin-bottom: -3px;
+     margin-right: 0.5em;
+     width: 16px;
+     height: 16px;
+}
+ div.header a {
+     cursor: pointer;
+     text-decoration: none;
+     font-weight: 700;
+}
+ div.header div.action {
+     padding-left: 0.5em;
+     padding-right: 2em;
+     cursor: pointer;
+     width: 16px;
+     height: 16px;
+     display: inline-block;
+}
+ div.body {
+     margin-top: 0.75em;
+     overflow-x: hidden;
+     width: 0;
+     min-width: 100%;
+}
+ div.body ul {
+}
+ div.body ul > li:before {
+     content: '\2022';
+     display: inline-block;
+     margin-left: -1em;
+     width: 0.25em;
+     margin-right: 0.75em;
+}
+ div.body ul.date-groups > li:before {
+     content: '\2605';
+     margin-left: -1em;
+     width: 0.5em;
+     margin-right: 0.75em;
+}
+ div.body ul.date-groups ul {
+     margin-left: 1.25em;
+}
+ div.body ul > li {
+     list-style-type: none;
+     line-height: 1.5em;
+     margin-left: 1em;
+}
+ div.body ol {
+}
+ div.body ol > li {
+     list-style-type: decimal;
+     line-height: 1.5em;
+     margin-left: 2.5em;
+}
+ div.body a {
+     color: inherit;
+     text-decoration: none;
+}
+ div.body a:hover {
+     text-decoration: underline;
+}
+ div.body a:visited {
+}
+ div.body div.error {
+     color: #9d0e15;
+}
+ div.body div.loading {
+     background-image: url('loading_16.png');
+     padding-left: 20px;
+     background-repeat: no-repeat;
+}
+ div.body .available-feeds {
+     text-align: center;
+}
+ div.body .available-feeds select.feeds {
+     line-height: 1.5em;
+     margin-bottom: 1.5em;
+     margin-top: 1.5em;
+     max-width: 300px;
+     width: 100%;
+}
+ div.body .available-feeds p {
+     line-height: 1.5em;
+     text-align: left;
+}
+ div.body .available-feeds div {
+     text-align: right;
+}
+ ul.menu-list {
+     list-style-type: none;
+     position: absolute;
+     margin: 0;
+     padding: 0;
+     z-index: 100;
+     width: 150px;
+     text-align: center;
+     display: none;
+     font-weight: normal;
+     text-align: left;
+     box-shadow: 2px 2px 1px #888888;
+}
+ .sidebar ul.menu-list {
+     transform: translate(50%, 0);
+}
+ ul.menu-list a {
+     display: block;
+     text-decoration: none;
+     padding: 0 0 0 1.5em;
+     white-space: nowrap;
+     font-weight: normal;
+     line-height: 1.5em;
+}
+ ul.menu-list a:hover {
+}
+ div.feedConfig {
+     padding-bottom: 0.75em;
+     border-bottom: 1px dashed;
+}
+ div.feedConfig div {
+     padding-top: 0.5em;
+}
+ div.feedConfig input {
+     margin: 0 0.375em 0 0.375em;
+}
+ div.feedConfig input[type="text"] {
+     width: 4em;
+}
+ #message {
+     position: absolute;
+     text-align: center;
+     width: 100%;
+     display: none;
+}
+ #message .dialog {
+     position: relative;
+     display: inline-block;
+     background-color: #9ab2c8;
+     margin: 0 auto;
+     padding: 0.75em 1.5em;
+     z-index: 1000;
+     max-width: 300px;
+}
+ #message .dialog p {
+     margin-bottom: 0.75em;
+}
+ #message .dialog .button:hover {
+     text-decoration: underline;
+     cursor: pointer;
+}
+/*-----------APPLY VAR---------------*/
+ body {
+     background-color: var(--colors-background15);
+     border-color: var(--colors-border);
+}
+ #menu-container {
+     position: sticky;
+     top: 0;
+     background-color: var(--colors-background15);
+     border-color: var(--colors-border) 
+}
+ .sticky-header #page-menu-list li {
+     border-color: var(--colors-border);
+}
+ .sidebar #menu-container {
+     border-color: var(--colors-border);
+}
+ .sidebar #page-menu {
+     border-color: var(--colors-border);
+}
+ .sticky-header #page-menu {
+     border-color: var(--colors-border);
+}
+ .sidebar #page-container {
+     border-color: var(--colors-border);
+}
+ .sticky-header #page-container {
+     border-color: var(--colors-border);
+}
+ #page-menu-list li a {
+     color: var(--colors-link);
+}
+ #page-menu-list li.active a {
+     color: var(--colors-misc);
+}
+ #action-menu {
+     color: var(--colors-misc);
+}
+ #panel-container td.column {
+     border-color: var(--colors-border);
+}
+ #page-menu-mobile {
+     border-color: var(--colors-border);
+}
+ #page-menu-mobile .nav-container div {
+     color: var(--colors-misc);
+}
+ #page-menu-mobile .active-page, #page-menu-mobile .action-menu-mobile {
+     color: var(--colors-misc);
+}
+ div.widget {
+     border-color: var(--colors-border);
+}
+ div.header a, div.header .action {
+     color: var(--colors-title);
+}
+ div.body li {
+     color: var(--colors-link);
+}
+ div.body a:visited{
+     color: var(--colors-visited);
+}
+ div.body .available-feeds p {
+     color: var(--colors-link);
+}
+ div.body div.loading{
+     color: var(--colors-link);
+}
+ div.body div.error{
+     color: var(--colors-link);
+}
+ ul.menu-list {
+     background-color: var(--colors-menu);
+     box-shadow: 1px 1px var(--colors-border);
+}
+ ul.menu-list a {
+     color: var(--colors-menutext);
+}
+ ul.menu-list a:hover {
+     background-color: var(--colors-menusel);
+}
+ #dd-placeholder {
+     background-color: var(--colors-misc);
+}
+ #nav-drop-indicator-bar {
+     background-color: var(--colors-misc);
+}
+ #message .dialog {
+     background-color: var(--colors-menu);
+     box-shadow: 1px 1px 1px var(--colors-border);
+     color: var(--colors-menutext);
+}
+ #options-container {
+     color: var(--colors-link);
+}
+ #options-container div.group {
+     border-color: var(--colors-border);
+}
+ div a.button {
+     color: var(--colors-misc);
+}
+ div.feedConfig {
+     color: var(--colors-link);
+     border-color: var(--colors-border);
+}
+ body {
+     font-size: var(--font-size);
+}
+ body {
+     font-family: var(--font-family);
+}
+ body tr.not-for-mobile {
+     display: var(--shownotformobile);
+}
+ body a.for-mobile-only {
+     display: var(--showformobileonly);
+}
+ button, select, input {
+     font-size: var(--font-size);
+}
+ div.body li {
+    margin-top: var(--pref-spacing);
+     margin-bottom: var(--pref-spacing);
+}
+/*-----------------------------------------*/
