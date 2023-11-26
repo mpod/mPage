@@ -751,6 +751,7 @@ let View = {
     var p45 = 0.45 * ld;
     var p50 = 0.50 * ld;
     
+    styles.push("@import url('https://fonts.googleapis.com/css2?family=" + font.family.replace(' ', '+') + "');");
     styles.push(':root {--colors-background:' + colors.background + ';'); 
     styles.push('       --colors-border:' + colors.border + ';');
     styles.push('       --colors-link:' + colors.link + ';');
@@ -760,7 +761,7 @@ let View = {
     styles.push('       --colors-menutext:' + colors.menuText + ';'); 
     styles.push('       --colors-title:' + colors.title + ';'); 
     styles.push('       --colors-visited:' + colors.visited + ';');  
-    styles.push('       --font-family:' + font.family + ';'); 
+    styles.push('       --font-family:' + "'" + font.family + "',Verdana,sans-serif;" + ';'); 
     styles.push('       --font-size:' + font.size + 'px;'); 
     styles.push('       --pref-spacing:' + pref.spacing + ';'); 
     styles.push('       --showformobileonly:' + showForMobileOnly + ';'); 

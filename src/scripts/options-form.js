@@ -10,6 +10,7 @@ let OptionsForm = {
     var pref = model.getPreferences();
     OptionsForm.setColors(pref);
     OptionsForm.setSelectElValue('schemeType', pref.getConfig().schemeType);
+    OptionsForm.setSelectElValue('fontFamily', pref.getConfig().font.family);
     OptionsForm.setSelectElValue('fontSize', pref.getConfig().font.size);
     OptionsForm.setSelectElValue('entrySpacing', pref.getConfig().spacing);
     OptionsForm.setSelectElValue('numberOfPanels', pref.getConfig().layout.numberOfPanels);
@@ -26,6 +27,7 @@ let OptionsForm = {
   addListeners: function() {
     document.getElementById("shuffleColors").addEventListener('click', OptionsForm.shuffleColors);
     document.getElementById("schemeType").addEventListener('change', OptionsForm.changeSchemeType);
+    document.getElementById("fontFamily").addEventListener('change',  OptionsForm.apply);
     document.getElementById("fontSize").addEventListener('change',  OptionsForm.apply);
     document.getElementById("entrySpacing").addEventListener('change', OptionsForm.apply);
     document.getElementById("lock").addEventListener('change', OptionsForm.apply);
@@ -45,6 +47,9 @@ let OptionsForm = {
     document.getElementById('export-json-button').addEventListener('click', OptionsForm.exportToJson);
     document.getElementById('import-json-button').addEventListener('click', function() { document.getElementById("import-json-file").click(); });
     document.getElementById('import-json-file').addEventListener('change', OptionsForm.importFromJson);
+    document.getElementById('setGroupByDate').addEventListener('click', function() { OptionsForm.changeGroupByDate(true); });
+    document.getElementById('unsetGroupByDate').addEventListener('click', function() { OptionsForm.changeGroupByDate(false); });
+    document.getElementById('setNumberOfEntries').addEventListener('click', OptionsForm.setNumberOfEntries);
   },
 
   isOpen: function() {
@@ -132,6 +137,7 @@ let OptionsForm = {
       menuSel: document.getElementById('colorMenuSel').style.backgroundColor,  
       misc: document.getElementById('colorError').style.backgroundColor
     };
+    config.font.family = OptionsForm.getSelectElValue('fontFamily');
     config.font.size = OptionsForm.getSelectElValue('fontSize');
     config.spacing = OptionsForm.getSelectElValue('entrySpacing');
     config.lock = document.getElementById('lock').checked;
@@ -199,6 +205,32 @@ let OptionsForm = {
       model.reset();
       OptionsForm.mapValues();
     }
+  },
+
+  changeGroupByDate: function(mode) {
+    var model = mPage.getModel();
+
+    model.getPages(model.GET_PAGES_ARRAY).forEach(function(page, i) {
+      page.getWidgets(page.GET_WIDGETS_ARRAY).forEach(function(widget, i) {
+        widget.set('groupByDate', mode === true);
+      });
+    });
+  },
+
+  setNumberOfEntries: function() {
+    var model = mPage.getModel();
+    var el = document.getElementById('numberOfEntries');
+    var n = parseInt(el.value);
+    if (isNaN(n) || n <= 0) {
+      alert('Value "' + el.value + '" is not a number.');
+      return;
+    }
+
+    model.getPages(model.GET_PAGES_ARRAY).forEach(function(page, i) {
+      page.getWidgets(page.GET_WIDGETS_ARRAY).forEach(function(widget, i) {
+        widget.set('entriesToShow', n);
+      });
+    });
   }
 
 }

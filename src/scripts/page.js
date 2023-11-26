@@ -10,6 +10,7 @@ let Page = function(config, model) {
 
   for (var i=0; i<config.widgets.length; i++) {
     var widget = new Feed(config.widgets[i], this);
+
     this.widgets[widget.id] = widget;
     if (widget.panelId in this.layout) 
       this.layout[widget.panelId].push(widget.id);
@@ -53,9 +54,25 @@ Page.prototype = {
   },
 
   load: function() {
-    for (var widgetId in this.widgets) {
-      this.widgets[widgetId].load();
+    var widgetsByHostname = {};
+    var hostname;
+    for (const widgetId in this.widgets) {
+      const widget = this.widgets[widgetId];
+      try {
+        hostname = new URL(widget.url).hostname;
+      } catch(e) {
+        hostname = widget.url;
+      }
+      if (hostname in widgetsByHostname) {
+        widgetsByHostname[hostname].push(widget);
+      } else {
+        widgetsByHostname[hostname] = [widget];
+      }
     }
+    for (const hostname in widgetsByHostname) {
+      widgetsByHostname[hostname].map((w) => w.load()).reduce((acc, loading) => acc.then(() => loading));
+    }
+
     var nPanelsReq = this.model.getPreferences().layout.numberOfPanels;
     this.alignLayout(nPanelsReq);
     window.document.documentElement.dispatchEvent(new CustomEvent('mpage-model', {detail: 'page-loaded:' + this.id}));

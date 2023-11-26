@@ -113,7 +113,6 @@ Feed.prototype = {
     var result = []
     var entry;
     var timeFilter = null;
-    var options, query, rooNode;
 
     if (this.hoursFilter > 0) {
       if (this.hoursFilter % 24 == 0) {
@@ -127,8 +126,6 @@ Feed.prototype = {
       } else  
         timeFilter = (new Date()).getTime() - this.hoursFilter * 60 * 60 * 1000;
     }
-
-    var globalVisitedFilter = mPage.getModel().getPreferences().globalVisitedFilter;
 
     for (var i=0; i<this.entries.length; i++) {
       entry = this.entries[i];
@@ -170,7 +167,7 @@ Feed.prototype = {
     this.state = 'BLANK';
   },
 
-  load: function(subscribing) {
+  load: function() {
     var self = this;
 
     var errorHandler = function() {
@@ -202,7 +199,27 @@ Feed.prototype = {
 
     this.state = 'LOADING';
     this.errorMessage = null;
-    browser.runtime.sendMessage({cmd: 'fetch-feed', url: this.url}).then(processHandler, errorHandler);
+
+    const delay = function(timeout) { 
+      return new Promise(resolve => setTimeout(resolve, timeout));
+    }
+
+    const fetchFeed = function() {
+      return browser.runtime.sendMessage({cmd: 'fetch-feed', url: self.url});
+    }
+
+    const getResource = function(retryCount) {
+      const timeouts = [0, 100, 500, 1000, 2000, 3000];
+      return fetchFeed().catch(function(error) {
+        if (retryCount >= timeouts.length) {
+          return Promise.reject(error);
+        } else {
+          return delay(timeouts[retryCount]).then(() => getResource(retryCount + 1))
+        }
+      });
+    }
+
+    return getResource(0).then(processHandler, errorHandler);
   },
 
   extractFeeds: function(htmlText) {
