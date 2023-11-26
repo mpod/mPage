@@ -761,7 +761,7 @@ let View = {
     styles.push('       --colors-menutext:' + colors.menuText + ';'); 
     styles.push('       --colors-title:' + colors.title + ';'); 
     styles.push('       --colors-visited:' + colors.visited + ';');  
-    styles.push('       --font-family:' + "'" + font.family + "',Verdana,sans-serif;" + ';'); 
+    styles.push('       --font-family:' + "'" + font.family + "',Verdana,sans-serif;"); 
     styles.push('       --font-size:' + font.size + 'px;'); 
     styles.push('       --pref-spacing:' + pref.spacing + ';'); 
     styles.push('       --showformobileonly:' + showForMobileOnly + ';'); 
