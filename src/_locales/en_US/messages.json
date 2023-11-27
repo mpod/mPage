@@ -94,6 +94,7 @@
 "xmpage.opt.button.export":{"message":"Export"},
 "xmpage.opt.stickyheader":{"message":"Sticky header"},
 "options.form.alert":{"message":"Only file with extension .json file can be imported here!"},
+"config.view.title":{"message":"Title:"},
 "config.view.showwithin":{"message":"Show within"},
 "config.view.infinite":{"message":"Infinite"},
 "config.view.hours":{"message":"hours"},

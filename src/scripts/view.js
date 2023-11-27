@@ -304,6 +304,17 @@ let View = {
     configEl.style.display = 'none';
 
     var row, el;
+
+    row = doc.createElement('div');
+    row.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.title")));
+    el = doc.createElement('input');
+    el.type = 'text';
+    el.className = 'title';
+    el.style.width = '15em';
+    el.value = widget.title;
+    row.appendChild(el);
+    configEl.appendChild(row);
+
     row = doc.createElement('div');
     row.appendChild(doc.createTextNode(browser.i18n.getMessage("config.view.showwithin")));
     el = doc.createElement('input');
@@ -383,8 +394,9 @@ let View = {
 
     el = createButtonEl(browser.i18n.getMessage("config.view.apply"));
     el.addEventListener('click', function(evt) {
-      var widgetEl = self.findWidgetEl(widget);
-      widgetEl.querySelector('.feedConfig').style.display = 'none';
+      var widgetEl = self.findWidgetEl(widget).querySelector('.feedConfig');
+
+      widgetEl.style.display = 'none';
       var config = {};
       var el = widgetEl.querySelector('.entriesToShow');
       var n = parseInt(el.value);
@@ -404,6 +416,9 @@ let View = {
 
       el = widgetEl.querySelector('.minimized');
       config.minimized = el.checked;
+
+      el = widgetEl.querySelector('.title');
+      config.title = el.value;
 
       widget.setBulk(config);
       self.enableDragAndDrop(self.findWidgetEl(widget));
