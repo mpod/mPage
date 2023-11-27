@@ -428,7 +428,7 @@ let View = {
   createWidgetActionMenu: function(widget) {
     var self = View;
     var doc = self.getDoc();
-    var el, listEl, itemEl, linkEl
+    var el;
 
     el = doc.createElement('div');
     el.setAttribute('class', 'action');
@@ -458,7 +458,6 @@ let View = {
 
   disableDragAndDrop: function(widgetEl) {
     var self = View;
-    var doc = self.getDoc();
     widgetEl.setAttribute('draggable', 'false');
     widgetEl.removeEventListener('dragstart', DragAndDrop.widgetHandler.dragStart, false);
     widgetEl.removeEventListener('dragend', DragAndDrop.widgetHandler.dragEnd, false);
@@ -466,7 +465,6 @@ let View = {
 
   enableDragAndDrop: function(widgetEl) {
     var self = View;
-    var doc = self.getDoc();
 
     if (!self.isNarrowScreen() && !mPage.getModel().getPreferences().lock) {
       widgetEl.setAttribute('draggable', 'true');
@@ -750,8 +748,9 @@ let View = {
     var p40 = 0.40 * ld;
     var p45 = 0.45 * ld;
     var p50 = 0.50 * ld;
+
+    const fontFamily = "'" + font.family + "',Verdana,sans-serif";
     
-    styles.push("@import url('https://fonts.googleapis.com/css2?family=" + font.family.replace(' ', '+') + "');");
     styles.push(':root {--colors-background:' + colors.background + ';'); 
     styles.push('       --colors-border:' + colors.border + ';');
     styles.push('       --colors-link:' + colors.link + ';');
@@ -761,7 +760,7 @@ let View = {
     styles.push('       --colors-menutext:' + colors.menuText + ';'); 
     styles.push('       --colors-title:' + colors.title + ';'); 
     styles.push('       --colors-visited:' + colors.visited + ';');  
-    styles.push('       --font-family:' + "'" + font.family + "',Verdana,sans-serif;"); 
+    styles.push('       --font-family:' + fontFamily + ';');
     styles.push('       --font-size:' + font.size + 'px;'); 
     styles.push('       --pref-spacing:' + pref.spacing + ';'); 
     styles.push('       --showformobileonly:' + showForMobileOnly + ';'); 

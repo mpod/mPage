@@ -10,7 +10,7 @@ let OptionsForm = {
     var pref = model.getPreferences();
     OptionsForm.setColors(pref);
     OptionsForm.setSelectElValue('schemeType', pref.getConfig().schemeType);
-    OptionsForm.setSelectElValue('fontFamily', pref.getConfig().font.family);
+    OptionsForm.setSelectElValue('fontFamily', pref.getConfig().font.family, 'Verdana');
     OptionsForm.setSelectElValue('fontSize', pref.getConfig().font.size);
     OptionsForm.setSelectElValue('entrySpacing', pref.getConfig().spacing);
     OptionsForm.setSelectElValue('numberOfPanels', pref.getConfig().layout.numberOfPanels);
@@ -114,12 +114,17 @@ let OptionsForm = {
     return el[el.selectedIndex].value;
   },
 
-  setSelectElValue: function(id, v) {
+  setSelectElValue: function(id, v, otherwise) {
     var el = document.getElementById(id);
+    var found = false;
     for (var i = 0; i < el.options.length; i++) {
       if (el.options[i].value == v) {
         el.selectedIndex = i;
+        found = true;
       }
+    }
+    if (!found) {
+      OptionsForm.setSelectElValue(id, otherwise);
     }
   },
 
